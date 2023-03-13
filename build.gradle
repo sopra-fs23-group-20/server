@@ -54,11 +54,11 @@ bootJar {
 }
 
 sonarqube {
-  properties {
-    property "sonar.projectKey", "TODO"
-    property "sonar.organization", "TODO"
-    property "sonar.host.url", "TODO"
-  }
+    properties {
+        property "sonar.projectKey", "sopra-fs23-group-20_client"
+        property "sonar.organization", "sopra-fs23-group-20"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
 }
 
 jacocoTestReport {
