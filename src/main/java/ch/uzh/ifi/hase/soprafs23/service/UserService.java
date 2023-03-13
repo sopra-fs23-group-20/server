@@ -146,7 +146,6 @@ public class UserService {
         }
 
 
-
         if (userInput.getUsername() != null) {
             if (userInput.getUsername().contains(" ")) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username cannot contain spaces");
@@ -156,7 +155,6 @@ public class UserService {
 
 
         originalUser.setBirthday(userInput.getBirthday());
-
 
 
         if (userInput.getStatus() != null) {
