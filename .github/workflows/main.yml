@@ -24,7 +24,7 @@ jobs:
           java-version: "17"
 
       - name: Test and analyze
-        run: ./gradlew test jacocoTestReport sonar -Dsonar.branch.name=main
+        run: ./gradlew test jacocoTestReport sonar -Dsonar.branch.name=main --debug
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
