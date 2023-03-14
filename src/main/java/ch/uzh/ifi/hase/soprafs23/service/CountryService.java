@@ -65,7 +65,7 @@ public class CountryService {
                 long population = (long) country.get("population");
                 String flag = (String) ((JSONObject) country.get("flags")).get("svg");
                 List<Double> latlng = (List<Double>) country.get("latlng");
-                
+
 
                 Country newCountry = new Country();
                 newCountry.setName(name);
