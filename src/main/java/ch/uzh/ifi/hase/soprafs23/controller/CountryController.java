@@ -23,8 +23,14 @@ public class CountryController {
 
     @PostMapping("/countries")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createCountry() {
-        countryService.setCountriesWithFile();
+    public List<CountryGetDTO> createCountry() {
+        countryService.setCountriesWithAPI();
+        List< Country> countries = countryService.getAllCountries();
+        List<CountryGetDTO> countryGetDTOS = new ArrayList<>();
+        for (Country country : countries){
+            countryGetDTOS.add(DTOMapper.INSTANCE.convertEntityToCountryGetDTO(country));
+        }
+        return countryGetDTOS;
     }
 
 

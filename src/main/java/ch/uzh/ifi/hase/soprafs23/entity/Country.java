@@ -21,8 +21,28 @@ public class Country {
     private Long population;
 
 
-    @Column(nullable = true)
-    private String flagURL;
+    @Column(nullable = false)
+    private String flag;
+
+    @Column(nullable = false)
+    private Double latitude;
+    private Double longitude;
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
 
     public Long getId() {
         return id;
@@ -48,12 +68,12 @@ public class Country {
         this.population = population;
     }
 
-    public String getFlagURL() {
-        return flagURL;
+    public String getFlag() {
+        return flag;
     }
 
-    public void setFlagURL(String flagURL) {
-        this.flagURL = flagURL;
+    public void setFlag(String flagURL) {
+        this.flag = flagURL;
     }
 
 }
