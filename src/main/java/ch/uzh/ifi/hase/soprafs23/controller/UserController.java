@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs23.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.UserPutDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
+import ch.uzh.ifi.hase.soprafs23.service.CountryService;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,10 +26,13 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final CountryService countryService;
 
-    UserController(UserService userService) {
+    UserController(UserService userService, CountryService countryService) {
         this.userService = userService;
+        this.countryService = countryService;
     }
+
 
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
@@ -59,7 +63,7 @@ public class UserController {
     @CrossOrigin(exposedHeaders = "Authorization")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<UserGetDTO> createUser(@RequestBody UserPostDTO userPostDTO) {
-
+        countryService.setCountriesWithFile();
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
         User createdUser = userService.createUser(userInput);
         UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
