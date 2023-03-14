@@ -30,6 +30,7 @@ public class CountryController {
         for (Country country : countries){
             countryGetDTOS.add(DTOMapper.INSTANCE.convertEntityToCountryGetDTO(country));
         }
+        countryGetDTOS.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
         return countryGetDTOS;
     }
 
