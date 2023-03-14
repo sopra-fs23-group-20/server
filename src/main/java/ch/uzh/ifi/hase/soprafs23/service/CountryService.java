@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.Scanner;
 
 @Service
@@ -33,6 +34,10 @@ public class CountryService {
     @Autowired
     public CountryService(@Qualifier("countryRepository") CountryRepository countryRepository) {
         this.countryRepository = countryRepository;
+    }
+
+    public List<Country> getAllCountries() {
+        return this.countryRepository.findAll();
     }
 
     public void setCountriesWithAPI() {
