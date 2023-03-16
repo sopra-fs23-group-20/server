@@ -40,6 +40,12 @@ public class CountryService {
         return this.countryRepository.findAll();
     }
 
+    public Country getRandomCountry(){
+        List<Country> countries = getAllCountries();
+        int randomIndex = (int) (Math.random() * countries.size());
+        return countries.get(randomIndex);
+    }
+
     public void setCountriesWithAPI() {
 
         try {
@@ -95,11 +101,16 @@ public class CountryService {
                 JSONObject country = (JSONObject) obj;
                 String name = (String) ((JSONObject) country.get("name")).get("common");
                 long population = (long) country.get("population");
+                String flag = (String) ((JSONObject) country.get("flags")).get("svg");
+                List<Double> latlng = (List<Double>) country.get("latlng");
 
 
                 Country newCountry = new Country();
                 newCountry.setName(name);
                 newCountry.setPopulation(population);
+                newCountry.setFlag(flag);
+                newCountry.setLatitude(latlng.get(0));
+                newCountry.setLongitude(latlng.get(1));
                 countryRepository.save(newCountry);
             }
             countryRepository.flush();

@@ -1,11 +1,9 @@
 package ch.uzh.ifi.hase.soprafs23.rest.mapper;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Country;
+import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.CountryGetDTO;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.UserGetDTO;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.UserPostDTO;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.UserPutDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -49,4 +47,15 @@ public interface DTOMapper {
     @Mapping(source = "longitude", target = "longitude")
     @Mapping(source = "latitude", target = "latitude")
     CountryGetDTO convertEntityToCountryGetDTO(Country country);
+
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "time", target = "time")
+    @Mapping(source = "currentCountry", target = "currentCountry")
+    @Mapping(source = "currentPopulation", target = "currentPopulation")
+    @Mapping(source = "gameState", target = "gameState")
+    @Mapping(source = "currentFlag", target = "currentFlag")
+    @Mapping(source = "currentLongitude", target = "currentLongitude")
+    @Mapping(source = "currentLatitude", target = "currentLatitude")
+    GameGetDTO convertEntityToGameGetDTO(Game game);
+
 }
