@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class UserGetDTO {
 
-    private Long userId;
+    private Long id;
     private String username;
 
     private Date creation_date;
@@ -14,12 +14,12 @@ public class UserGetDTO {
 
     private Date birthday;
 
-    public Long getUserId() {
-        return userId;
+    public Long getId() {
+        return id;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {

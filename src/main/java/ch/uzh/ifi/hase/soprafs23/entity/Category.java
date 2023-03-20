@@ -4,9 +4,8 @@ import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Embeddable
@@ -24,10 +23,10 @@ public class Category implements Serializable {
     @Column(nullable = true)
     private long population;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "location", joinColumns = @JoinColumn(name = "categoryId"))
     @Column(nullable = true)
-    private List<Double> location;
+    private Set<Double> location;
 
     @Column(nullable = true)
     private String outline;
@@ -64,11 +63,11 @@ public class Category implements Serializable {
         this.population = population;
     }
 
-    public List<Double> getLocation() {
+    public Set<Double> getLocation() {
         return location;
     }
 
-    public void setLocation(List<Double> location) {
+    public void setLocation(Set<Double> location) {
         this.location = location;
     }
 
@@ -97,14 +96,14 @@ public class Category implements Serializable {
             case LOCATION:
                 double latitude = country.getLatitude();
                 double longitude = country.getLongitude();
-                List<Double> location = new ArrayList<>();
+                Set<Double> location = new HashSet<>();
                 location.add(latitude);
                 location.add(longitude);
                 category.setLocation(location);
                 return category;
 
             case CAPITAL:
-                category.setPopulation(country.getPopulation());
+                category.setCapital(country.getCapital());
                 return category;
 
             default:

@@ -1,7 +1,9 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
+import ch.uzh.ifi.hase.soprafs23.entity.Guess;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GameGetDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.GuessPostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 import org.springframework.http.HttpStatus;
@@ -66,12 +68,26 @@ public class GameController {
          return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 
+    @GetMapping("/games/{gameId}/countries")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<String> getGameCountries(@PathVariable Long gameId) {
+        return gameService.getGameCountries(gameId);
+    }
+
     @PutMapping("/games/{gameId}/start")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GameGetDTO startGame(@PathVariable Long gameId) {
         Game game = gameService.startGame(gameId);
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
+    }
+
+    @PostMapping("/games/{gameId}/guesses")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void submitGuess(@PathVariable Long gameId, @RequestBody GuessPostDTO guessPostDTO) {
+        Guess guess = DTOMapper.INSTANCE.convertGuessPostDTOtoEntity(guessPostDTO);
+        gameService.submitGuess(gameId, guess);
     }
 
     @MessageMapping("/game/{gameId}/join")
@@ -87,6 +103,8 @@ public class GameController {
         // remove the sessionId from the list of subscribers for the given gameId
         gameService.removeSubscriber(gameId, sessionId);
     }
+
+
 
 
 

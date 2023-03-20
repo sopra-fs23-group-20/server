@@ -1,59 +1,22 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
 
-import javax.persistence.*;
+import javax.persistence.Embeddable;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-@Entity
-@Table(name = "COUNTRY")
-public class Country {
-
-    @Id
-    @GeneratedValue
-    @Column(name = "countryId")
-    private Long countryId;
-
-
-    @ManyToOne
-    @JoinColumn(name = "gameId")
-    private Game game;
-
-    @Column(nullable = false)
+@Embeddable
+public class GameCountry {
     private String name;
-
-    @Column(nullable = true)
     private Long population;
-
-
-    @Column(nullable = true)
     private String flag;
-
-    @Column(nullable = true)
     private Double latitude;
-    @Column(nullable = true)
     private Double longitude;
 
-    @Column(nullable = true)
     private String capital;
 
-    @Column(nullable = true)
     private String outline;
-
-
-    public Long getCountryId() {
-        return countryId;
-    }
-
-    public void setCountryId(Long countryId) {
-        this.countryId = countryId;
-    }
-
-    public Game getGame() {
-        return game;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
-    }
 
     public String getName() {
         return name;
@@ -110,4 +73,21 @@ public class Country {
     public void setOutline(String outline) {
         this.outline = outline;
     }
+
+    public static Set<GameCountry> addGameCountryCollection(List<Country> countyList){
+        Set<GameCountry> gameCountryList = new HashSet<>();
+        for (Country country : countyList) {
+            GameCountry gameCountry = new GameCountry();
+            gameCountry.setName(country.getName());
+            gameCountry.setPopulation(country.getPopulation());
+            gameCountry.setFlag(country.getFlag());
+            gameCountry.setLatitude(country.getLatitude());
+            gameCountry.setLongitude(country.getLongitude());
+            gameCountry.setCapital(country.getCapital());
+            gameCountry.setOutline(country.getOutline());
+            gameCountryList.add(gameCountry);
+        }
+        return gameCountryList;
+    }
+
 }

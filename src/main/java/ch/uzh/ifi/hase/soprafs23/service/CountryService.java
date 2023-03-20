@@ -103,10 +103,19 @@ public class CountryService {
                 long population = (long) country.get("population");
                 String flag = (String) ((JSONObject) country.get("flags")).get("svg");
                 List<Double> latlng = (List<Double>) country.get("latlng");
+                String capital;
+                try{
+                    capital = (String) ((JSONArray) country.get("capital")).get(0);
+
+                }catch (Exception e){
+                    capital = "No capital";
+                }
+
 
 
                 Country newCountry = new Country();
                 newCountry.setName(name);
+                newCountry.setCapital(capital);
                 newCountry.setPopulation(population);
                 newCountry.setFlag(flag);
                 newCountry.setLatitude(latlng.get(0));

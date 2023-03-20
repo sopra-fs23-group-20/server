@@ -112,7 +112,7 @@ public class UserService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username or password is empty");
         }
         catch (NullPointerException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username or password is empty");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username or password is empty, null pointer exception");
         }
         if (newUser.getUsername().contains(" ")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username cannot contain spaces");

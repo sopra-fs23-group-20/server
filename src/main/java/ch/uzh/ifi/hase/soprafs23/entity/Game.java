@@ -7,7 +7,7 @@ import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
-import java.util.Stack;
+import java.util.Set;
 
 @Entity
 @Table(name = "GAME")
@@ -20,9 +20,9 @@ public class Game {
     @Embedded
     private GameUser lobbyCreator;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "participants", joinColumns = @JoinColumn(name = "gameId"))
-    private List<GameUser> participants;
+    private Set<GameUser> participants;
 
     @Column(nullable = true)
     private Date creationDate;
@@ -37,13 +37,17 @@ public class Game {
     private RegionEnum region;
 
 
-    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
-    private List<Country> countriesToPlay;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "countriesToPlay", joinColumns = @JoinColumn(name = "gameId"))
+    private Set<GameCountry> countriesToPlay;
+
     @Column(nullable = true)
     private long currentRound;
-    @Embedded
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "categoryStackId")
     private CategoryStack remainingCategories;
-    @ElementCollection
+
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "categoriesSelected", joinColumns = @JoinColumn(name = "gameId"))
     @Column(name = "category")
     @Enumerated(EnumType.STRING)
@@ -74,11 +78,11 @@ public class Game {
         this.lobbyCreator = lobbyCreator;
     }
 
-    public List<GameUser> getParticipants() {
+    public Set<GameUser> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(List<GameUser> participants) {
+    public void setParticipants(Set<GameUser> participants) {
         this.participants = participants;
     }
 
@@ -122,11 +126,11 @@ public class Game {
         this.region = region;
     }
 
-    public List<Country> getCountriesToPlay() {
+    public Set<GameCountry> getCountriesToPlay() {
         return countriesToPlay;
     }
 
-    public void setCountriesToPlay(List<Country> countriesToPlay) {
+    public void setCountriesToPlay(Set<GameCountry> countriesToPlay) {
         this.countriesToPlay = countriesToPlay;
     }
 

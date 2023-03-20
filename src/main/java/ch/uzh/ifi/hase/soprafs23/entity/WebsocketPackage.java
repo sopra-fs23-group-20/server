@@ -2,7 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.entity;
 
 import ch.uzh.ifi.hase.soprafs23.constant.WebsocketType;
 
-public class Websocket {
+public class WebsocketPackage {
     private WebsocketType type;
     private Object payload;
 

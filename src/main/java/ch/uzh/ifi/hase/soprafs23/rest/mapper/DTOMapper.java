@@ -1,17 +1,13 @@
 package ch.uzh.ifi.hase.soprafs23.rest.mapper;
 
-import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
-import ch.uzh.ifi.hase.soprafs23.constant.GameState;
-import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
-import ch.uzh.ifi.hase.soprafs23.entity.*;
+import ch.uzh.ifi.hase.soprafs23.entity.Country;
+import ch.uzh.ifi.hase.soprafs23.entity.Game;
+import ch.uzh.ifi.hase.soprafs23.entity.Guess;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Stack;
 
 /**
  * DTOMapper
@@ -38,7 +34,7 @@ public interface DTOMapper {
     @Mapping(source = "status", target = "status")
     User convertUserPutDTOtoEntity(UserPutDTO userPutDTO);
 
-    @Mapping(source = "userId", target = "userId")
+    @Mapping(source = "userId", target = "id")
     @Mapping(source = "username", target = "username")
     @Mapping(source = "creation_date", target = "creation_date")
     @Mapping(source = "status", target = "status")
@@ -70,4 +66,7 @@ public interface DTOMapper {
     @Mapping(source = "currentCountry", target = "currentCountry")
     GameGetDTO convertEntityToGameGetDTO(Game game);
 
+    @Mapping(source = "username", target = "username")
+    @Mapping(source = "guess", target = "guess")
+    Guess convertGuessPostDTOtoEntity(GuessPostDTO guessPostDTO);
 }
