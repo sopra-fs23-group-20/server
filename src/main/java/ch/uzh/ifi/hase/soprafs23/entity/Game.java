@@ -41,11 +41,8 @@ public class Game {
     private List<Country> countriesToPlay;
     @Column(nullable = true)
     private long currentRound;
-    @ElementCollection
-    @CollectionTable(name = "remainingCategories", joinColumns = @JoinColumn(name = "gameId"))
-    @Column(name = "category")
-    @Enumerated(EnumType.STRING)
-    private List<CategoryEnum> remainingCategories;
+    @Embedded
+    private CategoryStack remainingCategories;
     @ElementCollection
     @CollectionTable(name = "categoriesSelected", joinColumns = @JoinColumn(name = "gameId"))
     @Column(name = "category")
@@ -141,11 +138,11 @@ public class Game {
         this.currentRound = currentRound;
     }
 
-    public List<CategoryEnum> getRemainingCategories() {
+    public CategoryStack getRemainingCategories() {
         return remainingCategories;
     }
 
-    public void setRemainingCategories(List<CategoryEnum> remainingCategories) {
+    public void setRemainingCategories(CategoryStack remainingCategories) {
         this.remainingCategories = remainingCategories;
     }
 

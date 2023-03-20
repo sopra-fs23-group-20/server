@@ -83,7 +83,7 @@ public class GameService {
         selectedCategories.add(CategoryEnum.LOCATION);
         game.setCategoriesSelected(selectedCategories);
 
-        Stack<CategoryEnum> remainingCategories = new Stack<CategoryEnum>();
+        CategoryStack remainingCategories = new CategoryStack();
         remainingCategories.addAll(selectedCategories);
         game.setRemainingCategories(remainingCategories);
 
@@ -117,9 +117,8 @@ public class GameService {
         if (timeRemaining > 0) {
             game.setRemainingTime(timeRemaining - 1);
             if(timeRemaining % 5 == 0){
-                CategoryEnum currentCategoryEnum = game.getRemainingCategories().get(0);
-                List<CategoryEnum> remainingCategories = game.getRemainingCategories();
-                remainingCategories.remove(0);
+                CategoryStack remainingCategories = game.getRemainingCategories();
+                CategoryEnum currentCategoryEnum = remainingCategories.pop();
                 game.setRemainingCategories(remainingCategories);
                 Category currentCategory = Category.transformToCategory(currentCategoryEnum, game.getCurrentCountry());
                 game.setCurrentCategory(currentCategory);

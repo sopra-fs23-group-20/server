@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import ch.uzh.ifi.hase.soprafs23.entity.Category;
+import ch.uzh.ifi.hase.soprafs23.entity.CategoryStack;
 import ch.uzh.ifi.hase.soprafs23.entity.Country;
 import ch.uzh.ifi.hase.soprafs23.entity.GameUser;
 
@@ -31,13 +32,13 @@ public class GameGetDTO {
     private Long remainingTime;
     private Country currentCountry;
 
-    private List<CategoryEnum> remainingCategories;
+    private CategoryStack remainingCategories;
 
-    public List<CategoryEnum> getRemainingCategories() {
+    public CategoryStack getRemainingCategories() {
         return remainingCategories;
     }
 
-    public void setRemainingCategories(List<CategoryEnum> remainingCategories) {
+    public void setRemainingCategories(CategoryStack remainingCategories) {
         this.remainingCategories = remainingCategories;
     }
 
