@@ -6,27 +6,82 @@ import javax.persistence.*;
 @Entity
 @Table(name = "COUNTRY")
 public class Country {
-    private static final long serialVersionUID = 2L;
 
     @Id
     @GeneratedValue
-    private Long id;
+    @Column(name = "countryId")
+    private Long countryId;
+
+
+    @ManyToOne
+    @JoinColumn(name = "gameId")
+    private Game game;
+
+
+
+
 
     @Column(nullable = false)
     private String name;
 
-
-
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Long population;
 
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String flag;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Double latitude;
+    @Column(nullable = true)
     private Double longitude;
+
+    @Column(nullable = true)
+    private String capital;
+
+    @Column(nullable = true)
+    private String outline;
+
+
+    public Long getCountryId() {
+        return countryId;
+    }
+
+    public void setCountryId(Long countryId) {
+        this.countryId = countryId;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getPopulation() {
+        return population;
+    }
+
+    public void setPopulation(Long population) {
+        this.population = population;
+    }
+
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
+    }
 
     public Double getLatitude() {
         return latitude;
@@ -44,36 +99,19 @@ public class Country {
         this.longitude = longitude;
     }
 
-    public Long getId() {
-        return id;
+    public String getCapital() {
+        return capital;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCapital(String capital) {
+        this.capital = capital;
     }
 
-    public String getName() {
-        return name;
+    public String getOutline() {
+        return outline;
     }
 
-    public void setName(String countryName) {
-        this.name = countryName;
+    public void setOutline(String outline) {
+        this.outline = outline;
     }
-
-    public Long getPopulation() {
-        return population;
-    }
-
-    public void setPopulation(Long population) {
-        this.population = population;
-    }
-
-    public String getFlag() {
-        return flag;
-    }
-
-    public void setFlag(String flagURL) {
-        this.flag = flagURL;
-    }
-
 }

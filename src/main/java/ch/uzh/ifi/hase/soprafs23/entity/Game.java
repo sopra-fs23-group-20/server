@@ -1,113 +1,184 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
+import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
+import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 
 import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Stack;
 
 @Entity
 @Table(name = "GAME")
 public class Game {
-    private static final long serialVersionUID = 3L;
 
     @Id
     @GeneratedValue
-    private Long id;
+    private Long gameId;
+
+    @OneToOne
+    @JoinColumn(name = "gameId")
+    private GameUser lobbyCreator;
+
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
+    @Column(nullable = true)
+    private List<GameUser> participants;
 
     @Column(nullable = true)
-    private Long time;
+    private Date creationDate;
+    @Column(nullable = true)
+    private GameState currentState;
+    @Column(nullable = true)
+    private long gameEndingCriteria;
+    @Column(nullable = true)
+    private long roundDuration;
 
     @Column(nullable = true)
-    private String currentCountry;
+    private RegionEnum region;
 
+
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
+    private List<Country> countriesToPlay;
     @Column(nullable = true)
-    private String currentPopulation;
-
+    private long currentRound;
+    @ElementCollection
+    @CollectionTable(name = "remainingCategories", joinColumns = @JoinColumn(name = "gameId"))
+    @Column(name = "category")
+    @Enumerated(EnumType.STRING)
+    private List<CategoryEnum> remainingCategories;
+    @ElementCollection
+    @CollectionTable(name = "categoriesSelected", joinColumns = @JoinColumn(name = "gameId"))
+    @Column(name = "category")
+    @Enumerated(EnumType.STRING)
+    private List<CategoryEnum> categoriesSelected;
+    @OneToOne
+    @JoinColumn(name = "gameId")
+    private Category currentCategory;
     @Column(nullable = true)
-    private String currentFlag;
+    private Long remainingTime;
 
-    @Column(nullable = true)
-    private double currentLatitude;
+    
+    @OneToOne
+    private Country currentCountry;
 
-    @Column(nullable = true)
-    private double currentLongitude;
-
-    @Column(nullable = false)
-    private GameState gameState;
-
-    @Column(nullable = false)
-    private String creatorUsername;
-
-    public String getCurrentFlag() {
-        return currentFlag;
+    public Long getGameId() {
+        return gameId;
     }
 
-    public void setCurrentFlag(String currentFlag) {
-        this.currentFlag = currentFlag;
+    public void setGameId(Long gameId) {
+        this.gameId = gameId;
     }
 
-    public double getCurrentLatitude() {
-        return currentLatitude;
+    public GameUser getLobbyCreator() {
+        return lobbyCreator;
     }
 
-    public void setCurrentLatitude(double currentLatitude) {
-        this.currentLatitude = currentLatitude;
+    public void setLobbyCreator(GameUser lobbyCreator) {
+        this.lobbyCreator = lobbyCreator;
     }
 
-    public double getCurrentLongitude() {
-        return currentLongitude;
+    public List<GameUser> getParticipants() {
+        return participants;
     }
 
-    public void setCurrentLongitude(double currentLongitude) {
-        this.currentLongitude = currentLongitude;
+    public void setParticipants(List<GameUser> participants) {
+        this.participants = participants;
     }
 
-    public String getCreatorUsername() {
-        return creatorUsername;
+    public Date getCreationDate() {
+        return creationDate;
     }
 
-    public void setCreatorUsername(String creatorUsername) {
-        this.creatorUsername = creatorUsername;
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
-    public Long getId() {
-        return id;
+    public GameState getCurrentState() {
+        return currentState;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCurrentState(GameState currentState) {
+        this.currentState = currentState;
     }
 
-    public Long getTime() {
-        return time;
+    public long getGameEndingCriteria() {
+        return gameEndingCriteria;
     }
 
-    public void setTime(Long time) {
-        this.time = time;
+    public void setGameEndingCriteria(long gameEndingCriteria) {
+        this.gameEndingCriteria = gameEndingCriteria;
     }
 
-    public String getCurrentCountry() {
+    public long getRoundDuration() {
+        return roundDuration;
+    }
+
+    public void setRoundDuration(long roundDuration) {
+        this.roundDuration = roundDuration;
+    }
+
+    public RegionEnum getRegion() {
+        return region;
+    }
+
+    public void setRegion(RegionEnum region) {
+        this.region = region;
+    }
+
+    public List<Country> getCountriesToPlay() {
+        return countriesToPlay;
+    }
+
+    public void setCountriesToPlay(List<Country> countriesToPlay) {
+        this.countriesToPlay = countriesToPlay;
+    }
+
+    public long getCurrentRound() {
+        return currentRound;
+    }
+
+    public void setCurrentRound(long currentRound) {
+        this.currentRound = currentRound;
+    }
+
+    public List<CategoryEnum> getRemainingCategories() {
+        return remainingCategories;
+    }
+
+    public void setRemainingCategories(List<CategoryEnum> remainingCategories) {
+        this.remainingCategories = remainingCategories;
+    }
+
+    public List<CategoryEnum> getCategoriesSelected() {
+        return categoriesSelected;
+    }
+
+    public void setCategoriesSelected(List<CategoryEnum> categoriesSelected) {
+        this.categoriesSelected = categoriesSelected;
+    }
+
+    public Category getCurrentCategory() {
+        return currentCategory;
+    }
+
+    public void setCurrentCategory(Category currentCategory) {
+        this.currentCategory = currentCategory;
+    }
+
+    public Long getRemainingTime() {
+        return remainingTime;
+    }
+
+    public void setRemainingTime(Long remainingTime) {
+        this.remainingTime = remainingTime;
+    }
+
+    public Country getCurrentCountry() {
         return currentCountry;
     }
 
-    public void setCurrentCountry(String currentCountry) {
+    public void setCurrentCountry(Country currentCountry) {
         this.currentCountry = currentCountry;
     }
-
-    public String getCurrentPopulation() {
-        return currentPopulation;
-    }
-
-    public void setCurrentPopulation(String currentPopulation) {
-        this.currentPopulation = currentPopulation;
-    }
-
-    public GameState getGameState() {
-        return gameState;
-    }
-
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
-    }
-
-
 }

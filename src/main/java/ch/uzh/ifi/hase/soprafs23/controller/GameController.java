@@ -79,7 +79,6 @@ public class GameController {
         // add the sessionId to the list of subscribers for the given gameId
         gameService.addSubscriber(gameId, sessionId);
         Game game = gameService.getGameById(gameId);
-        gameService.sendGameUpdates(gameId, DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
         messagingTemplate.convertAndSendToUser(sessionId, "/topic/game/" + gameId,DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
     }
 

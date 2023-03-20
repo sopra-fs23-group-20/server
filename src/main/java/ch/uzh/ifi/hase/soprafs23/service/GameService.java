@@ -1,9 +1,12 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
+import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
-import ch.uzh.ifi.hase.soprafs23.entity.Country;
-import ch.uzh.ifi.hase.soprafs23.entity.Game;
+import ch.uzh.ifi.hase.soprafs23.constant.WebsocketType;
+import ch.uzh.ifi.hase.soprafs23.entity.*;
+import ch.uzh.ifi.hase.soprafs23.repository.CategoryRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.GameUserRepository;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GameGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import org.slf4j.Logger;
@@ -14,8 +17,10 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.concurrent.*;
 
 @Service
@@ -31,11 +36,19 @@ public class GameService {
     private final Map<Long, ScheduledFuture<?>> scheduledFutures = new ConcurrentHashMap<>();
 
     private final CountryService countryService;
+
+    private final GameUserRepository gameUserRepository;
+
+    private final CategoryRepository categoryRepository;
+
+
     @Autowired
-    public GameService(@Qualifier("gameRepository")GameRepository gameRepository, SimpMessagingTemplate messagingTemplate, CountryService countryService) {
+    public GameService(@Qualifier("gameRepository")GameRepository gameRepository, @Qualifier("categoryRepository")CategoryRepository categoryRepository, @Qualifier("gameUserRepository")GameUserRepository gameUserRepository, SimpMessagingTemplate messagingTemplate, CountryService countryService, GameUserService gameUserService){
         this.gameRepository = gameRepository;
         this.messagingTemplate = messagingTemplate;
         this.countryService = countryService;
+        this.gameUserRepository = gameUserRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     public List<Game> getGames(){
@@ -47,28 +60,49 @@ public class GameService {
             countryService.setCountriesWithFile();
         }
 
-        Game game = new Game();
-        game.setCreatorUsername(username);
-        game.setGameState(GameState.SETUP);
+        GameUser lobbyCreator = new GameUser();
+        lobbyCreator.setUsername(username);
+        gameUserRepository.saveAndFlush(lobbyCreator);
+
         Country initialCountry = countryService.getRandomCountry();
-        game.setCurrentCountry(initialCountry.getName());
-        game.setCurrentPopulation(initialCountry.getPopulation().toString());
-        game.setCurrentFlag(initialCountry.getFlag());
-        game.setCurrentLatitude(initialCountry.getLatitude());
-        game.setCurrentLongitude(initialCountry.getLongitude());
-        game.setTime(60L);
+
+
+        Category currentCategory = Category.transformToCategory(CategoryEnum.POPULATION,initialCountry);
+        categoryRepository.saveAndFlush(currentCategory);
+        Game game = new Game();
+        game.setLobbyCreator(lobbyCreator);
+        game.setCurrentState(GameState.SETUP);
+
+        game.setCurrentCountry(initialCountry);
+        game.setCurrentCategory(currentCategory);
+        game.setRemainingTime(60L);
         gameRepository.save(game);
         gameRepository.flush();
         return game;
     }
 
     public Game startGame(Long gameId) {
-        Game game = gameRepository.findByid(gameId);
-        game.setGameState(GameState.GUESSING);
+        Game game = gameRepository.findByGameId(gameId);
+        game.setCurrentState(GameState.GUESSING);
+        List<CategoryEnum> selectedCategories = new ArrayList<>();
+        selectedCategories.add(CategoryEnum.POPULATION);
+        selectedCategories.add(CategoryEnum.FLAG);
+        selectedCategories.add(CategoryEnum.CAPITAL);
+        selectedCategories.add(CategoryEnum.LOCATION);
+        game.setCategoriesSelected(selectedCategories);
+
+        Stack<CategoryEnum> remainingCategories = new Stack<CategoryEnum>();
+        remainingCategories.addAll(selectedCategories);
+        game.setRemainingCategories(remainingCategories);
+
         final Game game2 = gameRepository.saveAndFlush(game);
-        String topic = "/topic/game/" + game2.getId();
+        String topic = "/topic/game/" + game2.getGameId();
+        Websocket websocket = new Websocket();
+        websocket.setType(WebsocketType.GAMESTATEUPDATE);
+        websocket.setPayload(game.getCurrentState());
+        sendGameUpdates(gameId, websocket);
         ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(() -> {
-            messagingTemplate.convertAndSend(topic, getGameUpdates(game2.getId()));
+            messagingTemplate.convertAndSend(topic, getGameUpdates(game2.getGameId()));
         }, 0, 1, TimeUnit.SECONDS);
         scheduledFutures.put(gameId, scheduledFuture);
         return game;
@@ -85,36 +119,39 @@ public class GameService {
 
     private GameGetDTO getGameUpdates(Long gameId) {
         // get the latest game state from the GameRepository
-        Game game = gameRepository.findByid(gameId);
+        Game game = gameRepository.findByGameId(gameId);
         // decrement the time remaining by 1 second
-        Long timeRemaining = game.getTime();
+        Long timeRemaining = game.getRemainingTime();
         if (timeRemaining > 0) {
-            Country randomCountry = countryService.getRandomCountry();
-            game.setTime(timeRemaining - 1);
+            game.setRemainingTime(timeRemaining - 1);
             if(timeRemaining % 5 == 0){
-                game.setCurrentCountry(randomCountry.getName());
-                game.setCurrentPopulation(randomCountry.getPopulation().toString());
-                game.setCurrentFlag(randomCountry.getFlag());
-                game.setCurrentLatitude(randomCountry.getLatitude());
-                game.setCurrentLongitude(randomCountry.getLongitude());
+                CategoryEnum currentCategoryEnum = game.getRemainingCategories().get(0);
+                List<CategoryEnum> remainingCategories = game.getRemainingCategories();
+                remainingCategories.remove(0);
+                game.setRemainingCategories(remainingCategories);
+                Category currentCategory = Category.transformToCategory(currentCategoryEnum, game.getCurrentCountry());
+                game.setCurrentCategory(currentCategory);
 
             }
             gameRepository.saveAndFlush(game);
 
         }else{
-            game.setGameState(GameState.SCOREBOARD);
+            game.setCurrentState(GameState.SCOREBOARD);
             gameRepository.saveAndFlush(game);
             stopGame(gameId);
 
         }
         // create a GameGetDTO object with the latest game state
         GameGetDTO gameGetDTO = DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
-        sendGameUpdates(gameId, gameGetDTO);
+        Websocket websocket = new Websocket();
+        websocket.setType(WebsocketType.CATEGORYUPDATE);
+        websocket.setPayload(game.getCurrentCategory());
+        sendGameUpdates(gameId, websocket);
         return gameGetDTO;
     }
 
     public Game getGameById(Long id){
-        return gameRepository.findByid(id);
+        return gameRepository.findByGameId(id);
     }
 
     public void addSubscriber(Long gameId, String sessionId) {
@@ -122,9 +159,8 @@ public class GameService {
         if (!subscribers.contains(sessionId)) {
             subscribers.add(sessionId);
         }
-        Game game = gameRepository.findByid(gameId);
+        Game game = gameRepository.findByGameId(gameId);
         GameGetDTO gameGetDTO = DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
-        sendGameUpdates(gameId, gameGetDTO);
         System.out.println("New subscriber added");
     }
 
@@ -138,11 +174,11 @@ public class GameService {
         }
     }
 
-    public void sendGameUpdates(Long gameId, GameGetDTO gameUpdates) {
+    public void sendGameUpdates(Long gameId, Websocket websocket) {
         List<String> subscribers = subscribersByGameId.get(gameId);
         if (subscribers != null) {
             for (String sessionId : subscribers) {
-                messagingTemplate.convertAndSendToUser(sessionId, "/topic/game/" + gameId, gameUpdates);
+                messagingTemplate.convertAndSendToUser(sessionId, "/topic/game/" + gameId, websocket);
             }
         }
     }
