@@ -48,7 +48,7 @@ public class UserControllerTest {
     public void createUser_validInput_userCreated() throws Exception {
         // given
         User user = new User();
-        user.setId(1L);
+        user.setUserId(1L);
         user.setUsername("testUsername");
         user.setToken("1");
         user.setStatus(UserStatus.ONLINE);
@@ -66,7 +66,7 @@ public class UserControllerTest {
         // then
         mockMvc.perform(postRequest)
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is(user.getId().intValue())))
+                .andExpect(jsonPath("$.id", is(user.getUserId().intValue())))
                 .andExpect(jsonPath("$.username", is(user.getUsername())))
                 .andExpect(jsonPath("$.status", is(user.getStatus().toString())));
     }
@@ -94,7 +94,7 @@ public class UserControllerTest {
     public void getUserById_validInput_userFound() throws Exception {
         // given
         User user = new User();
-        user.setId(1L);
+        user.setUserId(1L);
         user.setUsername("testUsername");
         user.setToken("1");
         user.setStatus(UserStatus.ONLINE);
@@ -102,14 +102,14 @@ public class UserControllerTest {
         given(userService.getUserByIdGeneralAuth(Mockito.anyLong(), Mockito.anyString())).willReturn(user);
 
         // when/then -> do the request + validate the result
-        MockHttpServletRequestBuilder getRequest = get("/users/{userId}", user.getId())
+        MockHttpServletRequestBuilder getRequest = get("/users/{userId}", user.getUserId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "1");
 
         // then
         mockMvc.perform(getRequest)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(user.getId().intValue())))
+                .andExpect(jsonPath("$.id", is(user.getUserId().intValue())))
                 .andExpect(jsonPath("$.username", is(user.getUsername())))
                 .andExpect(jsonPath("$.status", is(user.getStatus().toString())));
     }
@@ -117,14 +117,14 @@ public class UserControllerTest {
     @Test
     public void getUserById_validInput_userNotFound() throws Exception {
         User user = new User();
-        user.setId(1L);
+        user.setUserId(1L);
         user.setUsername("testUsername");
         user.setToken("1");
         user.setStatus(UserStatus.ONLINE);
 
         given(userService.getUserByIdGeneralAuth(Mockito.anyLong(), Mockito.anyString())).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        MockHttpServletRequestBuilder getRequest = get("/users/{userId}", user.getId())
+        MockHttpServletRequestBuilder getRequest = get("/users/{userId}", user.getUserId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "1");
 
@@ -137,7 +137,7 @@ public class UserControllerTest {
     @Test
     public void putUser_validInput_updateUser() throws Exception {
         User user = new User();
-        user.setId(1L);
+        user.setUserId(1L);
         user.setUsername("testUsername");
         user.setToken("1");
         user.setStatus(UserStatus.ONLINE);
@@ -148,7 +148,7 @@ public class UserControllerTest {
         userPutDTO.setUsername("changedUsername");
         userPutDTO.setBirthday(new Date("01/01/2000"));
 
-        MockHttpServletRequestBuilder putRequest = put("/users/{userId}", user.getId())
+        MockHttpServletRequestBuilder putRequest = put("/users/{userId}", user.getUserId())
                 .content(asJsonString(userPutDTO))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "1");
@@ -160,7 +160,7 @@ public class UserControllerTest {
     @Test
     public void putUser_validInput_userNotFound() throws Exception {
         User user = new User();
-        user.setId(1L);
+        user.setUserId(1L);
         user.setUsername("testUsername");
         user.setToken("1");
         user.setStatus(UserStatus.ONLINE);
@@ -172,7 +172,7 @@ public class UserControllerTest {
 
         given(userService.updateUser(Mockito.anyLong(), Mockito.anyString(), Mockito.any())).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        MockHttpServletRequestBuilder putRequest = put("/users/{userId}", user.getId())
+        MockHttpServletRequestBuilder putRequest = put("/users/{userId}", user.getUserId())
                 .content(asJsonString(userPutDTO))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "1");

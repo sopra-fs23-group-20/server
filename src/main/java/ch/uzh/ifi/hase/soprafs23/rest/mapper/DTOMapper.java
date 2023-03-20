@@ -1,12 +1,17 @@
 package ch.uzh.ifi.hase.soprafs23.rest.mapper;
 
-import ch.uzh.ifi.hase.soprafs23.entity.Country;
-import ch.uzh.ifi.hase.soprafs23.entity.Game;
-import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
+import ch.uzh.ifi.hase.soprafs23.constant.GameState;
+import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
+import ch.uzh.ifi.hase.soprafs23.entity.*;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Stack;
 
 /**
  * DTOMapper
@@ -33,7 +38,7 @@ public interface DTOMapper {
     @Mapping(source = "status", target = "status")
     User convertUserPutDTOtoEntity(UserPutDTO userPutDTO);
 
-    @Mapping(source = "id", target = "id")
+    @Mapping(source = "userId", target = "userId")
     @Mapping(source = "username", target = "username")
     @Mapping(source = "creation_date", target = "creation_date")
     @Mapping(source = "status", target = "status")
@@ -48,14 +53,21 @@ public interface DTOMapper {
     @Mapping(source = "latitude", target = "latitude")
     CountryGetDTO convertEntityToCountryGetDTO(Country country);
 
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "time", target = "time")
+
+    @Mapping(source = "gameId", target = "gameId")
+    @Mapping(source = "lobbyCreator", target = "lobbyCreator")
+    @Mapping(source = "participants", target = "participants")
+    @Mapping(source = "creationDate", target = "creationDate")
+    @Mapping(source = "gameEndingCriteria", target = "gameEndingCriteria")
+    @Mapping(source = "roundDuration", target = "roundDuration")
+    @Mapping(source = "region", target = "region")
+    @Mapping(source = "countriesToPlay", target = "countriesToPlay")
+    @Mapping(source = "currentRound", target = "currentRound")
+    @Mapping(source = "categoriesSelected", target = "categoriesSelected")
+    @Mapping(source = "remainingCategories", target = "remainingCategories")
+    @Mapping(source = "currentCategory", target = "currentCategory")
+    @Mapping(source = "remainingTime", target = "remainingTime")
     @Mapping(source = "currentCountry", target = "currentCountry")
-    @Mapping(source = "currentPopulation", target = "currentPopulation")
-    @Mapping(source = "gameState", target = "gameState")
-    @Mapping(source = "currentFlag", target = "currentFlag")
-    @Mapping(source = "currentLongitude", target = "currentLongitude")
-    @Mapping(source = "currentLatitude", target = "currentLatitude")
     GameGetDTO convertEntityToGameGetDTO(Game game);
 
 }

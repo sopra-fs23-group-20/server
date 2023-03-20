@@ -1,81 +1,157 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
+import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
+import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
+import ch.uzh.ifi.hase.soprafs23.entity.Category;
+import ch.uzh.ifi.hase.soprafs23.entity.Country;
+import ch.uzh.ifi.hase.soprafs23.entity.GameUser;
+
+import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Stack;
 
 public class GameGetDTO {
-    private Long id;
-    private Long time;
-    private String currentCountry;
-    private String currentPopulation;
-    private GameState gameState;
+    private Long gameId;
+    private GameUser lobbyCreator;
 
-    private String currentFlag;
+    private List<GameUser> participants;
 
-    private double currentLatitude;
+    private Date creationDate;
+    private GameState currentState;
+    private long gameEndingCriteria;
+    private long roundDuration;
+    private RegionEnum region;
+    private List<Country> countriesToPlay;
+    private long currentRound;
 
-    private double currentLongitude;
+    private List<CategoryEnum> categoriesSelected;
+    private Category currentCategory;
+    private Long remainingTime;
+    private Country currentCountry;
 
-    public String getCurrentFlag() {
-        return currentFlag;
+    private List<CategoryEnum> remainingCategories;
+
+    public List<CategoryEnum> getRemainingCategories() {
+        return remainingCategories;
     }
 
-    public void setCurrentFlag(String currentFlag) {
-        this.currentFlag = currentFlag;
+    public void setRemainingCategories(List<CategoryEnum> remainingCategories) {
+        this.remainingCategories = remainingCategories;
     }
 
-    public double getCurrentLatitude() {
-        return currentLatitude;
+    public Long getGameId() {
+        return gameId;
     }
 
-    public double getCurrentLongitude() {
-        return currentLongitude;
+    public void setGameId(Long gameId) {
+        this.gameId = gameId;
     }
 
-    public void setCurrentLongitude(double currentLongitude) {
-        this.currentLongitude = currentLongitude;
+    public GameUser getLobbyCreator() {
+        return lobbyCreator;
     }
 
-    public void setCurrentLatitude(double currentLatitude) {
-        this.currentLatitude = currentLatitude;
+    public void setLobbyCreator(GameUser lobbyCreator) {
+        this.lobbyCreator = lobbyCreator;
     }
 
-    public Long getId() {
-        return id;
+    public List<GameUser> getParticipants() {
+        return participants;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setParticipants(List<GameUser> participants) {
+        this.participants = participants;
     }
 
-    public Long getTime() {
-        return time;
+    public Date getCreationDate() {
+        return creationDate;
     }
 
-    public void setTime(Long time) {
-        this.time = time;
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
-    public String getCurrentCountry() {
+    public GameState getCurrentState() {
+        return currentState;
+    }
+
+    public void setCurrentState(GameState currentState) {
+        this.currentState = currentState;
+    }
+
+    public long getGameEndingCriteria() {
+        return gameEndingCriteria;
+    }
+
+    public void setGameEndingCriteria(long gameEndingCriteria) {
+        this.gameEndingCriteria = gameEndingCriteria;
+    }
+
+    public long getRoundDuration() {
+        return roundDuration;
+    }
+
+    public void setRoundDuration(long roundDuration) {
+        this.roundDuration = roundDuration;
+    }
+
+    public RegionEnum getRegion() {
+        return region;
+    }
+
+    public void setRegion(RegionEnum region) {
+        this.region = region;
+    }
+
+    public List<Country> getCountriesToPlay() {
+        return countriesToPlay;
+    }
+
+    public void setCountriesToPlay(List<Country> countriesToPlay) {
+        this.countriesToPlay = countriesToPlay;
+    }
+
+    public long getCurrentRound() {
+        return currentRound;
+    }
+
+    public void setCurrentRound(long currentRound) {
+        this.currentRound = currentRound;
+    }
+
+
+
+    public List<CategoryEnum> getCategoriesSelected() {
+        return categoriesSelected;
+    }
+
+    public void setCategoriesSelected(List<CategoryEnum> categoriesSelected) {
+        this.categoriesSelected = categoriesSelected;
+    }
+
+    public Category getCurrentCategory() {
+        return currentCategory;
+    }
+
+    public void setCurrentCategory(Category currentCategory) {
+        this.currentCategory = currentCategory;
+    }
+
+    public Long getRemainingTime() {
+        return remainingTime;
+    }
+
+    public void setRemainingTime(Long remainingTime) {
+        this.remainingTime = remainingTime;
+    }
+
+    public Country getCurrentCountry() {
         return currentCountry;
     }
 
-    public void setCurrentCountry(String currentCountry) {
+    public void setCurrentCountry(Country currentCountry) {
         this.currentCountry = currentCountry;
-    }
-
-    public String getCurrentPopulation() {
-        return currentPopulation;
-    }
-
-    public void setCurrentPopulation(String currentPopulation) {
-        this.currentPopulation = currentPopulation;
-    }
-
-    public GameState getGameState() {
-        return gameState;
-    }
-
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
     }
 }

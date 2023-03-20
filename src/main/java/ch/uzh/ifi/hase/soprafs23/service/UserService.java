@@ -47,7 +47,7 @@ public class UserService {
 
 
     public User getUserById(Long id, String authHeader) {
-        User userByID = userRepository.findByid(id);
+        User userByID = userRepository.findByUserId(id);
         User userByToken = userRepository.findByToken(authHeader);
         if (userByID == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User with id " + id + " was not found");
@@ -62,7 +62,7 @@ public class UserService {
     }
 
     public User getUserByIdGeneralAuth(Long id, String authHeader) {
-        User userByID = userRepository.findByid(id);
+        User userByID = userRepository.findByUserId(id);
         User userByToken = userRepository.findByToken(authHeader);
         if (userByID == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User with id " + id + " was not found");
