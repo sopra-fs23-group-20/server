@@ -2,34 +2,21 @@ package ch.uzh.ifi.hase.soprafs23.entity;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "GAMEUSER")
+@Embeddable
 public class GameUser {
-    @Id
-    @GeneratedValue
-    private Long gameUserId;
-    @ManyToOne
-    @JoinColumn(name = "gameId")
-    private Game game;
+
+    private Long userId;
     private String username;
     private Long currentRoundPoints;
     private Long gamePoints;
 
-    public Long getGameUserId() {
-        return gameUserId;
+
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setGameUserId(Long userId) {
-        this.gameUserId = userId;
-    }
-
-
-    public Game getGame() {
-        return game;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getUsername() {

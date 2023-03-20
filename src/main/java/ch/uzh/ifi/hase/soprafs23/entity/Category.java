@@ -3,22 +3,14 @@ package ch.uzh.ifi.hase.soprafs23.entity;
 import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 
-@Entity
-@Table(name = "CATEGORY")
-public class Category {
-
-    @Id
-    @GeneratedValue
-    private Long categoryId;
-
-    private Long gameId;
-
-
+@Embeddable
+public class Category implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(nullable = true)
     private CategoryEnum type;
@@ -39,23 +31,6 @@ public class Category {
 
     @Column(nullable = true)
     private String outline;
-
-
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public Long getGameId() {
-        return gameId;
-    }
-
-    public void setGameId(Long gameId) {
-        this.gameId = gameId;
-    }
 
     public CategoryEnum getType() {
         return type;
@@ -127,6 +102,7 @@ public class Category {
                 location.add(longitude);
                 category.setLocation(location);
                 return category;
+
             case CAPITAL:
                 category.setPopulation(country.getPopulation());
                 return category;

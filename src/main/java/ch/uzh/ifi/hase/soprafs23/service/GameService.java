@@ -4,9 +4,7 @@ import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.WebsocketType;
 import ch.uzh.ifi.hase.soprafs23.entity.*;
-import ch.uzh.ifi.hase.soprafs23.repository.CategoryRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
-import ch.uzh.ifi.hase.soprafs23.repository.GameUserRepository;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GameGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import org.slf4j.Logger;
@@ -37,18 +35,13 @@ public class GameService {
 
     private final CountryService countryService;
 
-    private final GameUserRepository gameUserRepository;
-
-    private final CategoryRepository categoryRepository;
 
 
     @Autowired
-    public GameService(@Qualifier("gameRepository")GameRepository gameRepository, @Qualifier("categoryRepository")CategoryRepository categoryRepository, @Qualifier("gameUserRepository")GameUserRepository gameUserRepository, SimpMessagingTemplate messagingTemplate, CountryService countryService, GameUserService gameUserService){
+    public GameService(@Qualifier("gameRepository")GameRepository gameRepository, SimpMessagingTemplate messagingTemplate, CountryService countryService){
         this.gameRepository = gameRepository;
         this.messagingTemplate = messagingTemplate;
         this.countryService = countryService;
-        this.gameUserRepository = gameUserRepository;
-        this.categoryRepository = categoryRepository;
     }
 
     public List<Game> getGames(){
@@ -62,13 +55,12 @@ public class GameService {
 
         GameUser lobbyCreator = new GameUser();
         lobbyCreator.setUsername(username);
-        gameUserRepository.saveAndFlush(lobbyCreator);
 
         Country initialCountry = countryService.getRandomCountry();
 
 
         Category currentCategory = Category.transformToCategory(CategoryEnum.POPULATION,initialCountry);
-        categoryRepository.saveAndFlush(currentCategory);
+
         Game game = new Game();
         game.setLobbyCreator(lobbyCreator);
         game.setCurrentState(GameState.SETUP);

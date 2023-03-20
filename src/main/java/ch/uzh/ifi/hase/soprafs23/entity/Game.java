@@ -17,12 +17,11 @@ public class Game {
     @GeneratedValue
     private Long gameId;
 
-    @OneToOne
-    @JoinColumn(name = "gameId")
+    @Embedded
     private GameUser lobbyCreator;
 
-    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
-    @Column(nullable = true)
+    @ElementCollection
+    @CollectionTable(name = "participants", joinColumns = @JoinColumn(name = "gameId"))
     private List<GameUser> participants;
 
     @Column(nullable = true)
@@ -52,8 +51,8 @@ public class Game {
     @Column(name = "category")
     @Enumerated(EnumType.STRING)
     private List<CategoryEnum> categoriesSelected;
-    @OneToOne
-    @JoinColumn(name = "gameId")
+
+    @Embedded
     private Category currentCategory;
     @Column(nullable = true)
     private Long remainingTime;
