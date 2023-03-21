@@ -35,9 +35,31 @@ public class Country {
     @Column(nullable = true)
     private String capital;
 
-    @Column(nullable = true)
+    @Column(nullable = true, length = 10000000)
     private String outline;
 
+    @Column(nullable = true)
+    private String countryCode;
+
+    @Column(nullable = true)
+    private String region;
+
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
 
     public Long getCountryId() {
         return countryId;

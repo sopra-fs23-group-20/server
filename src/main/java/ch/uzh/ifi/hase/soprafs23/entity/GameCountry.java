@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +17,7 @@ public class GameCountry {
 
     private String capital;
 
+    @Column(nullable = true, length = 10000000)
     private String outline;
 
     public String getName() {

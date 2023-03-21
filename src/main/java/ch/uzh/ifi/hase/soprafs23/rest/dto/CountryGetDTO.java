@@ -4,10 +4,19 @@ public class CountryGetDTO {
     private String name;
     private Long population;
 
+    private String outline;
     private String flag;
 
     private Double latitude;
     private Double longitude;
+
+    public String getOutline() {
+        return outline;
+    }
+
+    public void setOutline(String outline) {
+        this.outline = outline;
+    }
 
     public Double getLatitude() {
         return latitude;

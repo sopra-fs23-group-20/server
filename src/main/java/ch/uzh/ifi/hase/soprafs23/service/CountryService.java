@@ -16,11 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
-import java.util.Scanner;
 
 @Service
 @Transactional
@@ -45,7 +41,7 @@ public class CountryService {
         int randomIndex = (int) (Math.random() * countries.size());
         return countries.get(randomIndex);
     }
-
+/*
     public void setCountriesWithAPI() {
 
         try {
@@ -88,45 +84,66 @@ public class CountryService {
         }
     }
 
+ */
+
+    private String getCountryOutline(String countryCode, JSONArray outlines){
+
+        for (Object featureObj : outlines) {
+            JSONObject feature = (JSONObject) featureObj;
+            JSONObject properties = (JSONObject) feature.get("properties");
+            if (countryCode.equals(properties.get("ISO_A3"))) {
+                return  featureObj.toString();
+            }
+        }
+        return null;
+    }
     public void setCountriesWithFile() {
-
-        JSONParser parser = new JSONParser();
-
         try {
+            JSONParser parser = new JSONParser();
             // Read the JSON file
             JSONArray countries = (JSONArray) parser.parse(new FileReader("src/main/resources/countries.json"));
-
+            JSONObject outlines_Object = (JSONObject) parser.parse(new FileReader("src/main/resources/outlines.json"));
+            JSONArray outlines = (JSONArray) outlines_Object.get("features");
             // Extract the name and population of each country
             for (Object obj : countries) {
-                JSONObject country = (JSONObject) obj;
-                String name = (String) ((JSONObject) country.get("name")).get("common");
-                long population = (long) country.get("population");
-                String flag = (String) ((JSONObject) country.get("flags")).get("svg");
-                List<Double> latlng = (List<Double>) country.get("latlng");
-                String capital;
-                try{
+                try {
+                    JSONObject country = (JSONObject) obj;
+                    String name = (String) ((JSONObject) country.get("name")).get("common");
+                    long population = (long) country.get("population");
+                    String flag = (String) ((JSONObject) country.get("flags")).get("svg");
+                    String region = (String) country.get("region");
+                    String outline = null;
+                    String countryCode = null;
+                    String capital;
+                    List<Double> latlng = null;
+                    latlng = (List<Double>) ((JSONObject) country.get("capitalInfo")).get("latlng");
                     capital = (String) ((JSONArray) country.get("capital")).get(0);
+                    countryCode = (String) country.get("cca3");
+                    outline = getCountryOutline(countryCode, outlines);
 
-                }catch (Exception e){
-                    capital = "No capital";
+
+                    Country newCountry = new Country();
+                    newCountry.setName(name);
+                    newCountry.setRegion(region);
+                    newCountry.setCountryCode(countryCode);
+                    newCountry.setCapital(capital);
+                    newCountry.setPopulation(population);
+                    newCountry.setFlag(flag);
+                    newCountry.setLatitude(latlng.get(0));
+                    newCountry.setLongitude(latlng.get(1));
+                    newCountry.setOutline(outline);
+                    countryRepository.save(newCountry);
                 }
+                catch (Exception e) {
 
-
-
-                Country newCountry = new Country();
-                newCountry.setName(name);
-                newCountry.setCapital(capital);
-                newCountry.setPopulation(population);
-                newCountry.setFlag(flag);
-                newCountry.setLatitude(latlng.get(0));
-                newCountry.setLongitude(latlng.get(1));
-                countryRepository.save(newCountry);
+                }
+                countryRepository.flush();
             }
-            countryRepository.flush();
         }
-        catch (IOException | ParseException e) {
-            e.printStackTrace();
-        }
+
+    catch (IOException | ParseException e) {
+        e.printStackTrace();
+    }
     }
 
 }

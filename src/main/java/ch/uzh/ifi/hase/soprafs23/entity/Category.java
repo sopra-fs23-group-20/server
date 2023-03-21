@@ -28,7 +28,7 @@ public class Category implements Serializable {
     @Column(nullable = true)
     private Set<Double> location;
 
-    @Column(nullable = true)
+    @Column(nullable = true, length = 10000000)
     private String outline;
 
     public CategoryEnum getType() {
