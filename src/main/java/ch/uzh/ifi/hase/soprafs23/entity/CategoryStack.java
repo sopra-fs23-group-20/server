@@ -20,16 +20,16 @@ public class CategoryStack {
     @Enumerated(EnumType.STRING)
     @OrderColumn(name = "position")
     private List<CategoryEnum> categoryEnumList;
-    private int index;
+    private int stackIdx;
 
     public CategoryStack() {
         categoryEnumList = new ArrayList<>();
-        index = -1;
+        stackIdx = -1;
     }
 
     public void add(CategoryEnum categoryEnum) {
         categoryEnumList.add(categoryEnum);
-        index++;
+        stackIdx++;
     }
 
     public void addAll(List<CategoryEnum> categoryEnumListInsert) {
@@ -46,8 +46,8 @@ public class CategoryStack {
 
 
     public CategoryEnum pop(){
-        CategoryEnum categoryEnum = categoryEnumList.remove(index);
-        index--;
+        CategoryEnum categoryEnum = categoryEnumList.remove(stackIdx);
+        stackIdx--;
         return categoryEnum;
     }
 
