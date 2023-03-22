@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "categoryStack")
 public class CategoryStack {
 
     @Id
