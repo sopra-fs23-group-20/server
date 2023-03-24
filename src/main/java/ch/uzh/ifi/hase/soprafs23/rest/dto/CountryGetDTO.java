@@ -1,5 +1,9 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
+import ch.uzh.ifi.hase.soprafs23.entity.Location;
+
+import java.util.Set;
+
 public class CountryGetDTO {
     private String name;
     private Long population;
@@ -7,8 +11,9 @@ public class CountryGetDTO {
     private String outline;
     private String flag;
 
-    private Double latitude;
-    private Double longitude;
+    private Location location;
+
+    private String capital;
 
     public String getOutline() {
         return outline;
@@ -18,20 +23,12 @@ public class CountryGetDTO {
         this.outline = outline;
     }
 
-    public Double getLatitude() {
-        return latitude;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public String getFlag() {
@@ -57,5 +54,13 @@ public class CountryGetDTO {
 
     public void setPopulation(Long population) {
         this.population = population;
+    }
+
+    public String getCapital() {
+        return capital;
+    }
+
+    public void setCapital(String capital) {
+        this.capital = capital;
     }
 }

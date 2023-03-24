@@ -44,9 +44,9 @@ public interface DTOMapper {
 
     @Mapping(source = "name", target = "name")
     @Mapping(source = "population", target = "population")
+    @Mapping(source = "capital", target = "capital")
     @Mapping(source = "flag", target = "flag")
-    @Mapping(source = "longitude", target = "longitude")
-    @Mapping(source = "latitude", target = "latitude")
+    @Mapping(source = "location", target = "location")
     @Mapping(source = "outline", target = "outline")
     CountryGetDTO convertEntityToCountryGetDTO(Country country);
 

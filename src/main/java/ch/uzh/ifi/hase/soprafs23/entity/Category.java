@@ -8,8 +8,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-@Embeddable
+@Entity
+@Table(name = "CATEGORY")
 public class Category implements Serializable {
+    @Id
+    @GeneratedValue
+    private Long categoryId;
     @Enumerated(EnumType.STRING)
     @Column(nullable = true)
     private CategoryEnum type;
@@ -23,10 +27,8 @@ public class Category implements Serializable {
     @Column(nullable = true)
     private long population;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "location", joinColumns = @JoinColumn(name = "categoryId"))
-    @Column(nullable = true)
-    private Set<Double> location;
+    @Embedded
+    private Location location;
 
     @Column(nullable = true, length = 10000000)
     private String outline;
@@ -63,11 +65,11 @@ public class Category implements Serializable {
         this.population = population;
     }
 
-    public Set<Double> getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public void setLocation(Set<Double> location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 
@@ -79,7 +81,15 @@ public class Category implements Serializable {
         this.outline = outline;
     }
 
-    public static Category transformToCategory(CategoryEnum type, Country country){
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public static Category transformToCategory(CategoryEnum type, GameCountry country){
         Category category = new Category();
         category.setType(type);
         switch (type){
@@ -94,11 +104,7 @@ public class Category implements Serializable {
                 category.setFlag(country.getFlag());
                 return category;
             case LOCATION:
-                double latitude = country.getLatitude();
-                double longitude = country.getLongitude();
-                Set<Double> location = new HashSet<>();
-                location.add(latitude);
-                location.add(longitude);
+                Location location = country.getLocation();
                 category.setLocation(location);
                 return category;
 

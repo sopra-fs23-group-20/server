@@ -1,19 +1,25 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Embeddable
+@Entity
+@Table(name = "GAMECOUNTRY")
 public class GameCountry {
+    @Id
+    @GeneratedValue
+    @Column(name = "gameCountryId")
+    private Long gameCountryId;
     private String name;
     private Long population;
     private String flag;
-    private Double latitude;
-    private Double longitude;
+
+
+    @Embedded
+    private Location location;
 
     private String capital;
 
@@ -44,22 +50,6 @@ public class GameCountry {
         this.flag = flag;
     }
 
-    public Double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
-
     public String getCapital() {
         return capital;
     }
@@ -76,6 +66,36 @@ public class GameCountry {
         this.outline = outline;
     }
 
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public Long getGameCountryId() {
+        return gameCountryId;
+    }
+
+    public void setGameCountryId(Long gameCountryId) {
+        this.gameCountryId = gameCountryId;
+    }
+
+    public static GameCountry transformToGameCountry(Country country){
+        GameCountry gameCountry = new GameCountry();
+        gameCountry.setName(country.getName());
+        gameCountry.setPopulation(country.getPopulation());
+        gameCountry.setFlag(country.getFlag());
+        Location loc = new Location();
+        loc.setLatitude(country.getLocation().getLatitude());
+        loc.setLongitude(country.getLocation().getLongitude());
+        gameCountry.setLocation(loc);
+        gameCountry.setCapital(country.getCapital());
+        gameCountry.setOutline(country.getOutline());
+        return gameCountry;
+    }
+
     public static Set<GameCountry> addGameCountryCollection(List<Country> countyList){
         Set<GameCountry> gameCountryList = new HashSet<>();
         for (Country country : countyList) {
@@ -83,8 +103,10 @@ public class GameCountry {
             gameCountry.setName(country.getName());
             gameCountry.setPopulation(country.getPopulation());
             gameCountry.setFlag(country.getFlag());
-            gameCountry.setLatitude(country.getLatitude());
-            gameCountry.setLongitude(country.getLongitude());
+            Location loc = new Location();
+            loc.setLatitude(country.getLocation().getLatitude());
+            loc.setLongitude(country.getLocation().getLongitude());
+            gameCountry.setLocation(loc);
             gameCountry.setCapital(country.getCapital());
             gameCountry.setOutline(country.getOutline());
             gameCountryList.add(gameCountry);

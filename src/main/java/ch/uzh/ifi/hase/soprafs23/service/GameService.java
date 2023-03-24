@@ -62,7 +62,7 @@ public class GameService {
 
     public Game createGame(String username){
         if (countryService.getAllCountries().isEmpty()){
-            countryService.setCountriesWithFile();
+            countryService.setAllCountries();
         }
 
 
@@ -70,9 +70,9 @@ public class GameService {
         lobbyCreator.setUsername(username);
 
         Country initialCountry = countryService.getRandomCountry();
+        GameCountry inititalGameCountry = GameCountry.transformToGameCountry(initialCountry);
 
-
-        Category currentCategory = Category.transformToCategory(CategoryEnum.POPULATION,initialCountry);
+        Category currentCategory = Category.transformToCategory(CategoryEnum.POPULATION,inititalGameCountry);
 
         Game game = new Game();
         Set<GameCountry> countriesToPlay = GameCountry.addGameCountryCollection(countryService.getAllCountries());
@@ -81,7 +81,7 @@ public class GameService {
         game.setLobbyCreator(lobbyCreator);
         game.setCurrentState(GameState.SETUP);
 
-        game.setCurrentCountry(initialCountry);
+        game.setCurrentCountry(inititalGameCountry);
         game.setCurrentCategory(currentCategory);
         game.setRemainingTime(30L);
         gameRepository.save(game);

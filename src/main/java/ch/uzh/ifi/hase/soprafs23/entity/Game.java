@@ -37,8 +37,7 @@ public class Game {
     private RegionEnum region;
 
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "countriesToPlay", joinColumns = @JoinColumn(name = "gameId"))
+    @OneToMany(cascade = CascadeType.ALL)
     private Set<GameCountry> countriesToPlay;
 
     @Column(nullable = true)
@@ -53,14 +52,14 @@ public class Game {
     @Enumerated(EnumType.STRING)
     private List<CategoryEnum> categoriesSelected;
 
-    @Embedded
+    @OneToOne(cascade = CascadeType.ALL)
     private Category currentCategory;
     @Column(nullable = true)
     private Long remainingTime;
 
-    
-    @OneToOne
-    private Country currentCountry;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private GameCountry currentCountry;
 
     public Long getGameId() {
         return gameId;
@@ -174,11 +173,11 @@ public class Game {
         this.remainingTime = remainingTime;
     }
 
-    public Country getCurrentCountry() {
+    public GameCountry getCurrentCountry() {
         return currentCountry;
     }
 
-    public void setCurrentCountry(Country currentCountry) {
+    public void setCurrentCountry(GameCountry currentCountry) {
         this.currentCountry = currentCountry;
     }
 }

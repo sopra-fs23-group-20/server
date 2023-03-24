@@ -3,10 +3,7 @@ package ch.uzh.ifi.hase.soprafs23.rest.dto;
 import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
-import ch.uzh.ifi.hase.soprafs23.entity.Category;
-import ch.uzh.ifi.hase.soprafs23.entity.CategoryStack;
-import ch.uzh.ifi.hase.soprafs23.entity.Country;
-import ch.uzh.ifi.hase.soprafs23.entity.GameUser;
+import ch.uzh.ifi.hase.soprafs23.entity.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -30,7 +27,7 @@ public class GameGetDTO {
     private List<CategoryEnum> categoriesSelected;
     private Category currentCategory;
     private Long remainingTime;
-    private Country currentCountry;
+    private GameCountry currentCountry;
 
     private CategoryStack remainingCategories;
 
@@ -148,11 +145,11 @@ public class GameGetDTO {
         this.remainingTime = remainingTime;
     }
 
-    public Country getCurrentCountry() {
+    public GameCountry getCurrentCountry() {
         return currentCountry;
     }
 
-    public void setCurrentCountry(Country currentCountry) {
+    public void setCurrentCountry(GameCountry currentCountry) {
         this.currentCountry = currentCountry;
     }
 }

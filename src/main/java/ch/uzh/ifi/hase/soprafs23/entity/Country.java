@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.entity;
 
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "COUNTRY")
@@ -13,9 +14,6 @@ public class Country {
     private Long countryId;
 
 
-    @ManyToOne
-    @JoinColumn(name = "gameId")
-    private Game game;
 
     @Column(nullable = false)
     private String name;
@@ -27,10 +25,9 @@ public class Country {
     @Column(nullable = true)
     private String flag;
 
-    @Column(nullable = true)
-    private Double latitude;
-    @Column(nullable = true)
-    private Double longitude;
+
+    @Embedded
+    private Location location;
 
     @Column(nullable = true)
     private String capital;
@@ -69,14 +66,6 @@ public class Country {
         this.countryId = countryId;
     }
 
-    public Game getGame() {
-        return game;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
-    }
-
     public String getName() {
         return name;
     }
@@ -101,20 +90,12 @@ public class Country {
         this.flag = flag;
     }
 
-    public Double getLatitude() {
-        return latitude;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public String getCapital() {

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "categoryStack")
+@Table(name = "CATEGORYSTACK")
 public class CategoryStack {
 
     @Id
@@ -15,7 +15,7 @@ public class CategoryStack {
     private Long categoryStackId;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "categoryEnumList", joinColumns = @JoinColumn(name = "categoryStackId"))
+    @CollectionTable(name = "CATEGORYENUMLIST", joinColumns = @JoinColumn(name = "categoryStackId"))
     @Column(name = "categoryEnum")
     @Enumerated(EnumType.STRING)
     @OrderColumn(name = "position")

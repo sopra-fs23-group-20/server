@@ -24,7 +24,7 @@ public class CountryController {
     @PostMapping("/countries")
     @ResponseStatus(HttpStatus.CREATED)
     public List<CountryGetDTO> createCountry() {
-        countryService.setCountriesWithFile();
+        countryService.setAllCountries();
         List< Country> countries = countryService.getAllCountries();
         List<CountryGetDTO> countryGetDTOS = new ArrayList<>();
         for (Country country : countries){
