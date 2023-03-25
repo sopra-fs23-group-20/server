@@ -125,15 +125,15 @@ public class GameService {
         CategoryStack remainingCategories = new CategoryStack();
         remainingCategories.addAll(selectedCategories);
         game.setRemainingCategories(remainingCategories);
-
+        game.setCurrentState(GameState.GUESSING);
 
 
         final Game game2 = gameRepository.saveAndFlush(game);
-        WebsocketPackage websocketPackage = new WebsocketPackage();
 
-        websocketPackage.setType(WebsocketType.GAMESTATEUPDATE);
-        websocketPackage.setPayload(game.getCurrentState());
-        sendGameUpdates(gameId, websocketPackage);
+        WebsocketPackage websocketPackage3 = new WebsocketPackage();
+        websocketPackage3.setType(WebsocketType.GAMESTATEUPDATE);
+        websocketPackage3.setPayload(game.getCurrentState());
+        messagingTemplate.convertAndSend("/topic/game/" + gameId, websocketPackage3);
 
         String topic = "/topic/game/" + game2.getGameId();
         GameUpdater gameUpdater = new GameUpdater(game2.getGameId(), topic);
