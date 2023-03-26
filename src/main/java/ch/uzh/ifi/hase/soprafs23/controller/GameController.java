@@ -72,7 +72,7 @@ public class GameController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<String> getGameCountries(@PathVariable Long gameId) {
-        return gameService.getGameCountries(gameId);
+        return gameService.getGameCountriesNames(gameId);
     }
 
     @PutMapping("/games/{gameId}/start")

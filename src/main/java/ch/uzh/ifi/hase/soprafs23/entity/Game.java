@@ -36,9 +36,12 @@ public class Game {
     @Column(nullable = true)
     private RegionEnum region;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "countriesToPlay", joinColumns = @JoinColumn(name = "gameId"))
+    @Column(name = "countryId")
+    private Set<Long> countriesToPlayIds;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private Set<GameCountry> countriesToPlay;
+
 
     @Column(nullable = true)
     private long currentRound;
@@ -58,8 +61,8 @@ public class Game {
     private Long remainingTime;
 
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private GameCountry currentCountry;
+
+    private Long currentCountryId;
 
     public Long getGameId() {
         return gameId;
@@ -125,12 +128,12 @@ public class Game {
         this.region = region;
     }
 
-    public Set<GameCountry> getCountriesToPlay() {
-        return countriesToPlay;
+    public Set<Long> getCountriesToPlayIds() {
+        return countriesToPlayIds;
     }
 
-    public void setCountriesToPlay(Set<GameCountry> countriesToPlay) {
-        this.countriesToPlay = countriesToPlay;
+    public void setCountriesToPlayIds(Set<Long> countriesToPlay) {
+        this.countriesToPlayIds = countriesToPlay;
     }
 
     public long getCurrentRound() {
@@ -173,11 +176,12 @@ public class Game {
         this.remainingTime = remainingTime;
     }
 
-    public GameCountry getCurrentCountry() {
-        return currentCountry;
+    public Long getCurrentCountryId() {
+        return currentCountryId;
     }
 
-    public void setCurrentCountry(GameCountry currentCountry) {
-        this.currentCountry = currentCountry;
+    public void setCurrentCountryId(Long currentCountryId) {
+        this.currentCountryId = currentCountryId;
     }
+
 }

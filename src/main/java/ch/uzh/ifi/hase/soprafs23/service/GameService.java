@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.WebsocketType;
 import ch.uzh.ifi.hase.soprafs23.entity.*;
+import ch.uzh.ifi.hase.soprafs23.repository.CountryRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.*;
 
 @Service
@@ -34,27 +32,36 @@ public class GameService {
     private final Map<Long, ScheduledFuture<?>> scheduledFutures = new ConcurrentHashMap<>();
 
     private final CountryService countryService;
+    private final CountryRepository countryRepository;
 
 
 
     @Autowired
-    public GameService(@Qualifier("gameRepository")GameRepository gameRepository, SimpMessagingTemplate messagingTemplate, CountryService countryService){
+    public GameService(@Qualifier("gameRepository")GameRepository gameRepository, @Qualifier("countryRepository") CountryRepository countryRepository, SimpMessagingTemplate messagingTemplate, CountryService countryService){
         this.gameRepository = gameRepository;
         this.messagingTemplate = messagingTemplate;
         this.countryService = countryService;
+        this.countryRepository = countryRepository;
     }
 
     public List<Game> getGames(){
         return this.gameRepository.findAll();
     }
 
-    public List<String> getGameCountries(Long gameId){
-        Game game = gameRepository.findByGameId(gameId);
-        Set<GameCountry> gameCountries = game.getCountriesToPlay();
-        List<String> countryNames = new ArrayList<>();
+    private Set<Country> getCountriesById(Set<Long> countryIds){
+        Set<Country> countries = new HashSet<>();
+        for(Long countryId : countryIds){
+            countries.add(countryRepository.findByCountryId(countryId));
+        }
+        return countries;
+    }
 
-        for(GameCountry gameCountry : gameCountries){
-            countryNames.add(gameCountry.getName());
+    public List<String> getGameCountriesNames(Long gameId){
+        Game game = gameRepository.findByGameId(gameId);
+        List<String> countryNames = new ArrayList<>();
+        Set<Long> countryIds = game.getCountriesToPlayIds();
+        for(Long countryId : countryIds){
+            countryNames.add(countryRepository.findByCountryId(countryId).getName());
         }
         return countryNames;
     }
@@ -70,13 +77,12 @@ public class GameService {
         lobbyCreator.setUsername(username);
 
         Country initialCountry = countryService.getRandomCountry();
-        GameCountry inititalGameCountry = GameCountry.transformToGameCountry(initialCountry);
 
         Category currentCategory = Category.transformToCategory(CategoryEnum.POPULATION,inititalGameCountry);
 
         Game game = new Game();
         Set<GameCountry> countriesToPlay = GameCountry.addGameCountryCollection(countryService.getAllCountries());
-        game.setCountriesToPlay(countriesToPlay);
+        game.setCountriesToPlayIds(countriesToPlay);
 
         game.setLobbyCreator(lobbyCreator);
         game.setCurrentState(GameState.SETUP);
