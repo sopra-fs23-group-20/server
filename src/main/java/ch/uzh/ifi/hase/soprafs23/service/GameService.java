@@ -72,9 +72,6 @@ public class GameService {
 
 
     public Game createGame(String username){
-        if (countryService.getAllCountries().isEmpty()){
-            countryService.setAllCountries();
-        }
 
 
         GameUser lobbyCreator = new GameUser();

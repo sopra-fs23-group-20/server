@@ -44,9 +44,9 @@ public class CountryService {
     }
 
     public Country getRandomCountry(){
-        List<Country> countries = getAllCountries();
-        int randomIndex = (int) (Math.random() * countries.size());
-        return countries.get(randomIndex);
+        Set<Long> countryIds = countryRepository.getAllCountryIds();
+        int randomIndex = (int) (Math.random() * countryIds.size());
+        return countryRepository.findByCountryId((long) randomIndex);
     }
 /*
     public void setCountriesWithAPI() {
