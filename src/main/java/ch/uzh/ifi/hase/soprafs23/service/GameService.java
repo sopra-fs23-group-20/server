@@ -8,6 +8,7 @@ import ch.uzh.ifi.hase.soprafs23.entityDB.Country;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Game;
 import ch.uzh.ifi.hase.soprafs23.entityDB.GameUser;
 import ch.uzh.ifi.hase.soprafs23.entityOther.*;
+import ch.uzh.ifi.hase.soprafs23.repository.CategoryStackRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.CountryRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import org.slf4j.Logger;
@@ -96,11 +97,15 @@ public class GameService {
 
         CategoryStack categoryStack = new CategoryStack();
         categoryStack.addAll(Arrays.asList(CategoryEnum.values()));
+
+        System.out.println("Category Stack Remaining Categories: "+categoryStack.getRemainingCategories());
+        System.out.println("Category Stack Selected Categories: "+categoryStack.getSelectedCategories());
+
+
         game.setCategoryStack(categoryStack);
 
         game.setRemainingTime(30L);
-        gameRepository.save(game);
-        gameRepository.flush();
+        gameRepository.saveAndFlush(game);
         return game;
     }
 
@@ -187,8 +192,8 @@ public class GameService {
 
 
                     CategoryEnum currentCategoryEnum = remainingCategories.pop();
+                    remainingCategories.setCurrentCategory(currentCategoryEnum);
                     Category category = Category.transformToCategory(currentCategoryEnum, countryRepository.findByCountryId(game.getCurrentCountryId()));
-
                     gameRepository.saveAndFlush(game);
 
                     WebsocketPackage websocketPackage = new WebsocketPackage();
