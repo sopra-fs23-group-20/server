@@ -48,7 +48,7 @@ public class CategoryStack {
                 this.add(categoryEnum);
             }
         }
-        refillStack();
+        this.refillStack();
     }
 
     public boolean isEmpty(){
@@ -67,7 +67,6 @@ public class CategoryStack {
 
     public void refillStack(){
         remainingCategories.addAll(selectedCategories);
-        selectedCategories.clear();
         stackIdx = remainingCategories.size()-1;
     }
 
@@ -112,4 +111,6 @@ public class CategoryStack {
     public void setStackIdx(int stackIdx) {
         this.stackIdx = stackIdx;
     }
+
+
 }
