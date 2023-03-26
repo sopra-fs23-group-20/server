@@ -3,41 +3,31 @@ package ch.uzh.ifi.hase.soprafs23.rest.dto;
 import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
-import ch.uzh.ifi.hase.soprafs23.entity.*;
+import ch.uzh.ifi.hase.soprafs23.entityDB.CategoryStack;
+import ch.uzh.ifi.hase.soprafs23.entityDB.Country;
+import ch.uzh.ifi.hase.soprafs23.entityDB.GameUser;
+import ch.uzh.ifi.hase.soprafs23.entityOther.*;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
-import java.util.Stack;
+import java.util.Set;
 
 public class GameGetDTO {
     private Long gameId;
     private GameUser lobbyCreator;
-
-    private List<GameUser> participants;
+    private Set<GameUser> participants;
 
     private Date creationDate;
     private GameState currentState;
     private long gameEndingCriteria;
     private long roundDuration;
     private RegionEnum region;
-    private List<Country> countriesToPlay;
+    private Set<Long> countriesToPlayIds;
     private long currentRound;
-
-    private List<CategoryEnum> categoriesSelected;
-    private Category currentCategory;
+    private CategoryStack categoryStack;
     private Long remainingTime;
-    private GameCountry currentCountry;
-
-    private CategoryStack remainingCategories;
-
-    public CategoryStack getRemainingCategories() {
-        return remainingCategories;
-    }
-
-    public void setRemainingCategories(CategoryStack remainingCategories) {
-        this.remainingCategories = remainingCategories;
-    }
+    private Long currentCountryId;
 
     public Long getGameId() {
         return gameId;
@@ -55,11 +45,11 @@ public class GameGetDTO {
         this.lobbyCreator = lobbyCreator;
     }
 
-    public List<GameUser> getParticipants() {
+    public Set<GameUser> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(List<GameUser> participants) {
+    public void setParticipants(Set<GameUser> participants) {
         this.participants = participants;
     }
 
@@ -103,12 +93,12 @@ public class GameGetDTO {
         this.region = region;
     }
 
-    public List<Country> getCountriesToPlay() {
-        return countriesToPlay;
+    public Set<Long> getCountriesToPlayIds() {
+        return countriesToPlayIds;
     }
 
-    public void setCountriesToPlay(List<Country> countriesToPlay) {
-        this.countriesToPlay = countriesToPlay;
+    public void setCountriesToPlayIds(Set<Long> countriesToPlayIds) {
+        this.countriesToPlayIds = countriesToPlayIds;
     }
 
     public long getCurrentRound() {
@@ -119,22 +109,12 @@ public class GameGetDTO {
         this.currentRound = currentRound;
     }
 
-
-
-    public List<CategoryEnum> getCategoriesSelected() {
-        return categoriesSelected;
+    public CategoryStack getCategoryStack() {
+        return categoryStack;
     }
 
-    public void setCategoriesSelected(List<CategoryEnum> categoriesSelected) {
-        this.categoriesSelected = categoriesSelected;
-    }
-
-    public Category getCurrentCategory() {
-        return currentCategory;
-    }
-
-    public void setCurrentCategory(Category currentCategory) {
-        this.currentCategory = currentCategory;
+    public void setCategoryStack(CategoryStack categoryStack) {
+        this.categoryStack = categoryStack;
     }
 
     public Long getRemainingTime() {
@@ -145,11 +125,11 @@ public class GameGetDTO {
         this.remainingTime = remainingTime;
     }
 
-    public GameCountry getCurrentCountry() {
-        return currentCountry;
+    public Long getCurrentCountryId() {
+        return currentCountryId;
     }
 
-    public void setCurrentCountry(GameCountry currentCountry) {
-        this.currentCountry = currentCountry;
+    public void setCurrentCountryId(Long currentCountryId) {
+        this.currentCountryId = currentCountryId;
     }
 }

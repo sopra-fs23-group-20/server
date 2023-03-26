@@ -1,4 +1,4 @@
-package ch.uzh.ifi.hase.soprafs23.entity;
+package ch.uzh.ifi.hase.soprafs23.entityDB;
 
 import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
@@ -32,36 +32,19 @@ public class Game {
     private long gameEndingCriteria;
     @Column(nullable = true)
     private long roundDuration;
-
     @Column(nullable = true)
     private RegionEnum region;
-
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "countriesToPlay", joinColumns = @JoinColumn(name = "gameId"))
     @Column(name = "countryId")
     private Set<Long> countriesToPlayIds;
-
-
-
     @Column(nullable = true)
     private long currentRound;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "categoryStackId")
-    private CategoryStack remainingCategories;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "categoriesSelected", joinColumns = @JoinColumn(name = "gameId"))
-    @Column(name = "category")
-    @Enumerated(EnumType.STRING)
-    private List<CategoryEnum> categoriesSelected;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    private Category currentCategory;
+    private CategoryStack categoryStack;
     @Column(nullable = true)
     private Long remainingTime;
-
-
-
     private Long currentCountryId;
 
     public Long getGameId() {
@@ -144,28 +127,12 @@ public class Game {
         this.currentRound = currentRound;
     }
 
-    public CategoryStack getRemainingCategories() {
-        return remainingCategories;
+    public CategoryStack getCategoryStack() {
+        return categoryStack;
     }
 
-    public void setRemainingCategories(CategoryStack remainingCategories) {
-        this.remainingCategories = remainingCategories;
-    }
-
-    public List<CategoryEnum> getCategoriesSelected() {
-        return categoriesSelected;
-    }
-
-    public void setCategoriesSelected(List<CategoryEnum> categoriesSelected) {
-        this.categoriesSelected = categoriesSelected;
-    }
-
-    public Category getCurrentCategory() {
-        return currentCategory;
-    }
-
-    public void setCurrentCategory(Category currentCategory) {
-        this.currentCategory = currentCategory;
+    public void setCategoryStack(CategoryStack categoryStack) {
+        this.categoryStack = categoryStack;
     }
 
     public Long getRemainingTime() {

@@ -3,7 +3,11 @@ package ch.uzh.ifi.hase.soprafs23.service;
 import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.WebsocketType;
-import ch.uzh.ifi.hase.soprafs23.entity.*;
+import ch.uzh.ifi.hase.soprafs23.entityDB.CategoryStack;
+import ch.uzh.ifi.hase.soprafs23.entityDB.Country;
+import ch.uzh.ifi.hase.soprafs23.entityDB.Game;
+import ch.uzh.ifi.hase.soprafs23.entityDB.GameUser;
+import ch.uzh.ifi.hase.soprafs23.entityOther.*;
 import ch.uzh.ifi.hase.soprafs23.repository.CountryRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import org.slf4j.Logger;
@@ -78,17 +82,22 @@ public class GameService {
 
         Country initialCountry = countryService.getRandomCountry();
 
-        Category currentCategory = Category.transformToCategory(CategoryEnum.POPULATION,inititalGameCountry);
+        Category currentCategory = Category.transformToCategory(CategoryEnum.POPULATION,initialCountry);
 
         Game game = new Game();
-        Set<GameCountry> countriesToPlay = GameCountry.addGameCountryCollection(countryService.getAllCountries());
-        game.setCountriesToPlayIds(countriesToPlay);
+        Set<Long> countryIdsToPlay = countryRepository.getAllCountryIds();
+
+        game.setCountriesToPlayIds(countryIdsToPlay);
 
         game.setLobbyCreator(lobbyCreator);
         game.setCurrentState(GameState.SETUP);
 
-        game.setCurrentCountry(inititalGameCountry);
-        game.setCurrentCategory(currentCategory);
+        game.setCurrentCountryId(initialCountry.getCountryId());
+
+        CategoryStack categoryStack = new CategoryStack();
+        categoryStack.addAll(Arrays.asList(CategoryEnum.values()));
+        game.setCategoryStack(categoryStack);
+
         game.setRemainingTime(30L);
         gameRepository.save(game);
         gameRepository.flush();
@@ -117,22 +126,6 @@ public class GameService {
     public Game startGame(Long gameId) {
         Game game = gameRepository.findByGameId(gameId);
         game.setCurrentState(GameState.GUESSING);
-        List<CategoryEnum> selectedCategories = new ArrayList<>();
-
-        selectedCategories.add(CategoryEnum.CAPITAL);
-        selectedCategories.add(CategoryEnum.FLAG);
-        selectedCategories.add(CategoryEnum.LOCATION);
-        selectedCategories.add(CategoryEnum.OUTLINE);
-        selectedCategories.add(CategoryEnum.POPULATION);
-
-
-        game.setCategoriesSelected(selectedCategories);
-
-        CategoryStack remainingCategories = new CategoryStack();
-        remainingCategories.addAll(selectedCategories);
-        game.setRemainingCategories(remainingCategories);
-        game.setCurrentState(GameState.GUESSING);
-
 
         final Game game2 = gameRepository.saveAndFlush(game);
 
@@ -163,7 +156,7 @@ public class GameService {
         try {
             System.out.println("The guess submitted is:" + guess.getGuess());
         Game game = gameRepository.findByGameId(gameId);
-        if (game.getCurrentCountry().getName().equals(guess.getGuess())) {
+        if (countryRepository.findByCountryId(game.getCurrentCountryId()).getName().equals(guess.getGuess())) {
             return;
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Your guess was wrong");
@@ -188,22 +181,19 @@ public class GameService {
             messagingTemplate.convertAndSend("/topic/game/" + gameId, websocketPackage1);
 
             if(timeRemaining % 5 == 0){
-                CategoryStack remainingCategories = game.getRemainingCategories();
+                CategoryStack remainingCategories = game.getCategoryStack();
                 if(!remainingCategories.isEmpty()){
                     System.out.println("Remaining categories: " + remainingCategories);
 
 
                     CategoryEnum currentCategoryEnum = remainingCategories.pop();
-                    Category currentCategory = Category.transformToCategory(currentCategoryEnum, game.getCurrentCountry());
-
-                    game.setCurrentCategory(currentCategory);
-                    game.setRemainingCategories(remainingCategories);
+                    Category category = Category.transformToCategory(currentCategoryEnum, countryRepository.findByCountryId(game.getCurrentCountryId()));
 
                     gameRepository.saveAndFlush(game);
 
                     WebsocketPackage websocketPackage = new WebsocketPackage();
                     websocketPackage.setType(WebsocketType.CATEGORYUPDATE);
-                    websocketPackage.setPayload(game.getCurrentCategory());
+                    websocketPackage.setPayload(category);
                     messagingTemplate.convertAndSend("/topic/game/" + gameId, websocketPackage);
                 }
             }
@@ -218,16 +208,13 @@ public class GameService {
             websocketPackage3.setType(WebsocketType.GAMESTATEUPDATE);
             websocketPackage3.setPayload(game.getCurrentState());
             messagingTemplate.convertAndSend("/topic/game/" + gameId, websocketPackage3);
-
         }
-
-
-
-
-
-
     }
 
+    public String getGameCountryName(Long gameId){
+        Game game = gameRepository.findByGameId(gameId);
+        return countryRepository.findByCountryId(game.getCurrentCountryId()).getName();
+    }
     public Game getGameById(Long id){
         return gameRepository.findByGameId(id);
     }

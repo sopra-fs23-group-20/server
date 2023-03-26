@@ -1,36 +1,23 @@
-package ch.uzh.ifi.hase.soprafs23.entity;
+package ch.uzh.ifi.hase.soprafs23.entityOther;
 
 import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
+import ch.uzh.ifi.hase.soprafs23.entityDB.Country;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 
-@Entity
-@Table(name = "CATEGORY")
-public class Category implements Serializable {
-    @Id
-    @GeneratedValue
-    private Long categoryId;
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = true)
+
+public class Category {
+
     private CategoryEnum type;
 
-    @Column(nullable = true)
     private String capital;
-
-    @Column(nullable = true)
     private String flag;
-
-    @Column(nullable = true)
     private long population;
 
-    @Embedded
     private Location location;
 
-    @Column(nullable = true, length = 10000000)
     private String outline;
 
     public CategoryEnum getType() {
@@ -81,15 +68,7 @@ public class Category implements Serializable {
         this.outline = outline;
     }
 
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public static Category transformToCategory(CategoryEnum type, GameCountry country){
+    public static Category transformToCategory(CategoryEnum type, Country country){
         Category category = new Category();
         category.setType(type);
         switch (type){

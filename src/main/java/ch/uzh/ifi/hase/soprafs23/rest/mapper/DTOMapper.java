@@ -1,9 +1,9 @@
 package ch.uzh.ifi.hase.soprafs23.rest.mapper;
 
-import ch.uzh.ifi.hase.soprafs23.entity.Country;
-import ch.uzh.ifi.hase.soprafs23.entity.Game;
-import ch.uzh.ifi.hase.soprafs23.entity.Guess;
-import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.entityDB.Country;
+import ch.uzh.ifi.hase.soprafs23.entityDB.Game;
+import ch.uzh.ifi.hase.soprafs23.entityOther.Guess;
+import ch.uzh.ifi.hase.soprafs23.entityDB.User;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -58,13 +58,8 @@ public interface DTOMapper {
     @Mapping(source = "gameEndingCriteria", target = "gameEndingCriteria")
     @Mapping(source = "roundDuration", target = "roundDuration")
     @Mapping(source = "region", target = "region")
-    @Mapping(source = "countriesToPlay", target = "countriesToPlay")
     @Mapping(source = "currentRound", target = "currentRound")
-    @Mapping(source = "categoriesSelected", target = "categoriesSelected")
-    @Mapping(source = "remainingCategories", target = "remainingCategories")
-    @Mapping(source = "currentCategory", target = "currentCategory")
     @Mapping(source = "remainingTime", target = "remainingTime")
-    @Mapping(source = "currentCountry", target = "currentCountry")
     GameGetDTO convertEntityToGameGetDTO(Game game);
 
     @Mapping(source = "username", target = "username")

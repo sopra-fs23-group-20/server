@@ -1,8 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
-import ch.uzh.ifi.hase.soprafs23.entity.Location;
-
-import java.util.Set;
+import ch.uzh.ifi.hase.soprafs23.entityOther.Location;
 
 public class CountryGetDTO {
     private String name;

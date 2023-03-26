@@ -1,8 +1,8 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
 
-import ch.uzh.ifi.hase.soprafs23.entity.Country;
-import ch.uzh.ifi.hase.soprafs23.entity.Location;
+import ch.uzh.ifi.hase.soprafs23.entityDB.Country;
+import ch.uzh.ifi.hase.soprafs23.entityOther.Location;
 import ch.uzh.ifi.hase.soprafs23.repository.CountryRepository;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

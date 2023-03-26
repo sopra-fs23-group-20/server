@@ -1,8 +1,9 @@
-package ch.uzh.ifi.hase.soprafs23.entity;
+package ch.uzh.ifi.hase.soprafs23.entityDB;
 
+
+import ch.uzh.ifi.hase.soprafs23.entityOther.Location;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Table(name = "COUNTRY")

@@ -1,7 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
-import ch.uzh.ifi.hase.soprafs23.entity.Game;
-import ch.uzh.ifi.hase.soprafs23.entity.Guess;
+import ch.uzh.ifi.hase.soprafs23.entityDB.Game;
+import ch.uzh.ifi.hase.soprafs23.entityOther.Guess;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GameGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GuessPostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
@@ -66,6 +66,13 @@ public class GameController {
     public GameGetDTO getGameInfo(@PathVariable Long gameId) {
        Game game = gameService.getGameById(gameId);
          return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
+    }
+
+    @GetMapping("/games/{gameId}/country")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String getGameCountry(@PathVariable Long gameId) {
+        return gameService.getGameCountryName(gameId);
     }
 
     @GetMapping("/games/{gameId}/countries")
