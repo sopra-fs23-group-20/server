@@ -43,6 +43,7 @@ dependencies {
 
     implementation 'mysql:mysql-connector-java'
 
+    implementation 'com.google.cloud:spring-cloud-gcp-starter-secretmanager:2.0.6'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.postgresql:postgresql'
