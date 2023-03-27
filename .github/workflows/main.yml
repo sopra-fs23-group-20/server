@@ -32,6 +32,12 @@ jobs:
   deploy:
     name: Deploying to Google Cloud
     runs-on: ubuntu-latest
+
+    env:
+      DB_URL: ${{ secrets.DB_URL }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
     needs: test
 
 
@@ -48,10 +54,7 @@ jobs:
           version: v1
           credentials: ${{ secrets.GCP_SERVICE_CREDENTIALS }}
 
-        env:
-          DB_URL: ${{ secrets.DB_URL }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
 
       - name: Test
         run: curl "${{ steps.deploy.outputs.url }}"
