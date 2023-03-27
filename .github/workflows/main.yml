@@ -40,6 +40,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Deploy to App Engine
+
         id: deploy
         uses: google-github-actions/deploy-appengine@v0.2.0
         with:
@@ -49,3 +50,8 @@ jobs:
 
       - name: Test
         run: curl "${{ steps.deploy.outputs.url }}"
+
+        env:
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
