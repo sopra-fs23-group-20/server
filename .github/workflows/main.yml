@@ -48,10 +48,12 @@ jobs:
           version: v1
           credentials: ${{ secrets.GCP_SERVICE_CREDENTIALS }}
 
-      - name: Test
-        run: curl "${{ steps.deploy.outputs.url }}"
-
         env:
           DB_URL: ${{ secrets.DB_URL }}
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+      - name: Test
+        run: curl "${{ steps.deploy.outputs.url }}"
+
+
