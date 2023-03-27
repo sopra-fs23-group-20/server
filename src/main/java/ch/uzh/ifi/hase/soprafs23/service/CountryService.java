@@ -108,7 +108,7 @@ private final OutlineRepository outlineRepository;
         return null;
     }
     public void setAllCountries() {
-        if (countryRepository.findAll().size() == 0) {
+        if (countryRepository.getAllCountryIds().size() == 0) {
             JSONArray countries = null;
             try{
                 URL url = new URL("https://restcountries.com/v3.1/all");

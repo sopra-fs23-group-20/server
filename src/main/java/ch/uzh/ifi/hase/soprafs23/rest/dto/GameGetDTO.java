@@ -23,11 +23,9 @@ public class GameGetDTO {
     private long gameEndingCriteria;
     private long roundDuration;
     private RegionEnum region;
-    private Set<Long> countriesToPlayIds;
     private long currentRound;
     private CategoryStack categoryStack;
     private Long remainingTime;
-    private Long currentCountryId;
 
     public Long getGameId() {
         return gameId;
@@ -93,14 +91,6 @@ public class GameGetDTO {
         this.region = region;
     }
 
-    public Set<Long> getCountriesToPlayIds() {
-        return countriesToPlayIds;
-    }
-
-    public void setCountriesToPlayIds(Set<Long> countriesToPlayIds) {
-        this.countriesToPlayIds = countriesToPlayIds;
-    }
-
     public long getCurrentRound() {
         return currentRound;
     }
@@ -125,11 +115,4 @@ public class GameGetDTO {
         this.remainingTime = remainingTime;
     }
 
-    public Long getCurrentCountryId() {
-        return currentCountryId;
-    }
-
-    public void setCurrentCountryId(Long currentCountryId) {
-        this.currentCountryId = currentCountryId;
-    }
 }

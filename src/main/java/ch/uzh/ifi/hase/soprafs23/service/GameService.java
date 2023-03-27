@@ -50,20 +50,12 @@ public class GameService {
         return this.gameRepository.findAll();
     }
 
-    private Set<Country> getCountriesById(Set<Long> countryIds){
-        Set<Country> countries = new HashSet<>();
-        for(Long countryId : countryIds){
-            countries.add(countryRepository.findByCountryId(countryId));
-        }
-        return countries;
-    }
-
     public List<String> getGameCountriesNames(Long gameId){
         Game game = gameRepository.findByGameId(gameId);
         List<String> countryNames = new ArrayList<>();
         Set<Long> countryIds = game.getCountriesToPlayIds();
         for(Long countryId : countryIds){
-            countryNames.add(countryRepository.findByCountryId(countryId).getName());
+            countryNames.add(countryRepository.findNameByCountryId(countryId));
         }
         return countryNames;
     }
@@ -99,12 +91,13 @@ public class GameService {
 
 
     public Game createGame(String username) {
+        Game game = new Game();
+
         GameUser lobbyCreator = new GameUser();
         lobbyCreator.setUsername(username);
 
         Long initialCountryId= countryService.getAllCountryIdsWithRandomId();
 
-        Game game = new Game();
         game.setCountriesToPlayIds(countryRepository.getAllCountryIds());
         game.setLobbyCreator(lobbyCreator);
         game.setCurrentState(GameState.SETUP);
@@ -172,7 +165,7 @@ public class GameService {
         try {
             System.out.println("The guess submitted is:" + guess.getGuess());
         Game game = gameRepository.findByGameId(gameId);
-        if (countryRepository.findByCountryId(game.getCurrentCountryId()).getName().equals(guess.getGuess())) {
+        if (countryRepository.findNameByCountryId(game.getCurrentCountryId()).equals(guess.getGuess())) {
             return;
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Your guess was wrong");
@@ -229,7 +222,7 @@ public class GameService {
 
     public String getGameCountryName(Long gameId){
         Game game = gameRepository.findByGameId(gameId);
-        return countryRepository.findByCountryId(game.getCurrentCountryId()).getName();
+        return countryRepository.findNameByCountryId(game.getCurrentCountryId());
     }
     public Game getGameById(Long id){
         return gameRepository.findByGameId(id);
