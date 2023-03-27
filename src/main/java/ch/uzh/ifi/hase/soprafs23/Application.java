@@ -1,4 +1,5 @@
 package ch.uzh.ifi.hase.soprafs23;
+import com.google.cloud.spring.autoconfigure.secretmanager.EnableSecretManager;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @RestController
 @SpringBootApplication
+@EnableSecretManager
 public class Application {
 
     public static void main(String[] args) {
