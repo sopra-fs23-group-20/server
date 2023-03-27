@@ -156,6 +156,9 @@ public class UserService {
 
         originalUser.setBirthday(userInput.getBirthday());
 
+        if (userInput.getPassword() != null) {
+            originalUser.setPassword(userInput.getPassword());
+        }
 
         if (userInput.getStatus() != null) {
             originalUser.setStatus(userInput.getStatus());
