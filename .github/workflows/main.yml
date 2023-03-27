@@ -45,7 +45,8 @@ jobs:
           version: v1
           credentials: ${{ secrets.GCP_SERVICE_CREDENTIALS }}
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SERVICE_CREDENTIALS }}
+          SPRING_PROFILES_ACTIVE: prod
 
       - name: Test
         run: curl "${{ steps.deploy.outputs.url }}"
