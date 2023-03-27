@@ -33,8 +33,8 @@ public class Country {
     @Column(nullable = true)
     private String capital;
 
-    @Column(nullable = true, length = 10000000)
-    private String outline;
+    @OneToOne
+    private Outline outline;
 
     @Column(nullable = true)
     private String countryCode;
@@ -107,11 +107,11 @@ public class Country {
         this.capital = capital;
     }
 
-    public String getOutline() {
+    public Outline getOutline() {
         return outline;
     }
 
-    public void setOutline(String outline) {
+    public void setOutline(Outline outline) {
         this.outline = outline;
     }
 }

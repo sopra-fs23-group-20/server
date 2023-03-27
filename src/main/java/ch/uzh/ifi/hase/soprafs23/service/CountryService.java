@@ -2,8 +2,10 @@ package ch.uzh.ifi.hase.soprafs23.service;
 
 
 import ch.uzh.ifi.hase.soprafs23.entityDB.Country;
+import ch.uzh.ifi.hase.soprafs23.entityDB.Outline;
 import ch.uzh.ifi.hase.soprafs23.entityOther.Location;
 import ch.uzh.ifi.hase.soprafs23.repository.CountryRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.OutlineRepository;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -20,9 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Transactional
@@ -31,11 +31,12 @@ public class CountryService {
     private final Logger log = LoggerFactory.getLogger(UserService.class);
 
     private final CountryRepository countryRepository;
-
+private final OutlineRepository outlineRepository;
 
     @Autowired
-    public CountryService(@Qualifier("countryRepository") CountryRepository countryRepository) {
+    public CountryService(@Qualifier("countryRepository") CountryRepository countryRepository, @Qualifier("outlineRepository") OutlineRepository outlineRepository){
         this.countryRepository = countryRepository;
+        this.outlineRepository = outlineRepository;
         this.setAllCountries();
     }
 
@@ -43,11 +44,13 @@ public class CountryService {
         return this.countryRepository.findAll();
     }
 
-    public Country getRandomCountry(){
-        Set<Long> countryIds = countryRepository.getAllCountryIds();
-        int randomIndex = (int) (Math.random() * countryIds.size());
-        return countryRepository.findByCountryId((long) randomIndex);
+    public Long getAllCountryIdsWithRandomId() {
+        List<Long> allCountryIds = new ArrayList<>(this.countryRepository.getAllCountryIds());
+                Collections.shuffle(allCountryIds);
+        Long randomCountryId = allCountryIds.get(0);
+        return randomCountryId;
     }
+
 /*
     public void setCountriesWithAPI() {
 
@@ -174,11 +177,15 @@ public class CountryService {
                         newCountry.setPopulation(population);
                         newCountry.setFlag(flag);
                         newCountry.setLocation(location);
-                        newCountry.setOutline(outline);
+
+                        Outline outline1 = new Outline();
+                        outline1.setOutline(outline);
+                        outlineRepository.saveAndFlush(outline1);
+                        newCountry.setOutline(outline1);
+
                         countryRepository.save(newCountry);
                     }
                     catch (Exception e) {
-
                     }
                     countryRepository.flush();
                 }

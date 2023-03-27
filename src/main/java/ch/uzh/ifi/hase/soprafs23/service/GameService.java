@@ -3,10 +3,7 @@ package ch.uzh.ifi.hase.soprafs23.service;
 import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.WebsocketType;
-import ch.uzh.ifi.hase.soprafs23.entityDB.CategoryStack;
-import ch.uzh.ifi.hase.soprafs23.entityDB.Country;
-import ch.uzh.ifi.hase.soprafs23.entityDB.Game;
-import ch.uzh.ifi.hase.soprafs23.entityDB.GameUser;
+import ch.uzh.ifi.hase.soprafs23.entityDB.*;
 import ch.uzh.ifi.hase.soprafs23.entityOther.*;
 import ch.uzh.ifi.hase.soprafs23.repository.CategoryStackRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.CountryRepository;
@@ -71,40 +68,57 @@ public class GameService {
         return countryNames;
     }
 
+    private Category transformToCategory(CategoryEnum type, Long countryId){
+        Category category = new Category();
+        category.setType(type);
+        switch (type){
 
-    public Game createGame(String username){
+            case POPULATION:
+                category.setPopulation(countryRepository.findPopulationByCountryId(countryId));
+                return category;
+            case OUTLINE:
+                Outline outline =  countryRepository.findOutlineByCountryId(countryId);
+                category.setOutline(outline.getOutline());
+                return category;
+            case FLAG:
+                category.setFlag(countryRepository.findFlagByCountryId(countryId));
+                return category;
+            case LOCATION:
+                Location location = countryRepository.findLocationByCountryId(countryId);
+                category.setLocation(location);
+                return category;
+
+            case CAPITAL:
+                category.setCapital(countryRepository.findCapitalByCountryId(countryId));
+                return category;
+
+            default:
+                return null;
+        }
+    }
 
 
+    public Game createGame(String username) {
         GameUser lobbyCreator = new GameUser();
         lobbyCreator.setUsername(username);
 
-        Country initialCountry = countryService.getRandomCountry();
-
-        Category currentCategory = Category.transformToCategory(CategoryEnum.POPULATION,initialCountry);
+        Long initialCountryId= countryService.getAllCountryIdsWithRandomId();
 
         Game game = new Game();
-        Set<Long> countryIdsToPlay = countryRepository.getAllCountryIds();
-
-        game.setCountriesToPlayIds(countryIdsToPlay);
-
+        game.setCountriesToPlayIds(countryRepository.getAllCountryIds());
         game.setLobbyCreator(lobbyCreator);
         game.setCurrentState(GameState.SETUP);
-
-        game.setCurrentCountryId(initialCountry.getCountryId());
+        game.setCurrentCountryId(initialCountryId);
 
         CategoryStack categoryStack = new CategoryStack();
         categoryStack.addAll(Arrays.asList(CategoryEnum.values()));
 
-        System.out.println("Category Stack Remaining Categories: "+categoryStack.getRemainingCategories());
-        System.out.println("Category Stack Selected Categories: "+categoryStack.getSelectedCategories());
-
-
         game.setCategoryStack(categoryStack);
-
         game.setRemainingTime(30L);
         gameRepository.saveAndFlush(game);
         return game;
     }
+
 
     private class GameUpdater implements Runnable {
         private final Long gameId;
@@ -190,7 +204,7 @@ public class GameService {
 
                     CategoryEnum currentCategoryEnum = remainingCategories.pop();
                     remainingCategories.setCurrentCategory(currentCategoryEnum);
-                    Category category = Category.transformToCategory(currentCategoryEnum, countryRepository.findByCountryId(game.getCurrentCountryId()));
+                    Category category = transformToCategory(currentCategoryEnum, game.getCurrentCountryId());
                     gameRepository.saveAndFlush(game);
 
                     WebsocketPackage websocketPackage = new WebsocketPackage();
@@ -248,7 +262,4 @@ public class GameService {
             }
         }
     }
-
-
-
 }

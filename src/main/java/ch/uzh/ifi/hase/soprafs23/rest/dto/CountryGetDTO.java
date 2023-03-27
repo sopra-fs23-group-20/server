@@ -1,23 +1,24 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
+import ch.uzh.ifi.hase.soprafs23.entityDB.Outline;
 import ch.uzh.ifi.hase.soprafs23.entityOther.Location;
 
 public class CountryGetDTO {
     private String name;
     private Long population;
 
-    private String outline;
+    private Outline outline;
     private String flag;
 
     private Location location;
 
     private String capital;
 
-    public String getOutline() {
+    public Outline getOutline() {
         return outline;
     }
 
-    public void setOutline(String outline) {
+    public void setOutline(Outline outline) {
         this.outline = outline;
     }
 
@@ -61,4 +62,6 @@ public class CountryGetDTO {
     public void setCapital(String capital) {
         this.capital = capital;
     }
+
+
 }
