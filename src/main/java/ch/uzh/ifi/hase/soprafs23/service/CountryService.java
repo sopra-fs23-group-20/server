@@ -88,10 +88,15 @@ private final OutlineRepository outlineRepository;
     public void setAllCountries() {
         if (countryRepository.getAllCountryIds().size() == 0) {
             JSONArray countries = null;
+
+            /*
             try{
                 countries = fetchCountriesAPI(countries);
             }
             catch (IOException | ParseException e) {
+            }*/
+
+            if(countries == null) {
                 JSONParser parser = new JSONParser();
                 try {
                     countries = (JSONArray) parser.parse(new FileReader("src/main/resources/countries.json"));
