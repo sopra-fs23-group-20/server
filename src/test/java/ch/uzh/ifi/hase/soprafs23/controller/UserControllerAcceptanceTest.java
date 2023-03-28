@@ -19,6 +19,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -39,7 +41,7 @@ public class UserControllerAcceptanceTest {
 
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setPassword("beforeEachTestPassword");
-        userPostDTO.setUsername(generateRandomUsername(12));
+        userPostDTO.setUsername(generateDate());
 
         MockHttpServletRequestBuilder postRequest = post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -57,7 +59,7 @@ public class UserControllerAcceptanceTest {
     public void postUserValid() throws Exception {
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setPassword("testpaswword");
-        userPostDTO.setUsername(generateRandomUsername(6));
+        userPostDTO.setUsername(generateDate());
 
         MockHttpServletRequestBuilder postRequest = post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -67,6 +69,13 @@ public class UserControllerAcceptanceTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.username", is(userPostDTO.getUsername())))
                 .andExpect(jsonPath("$.status", is(UserStatus.ONLINE.toString())));
+    }
+
+    public static String generateDate(){
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss_SSS");
+        String formattedNow = now.format(formatter);
+        return "TestUser_" + formattedNow.toString();
     }
 
     public static String generateRandomUsername(int length) {
