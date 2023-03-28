@@ -99,7 +99,7 @@ if (dbPasswordPropsFile.exists()) {
         ext[name] = value
     }
 } else {
-    ext['dbPassword'] = 'fallbackPassword'
+    ext['dbPassword'] = 'L6tE6JP2Ga4K8'
 }
 
 
