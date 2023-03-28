@@ -29,7 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class UserControllerAcceptanceTest {
     String token = "1234";
     @Autowired
@@ -57,8 +56,8 @@ public class UserControllerAcceptanceTest {
     @Test
     public void postUserValid() throws Exception {
         UserPostDTO userPostDTO = new UserPostDTO();
-        userPostDTO.setPassword("testpsw");
-        userPostDTO.setUsername(generateRandomUsername(12));
+        userPostDTO.setPassword("testpaswword");
+        userPostDTO.setUsername(generateRandomUsername(6));
 
         MockHttpServletRequestBuilder postRequest = post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -87,7 +86,7 @@ public class UserControllerAcceptanceTest {
             username.append(randomChar);
         }
 
-        return username.toString();
+        return "TestUser" + username.toString();
     }
 
     private String asJsonString(final Object object) {

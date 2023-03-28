@@ -23,11 +23,11 @@ jobs:
           distribution: "temurin"
           java-version: "17"
 
-      #- name: Test and analyze
-      #  run: ./gradlew test jacocoTestReport sonar -Dsonar.branch.name=main --stacktrace
-      #  env:
-      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Test and analyze
+        run: ./gradlew test jacocoTestReport sonar -Dsonar.branch.name=main --stacktrace
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
 
 

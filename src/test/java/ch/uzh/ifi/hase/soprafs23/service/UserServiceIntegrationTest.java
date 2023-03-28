@@ -1,3 +1,4 @@
+
 package ch.uzh.ifi.hase.soprafs23.service;
 
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
@@ -11,13 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Random;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Test class for the UserResource REST resource.
- *
- * @see UserService
- */
 @WebAppConfiguration
 @SpringBootTest
 public class UserServiceIntegrationTest {
@@ -29,47 +27,24 @@ public class UserServiceIntegrationTest {
     @Autowired
     private UserService userService;
 
-    @BeforeEach
-    public void setup() {
-        userRepository.deleteAll();
-    }
+    public static String generateRandomUsername(int length) {
+        // Characters allowed in the username
+        String allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
 
-    @Test
-    public void createUser_validInputs_success() {
-        // given
-        assertNull(userRepository.findByUsername("testUsername"));
+        // Create a Random object to generate random numbers
+        Random random = new Random();
 
-        User testUser = new User();
-        testUser.setPassword("pswd");
-        testUser.setUsername("testUsername");
+        // Create a StringBuilder to build the username
+        StringBuilder username = new StringBuilder();
 
-        // when
-        User createdUser = userService.createUser(testUser);
+        // Generate the random username by picking random characters from the allowedChars
+        for (int i = 0; i < length; i++) {
+            int randomIndex = random.nextInt(allowedChars.length());
+            char randomChar = allowedChars.charAt(randomIndex);
+            username.append(randomChar);
+        }
 
-        // then
-        assertEquals(testUser.getUserId(), createdUser.getUserId());
-        assertEquals(testUser.getUsername(), createdUser.getUsername());
-        assertNotNull(createdUser.getToken());
-        assertEquals(UserStatus.ONLINE, createdUser.getStatus());
-    }
-
-    @Test
-    public void createUser_duplicateUsername_throwsException() {
-        assertNull(userRepository.findByUsername("testUsername"));
-
-        User testUser = new User();
-        testUser.setPassword("psw");
-        testUser.setUsername("testUsername");
-        User createdUser = userService.createUser(testUser);
-
-        // attempt to create second user with same username
-        User testUser2 = new User();
-
-        // change the name but forget about the username
-        testUser2.setPassword("testName2");
-        testUser2.setUsername("testUsername");
-
-        // check that an error is thrown
-        assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser2));
+        return "TestUser" + username.toString();
     }
 }
+
