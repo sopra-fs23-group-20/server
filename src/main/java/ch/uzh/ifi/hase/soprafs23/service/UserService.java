@@ -92,7 +92,6 @@ public class UserService {
         }
         if (userByUsername.getPassword().equals(user.getPassword())) {
             userByUsername.setStatus(UserStatus.ONLINE);
-            userByUsername.setToken(UUID.randomUUID().toString());
             userRepository.flush();
             return userByUsername;
         }

@@ -70,4 +70,8 @@ public interface DTOMapper {
     @Mapping(source = "username", target = "username")
     @Mapping(source = "guess", target = "guess")
     Guess convertGuessPostDTOtoEntity(GuessPostDTO guessPostDTO);
+
+
+    @Mapping(source = "userId", target = "userId")
+    User convertGametoUser(GameCreateDTO gameCreateDTO);
 }

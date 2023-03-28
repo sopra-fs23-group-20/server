@@ -6,6 +6,14 @@ public class WebsocketPackage {
     private WebsocketType type;
     private Object payload;
 
+    public WebsocketPackage(WebsocketType type, Object payload) {
+        this.type = type;
+        this.payload = payload;
+    }
+
+    public WebsocketPackage() {
+    }
+
     public WebsocketType getType() {
         return type;
     }

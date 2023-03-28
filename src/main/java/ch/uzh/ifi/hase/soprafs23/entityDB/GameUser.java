@@ -6,6 +6,7 @@ import javax.persistence.*;
 public class GameUser {
 
     private Long userId;
+    private String token;
     private String username;
     private Long currentRoundPoints;
     private Long gamePoints;
@@ -41,5 +42,23 @@ public class GameUser {
 
     public void setGamePoints(Long gamePoints) {
         this.gamePoints = gamePoints;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public static GameUser transformUserToGameUser(User user){
+        GameUser gameUser = new GameUser();
+        gameUser.setUserId(user.getUserId());
+        gameUser.setUsername(user.getUsername());
+        gameUser.setToken(user.getToken());
+        gameUser.setCurrentRoundPoints(0L);
+        gameUser.setGamePoints(0L);
+        return gameUser;
     }
 }

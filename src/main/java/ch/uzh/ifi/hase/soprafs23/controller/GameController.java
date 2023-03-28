@@ -1,7 +1,9 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.entityDB.Game;
+import ch.uzh.ifi.hase.soprafs23.entityDB.User;
 import ch.uzh.ifi.hase.soprafs23.entityOther.Guess;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.GameCreateDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GameGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GuessPostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
@@ -23,14 +25,11 @@ public class GameController {
 
     private final GameService gameService;
 
-    private final SimpMessagingTemplate messagingTemplate;
-
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
 
-    GameController(GameService gameService, SimpMessagingTemplate messagingTemplate) {
+    GameController(GameService gameService) {
         this.gameService = gameService;
-        this.messagingTemplate = messagingTemplate;
+
     }
 
     @GetMapping("/games")
@@ -51,9 +50,9 @@ public class GameController {
     @PostMapping("/games")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public GameGetDTO createGame(@RequestBody String username) {
-        // create game
-        Game createdGame = gameService.createGame(username);
+    public GameGetDTO createGame(@RequestBody GameCreateDTO gameCreateDTO) {
+        User user = DTOMapper.INSTANCE.convertGametoUser(gameCreateDTO);
+        Game createdGame = gameService.createGame(user.getUserId());
         // convert internal representation of game back to API
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(createdGame);
     }
@@ -63,8 +62,8 @@ public class GameController {
     @GetMapping("/games/{gameId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public GameGetDTO getGameInfo(@PathVariable Long gameId) {
-       Game game = gameService.getGameById(gameId);
+    public GameGetDTO getGameInfo(@PathVariable Long gameId, @RequestHeader("Authorization") String authHeader) {
+       Game game = gameService.getGameByIdAndAuth(gameId, authHeader);
          return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 
@@ -90,31 +89,20 @@ public class GameController {
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 
+    @PostMapping("/games/{gameId}/join")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameGetDTO joinGame(@PathVariable Long gameId, @RequestBody GameCreateDTO gameCreateDTO) {
+        User user = DTOMapper.INSTANCE.convertGametoUser(gameCreateDTO);
+        Game game = gameService.joinGame(gameId, user.getUserId());
+        return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
+    }
+
     @PostMapping("/games/{gameId}/guesses")
     @ResponseStatus(HttpStatus.CREATED)
     public void submitGuess(@PathVariable Long gameId, @RequestBody GuessPostDTO guessPostDTO) {
         Guess guess = DTOMapper.INSTANCE.convertGuessPostDTOtoEntity(guessPostDTO);
         gameService.submitGuess(gameId, guess);
     }
-
-    @MessageMapping("/game/{gameId}/join")
-    public void joinGame(@DestinationVariable Long gameId, @Payload String sessionId) {
-        // add the sessionId to the list of subscribers for the given gameId
-        gameService.addSubscriber(gameId, sessionId);
-        Game game = gameService.getGameById(gameId);
-        messagingTemplate.convertAndSendToUser(sessionId, "/topic/game/" + gameId,DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
-    }
-
-    @MessageMapping("/game/{gameId}/leave")
-    public void leaveGame(@DestinationVariable Long gameId, @Payload String sessionId) {
-        // remove the sessionId from the list of subscribers for the given gameId
-        gameService.removeSubscriber(gameId, sessionId);
-    }
-
-
-
-
-
-
 
 }
