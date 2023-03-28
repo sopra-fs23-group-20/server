@@ -194,7 +194,7 @@ public class UserControllerTest {
         // this mocks the UserService -> we define above what the userService should
         // return when getUsers() is called
         String token = "1";
-        given(userService.getUsers(token)).willReturn(allUsers);
+        given(userService.getUsers()).willReturn(allUsers);
 
         // when
         MockHttpServletRequestBuilder getRequest = get("/users")
