@@ -29,6 +29,8 @@ jobs:
       #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+
+
   deploy:
     name: Deploying to Google Cloud
     runs-on: ubuntu-latest
@@ -36,6 +38,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Set database password
+        run: echo "dbPassword=${{ secrets.DB_PASSWORD }}" > dbpassword.properties
+
 
       - name: Deploy to App Engine
         id: deploy
@@ -45,8 +51,9 @@ jobs:
           version: v1
           credentials: ${{ secrets.GCP_SERVICE_CREDENTIALS }}
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SERVICE_CREDENTIALS }}
           SPRING_PROFILES_ACTIVE: prod
+          GRADLE_OPTS: '-DdbPassword.file=./dbpassword.properties'
+
 
       - name: Test
         run: curl "${{ steps.deploy.outputs.url }}"
