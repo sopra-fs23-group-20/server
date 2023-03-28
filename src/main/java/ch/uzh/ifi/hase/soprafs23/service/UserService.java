@@ -36,12 +36,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> getUsers(String authHeader) {
-        User userByToken = userRepository.findByToken(authHeader);
-        if (userByToken == null)
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User is not authorized");
-        userByToken.setStatus(UserStatus.ONLINE);
-        userRepository.flush();
+    public List<User> getUsers() {
         return this.userRepository.findAll();
     }
 
@@ -162,6 +157,14 @@ public class UserService {
 
         if (userInput.getStatus() != null) {
             originalUser.setStatus(userInput.getStatus());
+        }
+
+        if (userInput.getNationality() != null) {
+            originalUser.setNationality(userInput.getNationality());
+        }
+
+        if (userInput.getProfilePicture() != null) {
+            originalUser.setProfilePicture(userInput.getProfilePicture());
         }
         userRepository.flush();
         return true;

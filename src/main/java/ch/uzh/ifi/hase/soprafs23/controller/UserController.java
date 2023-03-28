@@ -35,9 +35,9 @@ public class UserController {
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<UserGetDTO> getAllUsers(@RequestHeader("Authorization") String authHeader) {
+    public List<UserGetDTO> getAllUsers() {
         // fetch all users in the internal representation
-        List<User> users = userService.getUsers(authHeader);
+        List<User> users = userService.getUsers();
         List<UserGetDTO> userGetDTOs = new ArrayList<>();
 
         // convert each user to the API representation

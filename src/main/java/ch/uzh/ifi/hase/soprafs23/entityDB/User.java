@@ -33,6 +33,12 @@ public class User implements Serializable {
     @Column(nullable = false, unique = true)
     private String token;
 
+    @Column(nullable = true)
+    private String nationality;
+
+    @Column(nullable = true)
+    private String profilePicture;
+
 
     public Long getUserId() {
         return userId;
@@ -89,4 +95,12 @@ public class User implements Serializable {
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
+
+    public String getNationality() { return nationality; }
+    public void setNationality(String nationality) {this.nationality = nationality; }
+
+    public String getProfilePicture() {return profilePicture; }
+    public void setProfilePicture(String profilePicture) {this.profilePicture = profilePicture; }
+
+
 }

@@ -15,6 +15,10 @@ public class UserPutDTO {
 
     private UserStatus status;
 
+    private String nationality;
+
+    private String profilePicture;
+
     public String getUsername() {
         return username;
     }
@@ -41,4 +45,11 @@ public class UserPutDTO {
     public void setStatus(UserStatus status) {
         this.status = status;
     }
+
+    public String getNationality() { return nationality; }
+    public void setNationality(String nationality) {this.nationality = nationality; }
+    public String getProfilePicture() {return profilePicture; }
+    public void setProfilePicture(String profilePicture) {this.profilePicture = profilePicture; }
+
+
 }
