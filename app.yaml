@@ -1,6 +1,5 @@
 runtime: java17
 instance_class: F2
-env: flex
 
 env_variables:
   SPRING_PROFILES_ACTIVE: 'prod'
