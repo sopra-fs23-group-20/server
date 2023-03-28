@@ -14,6 +14,8 @@ public class UserGetDTO {
 
     private Date birthday;
 
+    private String nationality;
+
     private String profilePicture;
 
     public Long getId() {
@@ -55,6 +57,9 @@ public class UserGetDTO {
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
+
+    public String getNationality() {return nationality; }
+    public void setNationality(String nationality) { this.nationality = nationality; }
 
     public String getProfilePicture() {return profilePicture; }
     public void setProfilePicture(String profilePicture) {this.profilePicture = profilePicture; }

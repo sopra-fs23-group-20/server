@@ -36,7 +36,7 @@ public class User implements Serializable {
     @Column(nullable = true)
     private String nationality;
 
-    @Column(nullable = true)
+    @Column(nullable = true, length = 1000000)
     private String profilePicture;
 
 
