@@ -23,11 +23,16 @@ jobs:
           distribution: "temurin"
           java-version: "17"
 
+      - name: Set database password1
+        run: echo "dbPassword=${{ secrets.DB_PASSWORD }}" > dbpassword.properties
+
       - name: Test and analyze
-        run: ./gradlew test jacocoTestReport sonar -Dsonar.branch.name=main --stacktrace
+        run: ./gradlew test jacocoTestReport sonar -Dsonar.branch.name=main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SPRING_PROFILES_ACTIVE: prod
+          GRADLE_OPTS: '-DdbPassword=${{ secrets.DB_PASSWORD }}'
 
 
 
