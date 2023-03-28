@@ -1,6 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
-/*
+
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.UserPutDTO;
@@ -18,6 +18,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Random;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -38,14 +40,13 @@ public class UserControllerAcceptanceTest {
 
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setPassword("beforeEachTestPassword");
-        userPostDTO.setUsername("beforeEachTestUsername");
+        userPostDTO.setUsername(generateRandomUsername(12));
 
         MockHttpServletRequestBuilder postRequest = post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(userPostDTO));
         mockMvc.perform(postRequest)
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.username", is(userPostDTO.getUsername())))
                 .andExpect(jsonPath("$.status", is(UserStatus.ONLINE.toString())))
                 .andDo(result -> {
@@ -57,7 +58,7 @@ public class UserControllerAcceptanceTest {
     public void postUserValid() throws Exception {
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setPassword("testpsw");
-        userPostDTO.setUsername("testUsername");
+        userPostDTO.setUsername(generateRandomUsername(12));
 
         MockHttpServletRequestBuilder postRequest = post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -65,11 +66,42 @@ public class UserControllerAcceptanceTest {
 
         mockMvc.perform(postRequest)
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is(2)))
                 .andExpect(jsonPath("$.username", is(userPostDTO.getUsername())))
                 .andExpect(jsonPath("$.status", is(UserStatus.ONLINE.toString())));
     }
 
+    public static String generateRandomUsername(int length) {
+        // Characters allowed in the username
+        String allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
+
+        // Create a Random object to generate random numbers
+        Random random = new Random();
+
+        // Create a StringBuilder to build the username
+        StringBuilder username = new StringBuilder();
+
+        // Generate the random username by picking random characters from the allowedChars
+        for (int i = 0; i < length; i++) {
+            int randomIndex = random.nextInt(allowedChars.length());
+            char randomChar = allowedChars.charAt(randomIndex);
+            username.append(randomChar);
+        }
+
+        return username.toString();
+    }
+
+    private String asJsonString(final Object object) {
+        try {
+            return new ObjectMapper().writeValueAsString(object);
+        }
+        catch (JsonProcessingException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    String.format("The request body could not be created.%s", e));
+        }
+    }
+
+}
+/*
     @Test
     public void postUserInValid() throws Exception {
         UserPostDTO userPostDTO = new UserPostDTO();
@@ -260,15 +292,6 @@ public class UserControllerAcceptanceTest {
     }
 
 
-    private String asJsonString(final Object object) {
-        try {
-            return new ObjectMapper().writeValueAsString(object);
-        }
-        catch (JsonProcessingException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    String.format("The request body could not be created.%s", e));
-        }
-    }
 
 
 }
