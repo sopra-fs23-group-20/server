@@ -52,7 +52,8 @@ jobs:
           credentials: ${{ secrets.GCP_SERVICE_CREDENTIALS }}
         env:
           SPRING_PROFILES_ACTIVE: prod
-          GRADLE_OPTS: '-DdbPassword.file=./dbpassword.properties'
+          GRADLE_OPTS: '-DdbPassword=${{ secrets.DB_PASSWORD }}'
+
 
 
       - name: Test
