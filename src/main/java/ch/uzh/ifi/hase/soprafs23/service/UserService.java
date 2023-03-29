@@ -131,41 +131,34 @@ public class UserService {
         if (originalUser == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User with id " + userId + " was not found");
         }
-
         if (!originalUser.getToken().equals(authHeader))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User is not authorized");
-
         if (userRepository.findByUsername(userInput.getUsername()) != null && !userInput.getUsername().equals(originalUser.getUsername())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Updating user failed because user with username: " + userInput.getUsername() + " already exists");
         }
-
-
         if (userInput.getUsername() != null) {
             if (userInput.getUsername().contains(" ")) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username cannot contain spaces");
             }
             originalUser.setUsername(userInput.getUsername());
         }
-
-
         originalUser.setBirthday(userInput.getBirthday());
-
         if (userInput.getPassword() != null) {
             originalUser.setPassword(userInput.getPassword());
         }
-
         if (userInput.getStatus() != null) {
             originalUser.setStatus(userInput.getStatus());
         }
-
         if (userInput.getNationality() != null) {
             originalUser.setNationality(userInput.getNationality());
         }
-
         if (userInput.getProfilePicture() != null) {
             originalUser.setProfilePicture(userInput.getProfilePicture());
         }
+        userRepository.save(originalUser);
         userRepository.flush();
+        log.debug("Updated Information for User: {}", originalUser);
         return true;
     }
+
 }
