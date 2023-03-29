@@ -14,8 +14,11 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class UserServiceTest {
@@ -48,6 +51,7 @@ public class UserServiceTest {
         // testUser
         when(userRepository.save(Mockito.any())).thenReturn(testUser);
 
+
     }
 
     @Test
@@ -74,8 +78,8 @@ public class UserServiceTest {
 
         // call the getUserByIdGeneralAuth function and verify that it throws an Unauthorized exception
         assertThrows(ResponseStatusException.class, () -> userService.getUserByIdGeneralAuth(userId, authHeader));
-        Mockito.verify(userRepository, Mockito.times(1)).findByUserId(userId);
-        Mockito.verify(userRepository, Mockito.times(1)).findByToken(authHeader);
+        verify(userRepository, times(1)).findByUserId(userId);
+        verify(userRepository, times(1)).findByToken(authHeader);
         Mockito.verifyNoMoreInteractions(userRepository);
     }
 
@@ -93,7 +97,7 @@ public class UserServiceTest {
         // then -> the correct user is returned and its status is set to ONLINE
         assertEquals(testUser, result);
         assertEquals(UserStatus.ONLINE, result.getStatus());
-        Mockito.verify(userRepository, Mockito.times(1)).flush();
+        verify(userRepository, times(1)).flush();
     }
 
     @Test
@@ -108,7 +112,7 @@ public class UserServiceTest {
         assertThrows(ResponseStatusException.class, () -> userService.getUserById(userId, authHeader));
 
         // then -> a NotFoundException is thrown
-        Mockito.verify(userRepository, Mockito.never()).flush();
+        verify(userRepository, Mockito.never()).flush();
     }
 
     @Test
@@ -143,7 +147,7 @@ public class UserServiceTest {
         User createdUser = userService.createUser(testUser);
 
         // then
-        Mockito.verify(userRepository, Mockito.times(1)).save(Mockito.any());
+        verify(userRepository, times(1)).save(Mockito.any());
 
 
         assertEquals(testUser.getUserId(), createdUser.getUserId());
@@ -254,7 +258,7 @@ public class UserServiceTest {
         User loggedInUser = userService.loginUser(existingUser);
 
         // then -> check that user status is set to online
-        Mockito.verify(userRepository, Mockito.times(1)).flush();
+        verify(userRepository, times(1)).flush();
         assertEquals(UserStatus.ONLINE, loggedInUser.getStatus());
     }
 
@@ -280,43 +284,142 @@ public class UserServiceTest {
         assertThrows(ResponseStatusException.class, () -> userService.loginUser(user));
     }
 
-
+    // Test case for updating a user's username
     @Test
-    public void testUpdateUserNotFound() {
+    public void updateUser_validUsername_success() {
         // given
-        when(userRepository.findByUserId(1L)).thenReturn(null);
+        User existingUser = new User();
+        existingUser.setUserId(1L);
+        existingUser.setUsername("oldUsername");
+        existingUser.setPassword("password");
+        existingUser.setToken(UUID.randomUUID().toString());
 
-        // when & then
-        assertThrows(ResponseStatusException.class, () -> userService.updateUser(1L, "authHeader", testUser));
+        User updatedUser = new User();
+        updatedUser.setUsername("newUsername");
+
+        when(userRepository.findByUserId(Mockito.any())).thenReturn(existingUser);
+        when(userRepository.findByUsername(Mockito.any())).thenReturn(null);
+        when(userRepository.findByToken(Mockito.any())).thenReturn(existingUser);
+        when(userRepository.save(Mockito.any())).thenReturn(existingUser);
+
+        // when
+        boolean isUpdated = userService.updateUser(existingUser.getUserId(), existingUser.getToken(), updatedUser);
+
+        // then
+        assertTrue(isUpdated);
+        assertEquals(updatedUser.getUsername(), existingUser.getUsername());
+        verify(userRepository, times(1)).save(existingUser);
+    }
+
+    // Test case for updating a user's birthday
+    @Test
+    public void updateUser_validBirthday_success() {
+        // given
+        User existingUser = new User();
+        existingUser.setUserId(1L);
+        existingUser.setUsername("username");
+        existingUser.setPassword("password");
+        existingUser.setBirthday(new Date(10000000));
+        existingUser.setToken(UUID.randomUUID().toString());
+
+        User updatedUser = new User();
+        updatedUser.setBirthday(new Date(20000000));
+
+        when(userRepository.findByUserId(Mockito.any())).thenReturn(existingUser);
+        when(userRepository.findByToken(Mockito.any())).thenReturn(existingUser);
+        when(userRepository.save(Mockito.any())).thenReturn(existingUser);
+
+        // when
+        boolean isUpdated = userService.updateUser(existingUser.getUserId(), existingUser.getToken(), updatedUser);
+
+        // then
+        assertTrue(isUpdated);
+        assertEquals(updatedUser.getBirthday(), existingUser.getBirthday());
+        verify(userRepository, times(1)).save(existingUser);
+    }
+
+    // Test case for updating a user's password
+    @Test
+    public void updateUser_validPassword_success() {
+        // given
+        User existingUser = new User();
+        existingUser.setUserId(1L);
+        existingUser.setUsername("username");
+        existingUser.setPassword("oldPassword");
+        existingUser.setToken(UUID.randomUUID().toString());
+
+        User updatedUser = new User();
+        updatedUser.setPassword("newPassword");
+
+        when(userRepository.findByUserId(Mockito.any())).thenReturn(existingUser);
+        when(userRepository.findByToken(Mockito.any())).thenReturn(existingUser);
+        when(userRepository.save(Mockito.any())).thenReturn(existingUser);
+
+        // when
+        boolean isUpdated = userService.updateUser(existingUser.getUserId(), existingUser.getToken(), updatedUser);
+
+        // then
+        assertTrue(isUpdated);
+        assertEquals(updatedUser.getPassword(), existingUser.getPassword());
+        verify(userRepository, times(1)).save(existingUser);
+    }
+
+    // Test case for updating a user's status
+    @Test
+    public void updateUser_validStatus_success() {
+        // given
+        User existingUser = new User();
+        existingUser.setUserId(1L);
+        existingUser.setUsername("username");
+        existingUser.setPassword("password");
+        existingUser.setStatus(UserStatus.ONLINE);
+        existingUser.setToken(UUID.randomUUID().toString());
+
+        User updatedUser = new User();
+        updatedUser.setStatus(UserStatus.OFFLINE);
+
+        when(userRepository.findByUserId(Mockito.any())).thenReturn(existingUser);
+        when(userRepository.findByToken(Mockito.any())).thenReturn(existingUser);
+        when(userRepository.save(Mockito.any())).thenReturn(existingUser);
+
+        // when
+        boolean isUpdated = userService.updateUser(existingUser.getUserId(), existingUser.getToken(), updatedUser);
+
+        // then
+        assertTrue(isUpdated);
+        assertEquals(updatedUser.getStatus(), existingUser.getStatus());
+        verify(userRepository, times(1)).save(existingUser);
     }
 
     @Test
-    public void testUpdateUserUnauthorized() {
+    public void updateUser_changeNationality_success() {
         // given
-        when(userRepository.findByUserId(1L)).thenReturn(testUser);
+        User originalUser = new User();
+        originalUser.setUserId(1L);
+        originalUser.setUsername("testUser");
+        originalUser.setPassword("testPassword");
+        originalUser.setNationality("originalNationality");
+        originalUser.setStatus(UserStatus.ONLINE);
+        originalUser.setCreation_date(new Date());
+        originalUser.setToken("testToken");
 
-        // when & then
-        assertThrows(ResponseStatusException.class, () -> userService.updateUser(1L, "wrongAuthHeader", testUser));
+        when(userRepository.findByUserId(Mockito.any())).thenReturn(originalUser);
+        when(userRepository.findByToken(Mockito.any())).thenReturn(originalUser);
+        when(userRepository.findByUsername(Mockito.any())).thenReturn(null);
+        when(userRepository.save(Mockito.any())).thenReturn(originalUser);
+
+        User updatedUser = new User();
+        updatedUser.setNationality("newNationality");
+
+        // when
+        boolean result = userService.updateUser(1L, "testToken", updatedUser);
+
+        // then
+        assertTrue(result);
+        assertEquals(updatedUser.getNationality(), originalUser.getNationality());
+        Mockito.verify(userRepository, Mockito.times(1)).save(Mockito.any());
+        Mockito.verify(userRepository, Mockito.times(1)).flush();
     }
 
-    @Test
-    public void testUpdateUserDuplicateUsername() {
-        // given
-        when(userRepository.findByUserId(1L)).thenReturn(testUser);
-        when(userRepository.findByUsername("newUsername")).thenReturn(new User());
-
-        // when & then
-        assertThrows(ResponseStatusException.class, () -> userService.updateUser(1L, "authHeader", testUser));
-    }
-
-    @Test
-    public void testUpdateUserInvalidUsername() {
-        // given
-        when(userRepository.findByUserId(1L)).thenReturn(testUser);
-        testUser.setUsername("new User name");
-
-        // when & then
-        assertThrows(ResponseStatusException.class, () -> userService.updateUser(1L, "authHeader", testUser));
-    }
 
 }

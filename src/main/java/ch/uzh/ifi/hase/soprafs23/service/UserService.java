@@ -156,7 +156,7 @@ public class UserService {
             originalUser.setProfilePicture(userInput.getProfilePicture());
         }
         userRepository.save(originalUser);
-        userRepository.flush();
+        //userRepository.flush();
         log.debug("Updated Information for User: {}", originalUser);
         return true;
     }
