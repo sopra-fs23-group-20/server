@@ -19,27 +19,27 @@ public class Country {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = true)
+    @Column()
     private Long population;
 
 
-    @Column(nullable = true)
+    @Column()
     private String flag;
 
 
     @Embedded
     private Location location;
 
-    @Column(nullable = true)
+    @Column()
     private String capital;
 
     @OneToOne
     private Outline outline;
 
-    @Column(nullable = true)
+    @Column()
     private String countryCode;
 
-    @Column(nullable = true)
+    @Column()
     private String region;
 
 

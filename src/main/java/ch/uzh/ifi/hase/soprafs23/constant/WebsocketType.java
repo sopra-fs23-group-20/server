@@ -4,6 +4,8 @@ public enum WebsocketType {
     GAMESTATEUPDATE,
     CATEGORYUPDATE,
     TIMEUPDATE,
-    PLAYERUPDATE
+    PLAYERUPDATE,
+
+    POINTSUPDATE
 
 }

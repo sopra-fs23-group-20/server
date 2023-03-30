@@ -27,8 +27,7 @@ public class GameService {
 
     private final GameRepository gameRepository;
 
-    @Autowired
-    private MyHandler myHandler;
+    private final MyHandler myHandler;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final Map<Long, ScheduledFuture<?>> scheduledFutures = new ConcurrentHashMap<>();
 
@@ -39,11 +38,12 @@ public class GameService {
 
 
     @Autowired
-    public GameService(@Qualifier("gameRepository")GameRepository gameRepository, @Qualifier("countryRepository") CountryRepository countryRepository, @Qualifier("userRepository") UserRepository userRepository, CountryService countryService){
+    public GameService(@Qualifier("gameRepository")GameRepository gameRepository, @Qualifier("countryRepository") CountryRepository countryRepository, @Qualifier("userRepository") UserRepository userRepository, CountryService countryService, MyHandler myHandler){
         this.gameRepository = gameRepository;
         this.countryService = countryService;
         this.countryRepository = countryRepository;
         this.userRepository = userRepository;
+        this.myHandler = myHandler;
     }
 
     public List<Game> getGames(){
@@ -63,40 +63,41 @@ public class GameService {
     private Category transformToCategory(CategoryEnum type, Long countryId){
         Category category = new Category();
         category.setType(type);
-        switch (type){
-
-            case POPULATION:
+        switch (type) {
+            case POPULATION -> {
                 category.setPopulation(countryRepository.findPopulationByCountryId(countryId));
                 return category;
-            case OUTLINE:
-                Outline outline =  countryRepository.findOutlineByCountryId(countryId);
+            }
+            case OUTLINE -> {
+                Outline outline = countryRepository.findOutlineByCountryId(countryId);
                 category.setOutline(outline.getOutline());
                 return category;
-            case FLAG:
+            }
+            case FLAG -> {
                 category.setFlag(countryRepository.findFlagByCountryId(countryId));
                 return category;
-            case LOCATION:
+            }
+            case LOCATION -> {
                 Location location = countryRepository.findLocationByCountryId(countryId);
                 category.setLocation(location);
                 return category;
-
-            case CAPITAL:
+            }
+            case CAPITAL -> {
                 category.setCapital(countryRepository.findCapitalByCountryId(countryId));
                 return category;
-
-            default:
+            }
+            default -> {
                 return null;
+            }
         }
     }
 
 
     private class GameUpdater implements Runnable {
         private final Long gameId;
-        private final String topic;
 
         public GameUpdater(Long gameId, String topic) {
             this.gameId = gameId;
-            this.topic = topic;
         }
 
         @Override
@@ -108,6 +109,37 @@ public class GameService {
             }
         }
     }
+
+    private void initializePoints(Game game){
+        for(GameUser gameUser : game.getParticipants()){
+            gameUser.setCurrentRoundPoints(100L);
+            WebsocketPackage websocketPackage = new WebsocketPackage(WebsocketType.POINTSUPDATE,100L );
+            sendWebsocketPackageToPlayer(gameUser, websocketPackage);
+        }
+    }
+
+    private void reduceCurrentPoints(Game game){
+
+        long roundTime = game.getTotalRoundTime();
+        double pointsDeducted =  100.0 / roundTime;
+        Long pDeducted = (long) Math.floor(pointsDeducted);
+        Set<GameUser> gameUsers =  game.getParticipants();
+
+        for(GameUser gameUser : gameUsers){
+            if(gameUser.getCurrentRoundPoints() - pointsDeducted <=0){
+                continue;
+            }
+            Long newCurrentPoints = gameUser.getCurrentRoundPoints() -  pDeducted;
+            gameUser.setCurrentRoundPoints(newCurrentPoints);
+            WebsocketPackage websocketPackage = new WebsocketPackage(WebsocketType.POINTSUPDATE,newCurrentPoints );
+            sendWebsocketPackageToPlayer(gameUser, websocketPackage);
+            System.out.println("The player: " + gameUser.getUsername() + " has remianing points: " + gameUser.getCurrentRoundPoints());
+
+        }
+        game.setParticipants(gameUsers);
+    }
+
+
 
     public Game createGame(Long lobbyCreatorId) {
         User lobbyCreatorUser = userRepository.findByUserId(lobbyCreatorId);
@@ -131,6 +163,7 @@ public class GameService {
 
         game.setCategoryStack(categoryStack);
         game.setRemainingTime(30L);
+        game.setTotalRoundTime(30L);
 
 
         gameRepository.saveAndFlush(game);
@@ -159,7 +192,7 @@ public class GameService {
     public Game startGame(Long gameId) {
         Game game = gameRepository.findByGameId(gameId);
         game.setCurrentState(GameState.GUESSING);
-
+        initializePoints(game);
         final Game game2 = gameRepository.saveAndFlush(game);
 
         WebsocketPackage websocketPackage3 = new WebsocketPackage();
@@ -177,14 +210,7 @@ public class GameService {
 
         return game;
     }
-    public void stopGame(Long gameId) {
-    System.out.println("Stopping game");
-        ScheduledFuture<?> scheduledFuture = scheduledFutures.get(gameId);
-        if (scheduledFuture != null) {
-            scheduledFuture.cancel(false);
-            scheduledFutures.remove(gameId);
-        }
-    }
+
 
     private void sendWebsocketPackageToLobby(Long gameId, WebsocketPackage websocketPackage){
         Game game = gameRepository.findByGameId(gameId);
@@ -194,12 +220,17 @@ public class GameService {
         }
     }
 
+    private void sendWebsocketPackageToPlayer(GameUser gameUser, WebsocketPackage websocketPackage){
+        System.out.println("Sending websocket package to user: " + gameUser.getUsername());
+        myHandler.sendWebsocketPackage(gameUser.getToken(), websocketPackage);
+    }
+
+
     public void submitGuess(Long gameId, Guess guess) {
         try {
             System.out.println("The guess submitted is:" + guess.getGuess());
         Game game = gameRepository.findByGameId(gameId);
         if (countryRepository.findNameByCountryId(game.getCurrentCountryId()).equals(guess.getGuess())) {
-            return;
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Your guess was wrong");
         }
@@ -215,12 +246,19 @@ public class GameService {
         Game game = gameRepository.findByGameId(gameId);
         // decrement the time remaining by 1 second
         Long timeRemaining = game.getRemainingTime();
+
         if (timeRemaining > 0 && game.getCurrentState() == GameState.GUESSING){
+
+
+
             game.setRemainingTime(timeRemaining - 1);
             WebsocketPackage websocketPackage1 = new WebsocketPackage();
             websocketPackage1.setType(WebsocketType.TIMEUPDATE);
             websocketPackage1.setPayload(game.getRemainingTime());
             sendWebsocketPackageToLobby(gameId, websocketPackage1);
+
+
+            reduceCurrentPoints(game);
 
             if(timeRemaining % 5 == 0){
                 CategoryStack remainingCategories = game.getCategoryStack();
@@ -250,6 +288,15 @@ public class GameService {
             websocketPackage3.setType(WebsocketType.GAMESTATEUPDATE);
             websocketPackage3.setPayload(game.getCurrentState());
             sendWebsocketPackageToLobby(gameId, websocketPackage3);
+        }
+    }
+
+    public void stopGame(Long gameId) {
+        System.out.println("Stopping game");
+        ScheduledFuture<?> scheduledFuture = scheduledFutures.get(gameId);
+        if (scheduledFuture != null) {
+            scheduledFuture.cancel(false);
+            scheduledFutures.remove(gameId);
         }
     }
 

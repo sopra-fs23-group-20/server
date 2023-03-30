@@ -1,12 +1,10 @@
 package ch.uzh.ifi.hase.soprafs23.entityDB;
 
-import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -24,28 +22,41 @@ public class Game {
     @CollectionTable(name = "participants", joinColumns = @JoinColumn(name = "gameId"))
     private Set<GameUser> participants;
 
-    @Column(nullable = true)
+    @Column()
     private Date creationDate;
-    @Column(nullable = true)
+    @Column()
     private GameState currentState;
-    @Column(nullable = true)
+    @Column()
     private long gameEndingCriteria;
-    @Column(nullable = true)
+    @Column()
     private long roundDuration;
-    @Column(nullable = true)
+    @Column()
     private RegionEnum region;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "countriesToPlay", joinColumns = @JoinColumn(name = "gameId"))
     @Column(name = "countryId")
     private Set<Long> countriesToPlayIds;
-    @Column(nullable = true)
+    @Column()
     private long currentRound;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "categoryStackId")
     private CategoryStack categoryStack;
-    @Column(nullable = true)
+    @Column()
     private Long remainingTime;
+
+    @Column(nullable = true)
+    private Long totalRoundTime;
+
     private Long currentCountryId;
+
+
+    public Long getTotalRoundTime() {
+        return totalRoundTime;
+    }
+
+    public void setTotalRoundTime(Long totalRoundTime) {
+        this.totalRoundTime = totalRoundTime;
+    }
 
     public Long getGameId() {
         return gameId;
