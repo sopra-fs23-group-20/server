@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -25,12 +26,16 @@ public class CountryController {
     @ResponseStatus(HttpStatus.CREATED)
     public List<CountryGetDTO> createCountry() {
         countryService.setAllCountries();
-        List< Country> countries = countryService.getAllCountries();
+        return getCountryGetDTOS();
+    }
+
+    private List<CountryGetDTO> getCountryGetDTOS() {
+        List<Country> countries = countryService.getAllCountries();
         List<CountryGetDTO> countryGetDTOS = new ArrayList<>();
         for (Country country : countries){
             countryGetDTOS.add(DTOMapper.INSTANCE.convertEntityToCountryGetDTO(country));
         }
-        countryGetDTOS.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
+        countryGetDTOS.sort(Comparator.comparing(CountryGetDTO::getName));
         return countryGetDTOS;
     }
 
@@ -38,13 +43,7 @@ public class CountryController {
     @GetMapping("/countries")
     @ResponseStatus(HttpStatus.OK)
     public List<CountryGetDTO> getCountries() {
-        List< Country> countries = countryService.getAllCountries();
-        List<CountryGetDTO> countryGetDTOS = new ArrayList<>();
-        for (Country country : countries){
-            countryGetDTOS.add(DTOMapper.INSTANCE.convertEntityToCountryGetDTO(country));
-        }
-        countryGetDTOS.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
-        return countryGetDTOS;
+        return getCountryGetDTOS();
     }
 
 }

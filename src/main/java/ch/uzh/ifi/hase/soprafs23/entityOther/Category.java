@@ -1,13 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.entityOther;
 
 import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
-import ch.uzh.ifi.hase.soprafs23.entityDB.Country;
-import ch.uzh.ifi.hase.soprafs23.entityDB.Outline;
-
-import javax.persistence.*;
-import java.io.Serializable;
-
-
 
 public class Category {
 

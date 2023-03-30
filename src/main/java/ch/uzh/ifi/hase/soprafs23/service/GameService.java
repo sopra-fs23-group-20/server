@@ -27,8 +27,7 @@ public class GameService {
 
     private final GameRepository gameRepository;
 
-    @Autowired
-    private MyHandler myHandler;
+    private final MyHandler myHandler;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final Map<Long, ScheduledFuture<?>> scheduledFutures = new ConcurrentHashMap<>();
 
@@ -39,11 +38,12 @@ public class GameService {
 
 
     @Autowired
-    public GameService(@Qualifier("gameRepository")GameRepository gameRepository, @Qualifier("countryRepository") CountryRepository countryRepository, @Qualifier("userRepository") UserRepository userRepository, CountryService countryService){
+    public GameService(@Qualifier("gameRepository")GameRepository gameRepository, @Qualifier("countryRepository") CountryRepository countryRepository, @Qualifier("userRepository") UserRepository userRepository, CountryService countryService, MyHandler myHandler){
         this.gameRepository = gameRepository;
         this.countryService = countryService;
         this.countryRepository = countryRepository;
         this.userRepository = userRepository;
+        this.myHandler = myHandler;
     }
 
     public List<Game> getGames(){
@@ -63,40 +63,41 @@ public class GameService {
     private Category transformToCategory(CategoryEnum type, Long countryId){
         Category category = new Category();
         category.setType(type);
-        switch (type){
-
-            case POPULATION:
+        switch (type) {
+            case POPULATION -> {
                 category.setPopulation(countryRepository.findPopulationByCountryId(countryId));
                 return category;
-            case OUTLINE:
-                Outline outline =  countryRepository.findOutlineByCountryId(countryId);
+            }
+            case OUTLINE -> {
+                Outline outline = countryRepository.findOutlineByCountryId(countryId);
                 category.setOutline(outline.getOutline());
                 return category;
-            case FLAG:
+            }
+            case FLAG -> {
                 category.setFlag(countryRepository.findFlagByCountryId(countryId));
                 return category;
-            case LOCATION:
+            }
+            case LOCATION -> {
                 Location location = countryRepository.findLocationByCountryId(countryId);
                 category.setLocation(location);
                 return category;
-
-            case CAPITAL:
+            }
+            case CAPITAL -> {
                 category.setCapital(countryRepository.findCapitalByCountryId(countryId));
                 return category;
-
-            default:
+            }
+            default -> {
                 return null;
+            }
         }
     }
 
 
     private class GameUpdater implements Runnable {
         private final Long gameId;
-        private final String topic;
 
         public GameUpdater(Long gameId, String topic) {
             this.gameId = gameId;
-            this.topic = topic;
         }
 
         @Override
@@ -199,7 +200,6 @@ public class GameService {
             System.out.println("The guess submitted is:" + guess.getGuess());
         Game game = gameRepository.findByGameId(gameId);
         if (countryRepository.findNameByCountryId(game.getCurrentCountryId()).equals(guess.getGuess())) {
-            return;
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Your guess was wrong");
         }

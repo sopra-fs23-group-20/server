@@ -27,16 +27,16 @@ public class User implements Serializable {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = true)
+    @Column()
     private Date birthday;
 
     @Column(nullable = false, unique = true)
     private String token;
 
-    @Column(nullable = true)
+    @Column()
     private String nationality;
 
-    @Column(nullable = true, length = 1000000)
+    @Column(length = 1000000)
     private String profilePicture;
 
 

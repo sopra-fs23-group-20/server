@@ -1,16 +1,10 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
-import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import ch.uzh.ifi.hase.soprafs23.entityDB.CategoryStack;
-import ch.uzh.ifi.hase.soprafs23.entityDB.Country;
 import ch.uzh.ifi.hase.soprafs23.entityDB.GameUser;
-import ch.uzh.ifi.hase.soprafs23.entityOther.*;
-
-import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 public class GameGetDTO {
