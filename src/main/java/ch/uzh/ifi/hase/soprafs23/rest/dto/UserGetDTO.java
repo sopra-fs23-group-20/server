@@ -58,9 +58,19 @@ public class UserGetDTO {
         this.birthday = birthday;
     }
 
-    public String getNationality() {return nationality; }
-    public void setNationality(String nationality) { this.nationality = nationality; }
+    public String getNationality() {
+        return nationality;
+    }
 
-    public String getProfilePicture() {return profilePicture; }
-    public void setProfilePicture(String profilePicture) {this.profilePicture = profilePicture; }
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
 }
