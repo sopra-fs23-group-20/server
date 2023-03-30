@@ -47,8 +47,7 @@ private final OutlineRepository outlineRepository;
     public Long getAllCountryIdsWithRandomId() {
         List<Long> allCountryIds = new ArrayList<>(this.countryRepository.getAllCountryIds());
                 Collections.shuffle(allCountryIds);
-        Long randomCountryId = allCountryIds.get(0);
-        return randomCountryId;
+        return allCountryIds.get(0);
     }
 
 
@@ -64,7 +63,7 @@ private final OutlineRepository outlineRepository;
         return null;
     }
 
-    public JSONArray fetchCountriesAPI(JSONArray countries) throws IOException, ParseException{
+    public JSONArray fetchCountriesAPI() throws IOException, ParseException{
 
             URL url = new URL("https://restcountries.com/v3.1/all");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -80,14 +79,14 @@ private final OutlineRepository outlineRepository;
 
             // Parse the JSON response and extract the name and population of each country
             JSONParser parser = new JSONParser();
-            countries = (JSONArray) parser.parse(response);
+        JSONArray countries = (JSONArray) parser.parse(response);
             System.out.println("Set countries with API");
         return countries;
     }
 
     public void setAllCountries() {
         if (countryRepository.getAllCountryIds().size() == 0) {
-            JSONArray countries = null;
+            JSONArray countries;
 
             /*
             try{
@@ -96,7 +95,7 @@ private final OutlineRepository outlineRepository;
             catch (IOException | ParseException e) {
             }*/
 
-            if(countries == null) {
+            {
                 JSONParser parser = new JSONParser();
                 try {
                     countries = (JSONArray) parser.parse(new FileReader("src/main/resources/countries.json"));
@@ -122,10 +121,10 @@ private final OutlineRepository outlineRepository;
                         long population = (long) country.get("population");
                         String flag = (String) ((JSONObject) country.get("flags")).get("svg");
                         String region = (String) country.get("region");
-                        String outline = null;
-                        String countryCode = null;
+                        String outline;
+                        String countryCode;
                         String capital;
-                        List<Double> latlngList = null;
+                        List<Double> latlngList;
                         Set<Double> latlng = null;
                         latlngList = (List<Double>) ((JSONObject) country.get("capitalInfo")).get("latlng");
                         Location location = new Location();
