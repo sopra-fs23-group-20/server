@@ -45,7 +45,20 @@ public class Game {
     private CategoryStack categoryStack;
     @Column(nullable = true)
     private Long remainingTime;
+
+    @Column(nullable = true)
+    private Long totalRoundTime;
+
     private Long currentCountryId;
+
+
+    public Long getTotalRoundTime() {
+        return totalRoundTime;
+    }
+
+    public void setTotalRoundTime(Long totalRoundTime) {
+        this.totalRoundTime = totalRoundTime;
+    }
 
     public Long getGameId() {
         return gameId;
