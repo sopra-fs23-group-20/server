@@ -5,9 +5,11 @@ import ch.uzh.ifi.hase.soprafs23.entityOther.Location;
 
 public class CountryGetDTO {
     private String name;
+
     private Long population;
 
     private Outline outline;
+
     private String flag;
 
     private Location location;

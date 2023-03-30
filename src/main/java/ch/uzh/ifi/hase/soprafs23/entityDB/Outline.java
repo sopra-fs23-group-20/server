@@ -10,6 +10,7 @@ public class Outline {
     @GeneratedValue
     @Column(name = "outlineId")
     private Long outlineId;
+
     @Column(length = 10000000)
     private String outline;
 

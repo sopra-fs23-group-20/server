@@ -4,10 +4,10 @@ import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 
 import java.util.Date;
 
-
 public class UserPutDTO {
 
     private String username;
+
     private String password;
 
     private Date birthday;

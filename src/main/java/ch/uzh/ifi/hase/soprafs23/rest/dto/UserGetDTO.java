@@ -7,9 +7,11 @@ import java.util.Date;
 public class UserGetDTO {
 
     private Long id;
+
     private String username;
 
     private Date creation_date;
+
     private UserStatus status;
 
     private Date birthday;
