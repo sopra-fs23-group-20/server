@@ -26,6 +26,17 @@ Jamo:
 Jonas:
 <br />
 Dario:
+(https://github.com/sopra-fs23-group-20/server/issues/12)
+(https://github.com/sopra-fs23-group-20/client/issues/35)
+(https://github.com/sopra-fs23-group-20/client/issues/34)
+(https://github.com/sopra-fs23-group-20/server/issues/35)
+(https://github.com/sopra-fs23-group-20/server/issues/69)
+(https://github.com/sopra-fs23-group-20/client/issues/10)
+(https://github.com/sopra-fs23-group-20/client/issues/38)
+(https://github.com/sopra-fs23-group-20/client/issues/39)
+(https://github.com/sopra-fs23-group-20/client/issues/44)
+<br />
+description: I finished the edit profile page, so that now it is possible to change password, add/change profile picture and nationality. I also added a settings so that lobby creator can choose and view ending criteria (client side).
 <br />
 Jonathan:
 ### week 3.4 - 10.4
