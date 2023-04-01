@@ -9,7 +9,7 @@ throughout the remainder of the course, and each entry should consist of the (we
 name, links to the GitHub Issues you worked on, and optionally a short description of your work.
 
 ## Milestone 3
-### week 27.3 - 3.4
+### week 27.3 - 2.4
 Louis:
 (https://github.com/sopra-fs23-group-20/client/issues/3)
 (https://github.com/sopra-fs23-group-20/server/issues/2)
