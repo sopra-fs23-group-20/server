@@ -13,7 +13,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(myHandler(), "/topic/{token}")
-                .setAllowedOrigins("http://localhost:3000", "https://sopra-fs23-group-20-client.oa.r.appspot.com");
+                .setAllowedOrigins("*");
     }
 
     @Bean
