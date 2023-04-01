@@ -40,4 +40,4 @@ Dario:
 description: I finished the edit profile page, so that now it is possible to change password, add/change profile picture and nationality. I also added a settings so that lobby creator can choose and view ending criteria (client side).
 <br />
 Jonathan:
-### week 3.4 - 10.4
+### week 3.4 - 9.4
