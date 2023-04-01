@@ -9,7 +9,7 @@ throughout the remainder of the course, and each entry should consist of the (we
 name, links to the GitHub Issues you worked on, and optionally a short description of your work.
 
 ## Milestone 3
-### week 27.3 - 3.4
+### Week 27.3 - 2.4
 Louis:
 (https://github.com/sopra-fs23-group-20/client/issues/3)
 (https://github.com/sopra-fs23-group-20/server/issues/2)
@@ -35,8 +35,15 @@ Dario:
 (https://github.com/sopra-fs23-group-20/client/issues/38)
 (https://github.com/sopra-fs23-group-20/client/issues/39)
 (https://github.com/sopra-fs23-group-20/client/issues/44)
+(https://github.com/sopra-fs23-group-20/client/issues/16)
 <br />
 description: I finished the edit profile page, so that now it is possible to change password, add/change profile picture and nationality. I also added a settings so that lobby creator can choose and view ending criteria (client side).
 <br />
 Jonathan:
-### week 3.4 - 10.4
+### Week 3.4 - 9.4
+### Week 17.4 - 23.4
+### Week 24.4 - 30.4
+### Week 1.5 - 7.5
+### Week 8.5 - 14.5
+### Week 15.5 - 21.5
+
