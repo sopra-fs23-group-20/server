@@ -40,6 +40,18 @@ Dario:
 description: I finished the edit profile page, so that now it is possible to change password, add/change profile picture and nationality. I also added a settings so that lobby creator can choose and view ending criteria (client side).
 <br />
 Jonathan:
+(https://github.com/sopra-fs23-group-20/server/issues/95)
+(https://github.com/sopra-fs23-group-20/client/issues/96)
+(https://github.com/sopra-fs23-group-20/client/issues/97)
+(https://github.com/sopra-fs23-group-20/server/issues/98)
+(https://github.com/sopra-fs23-group-20/server/issues/99)
+<br />
+description: I created tests for all functions of the User entity meaning all function of the User Controller, User Service, and User Repository. I also created automated tests for all mappings of all entity that we have so far.
+
+Jonas and I also connected a Postgres Database to Google Cloud.
+<br />
+
+
 ### Week 3.4 - 9.4
 ### Week 17.4 - 23.4
 ### Week 24.4 - 30.4
