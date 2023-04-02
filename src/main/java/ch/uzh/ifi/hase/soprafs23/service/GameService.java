@@ -201,6 +201,7 @@ public class GameService {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not in game");
     }
 
+    //Logic fixed; not tested
     public void submitGuess(Long gameId, Guess guess) {
         try {
             System.out.println("THe guess username: "+ guess.getUserId());
