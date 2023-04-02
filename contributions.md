@@ -41,8 +41,8 @@ description: I finished the edit profile page, so that now it is possible to cha
 <br />
 Jonathan:
 (https://github.com/sopra-fs23-group-20/server/issues/95)
-(https://github.com/sopra-fs23-group-20/client/issues/96)
-(https://github.com/sopra-fs23-group-20/client/issues/97)
+(https://github.com/sopra-fs23-group-20/server/issues/96)
+(https://github.com/sopra-fs23-group-20/server/issues/97)
 (https://github.com/sopra-fs23-group-20/server/issues/98)
 (https://github.com/sopra-fs23-group-20/server/issues/99)
 <br />
