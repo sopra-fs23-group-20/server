@@ -94,33 +94,18 @@ public class GameService {
         }
     }
 
-    private void initializePoints(Game game) {
-        for (GameUser gameUser : game.getParticipants()) {
-            gameUser.setCurrentRoundPoints(100L);
-            WebsocketPackage websocketPackage = new WebsocketPackage(WebsocketType.POINTSUPDATE, 100L);
-            sendWebsocketPackageToPlayer(gameUser, websocketPackage);
-        }
-    }
+
 
     private void reduceCurrentPoints(Game game) {
 
         long roundTime = game.getTotalRoundTime();
         double pointsDeducted = 100.0 / roundTime;
         Long pDeducted = (long) Math.floor(pointsDeducted);
-        Set<GameUser> gameUsers = game.getParticipants();
+        Long newCurrentPoints = game.getRemainingRoundPoints() - pDeducted;
+        game.setRemainingRoundPoints(newCurrentPoints);
+        WebsocketPackage websocketPackage = new WebsocketPackage(WebsocketType.POINTSUPDATE, newCurrentPoints);
+        sendWebsocketPackageToLobby(game.getGameId(), websocketPackage);
 
-        for (GameUser gameUser : gameUsers) {
-            if (gameUser.getCurrentRoundPoints() - pointsDeducted <= 0) {
-                continue;
-            }
-            Long newCurrentPoints = gameUser.getCurrentRoundPoints() - pDeducted;
-            gameUser.setCurrentRoundPoints(newCurrentPoints);
-            WebsocketPackage websocketPackage = new WebsocketPackage(WebsocketType.POINTSUPDATE, newCurrentPoints);
-            sendWebsocketPackageToPlayer(gameUser, websocketPackage);
-            System.out.println("The player: " + gameUser.getUsername() + " has remianing points: " + gameUser.getCurrentRoundPoints());
-
-        }
-        game.setParticipants(gameUsers);
     }
 
     public Game createGame(Long lobbyCreatorId) {
@@ -174,7 +159,8 @@ public class GameService {
     public Game startGame(Long gameId) {
         Game game = gameRepository.findByGameId(gameId);
         game.setCurrentState(GameState.GUESSING);
-        initializePoints(game);
+        game.setRemainingRoundPoints(100L);
+
         final Game game2 = gameRepository.saveAndFlush(game);
 
         WebsocketPackage websocketPackage3 = new WebsocketPackage();
@@ -206,31 +192,33 @@ public class GameService {
         myHandler.sendWebsocketPackage(gameUser.getToken(), websocketPackage);
     }
 
+    private GameUser findGameUser(Set<GameUser> gameUsers, Long userId){
+        for (GameUser gameUser : gameUsers) {
+            if (gameUser.getUserId().equals(userId)) {
+                return gameUser;
+            }
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not in game");
+    }
+
     public void submitGuess(Long gameId, Guess guess) {
         try {
+            System.out.println("THe guess username: "+ guess.getUserId());
             System.out.println("The guess submitted is:" + guess.getGuess());
             Game game = gameRepository.findByGameId(gameId);
             Set<GameUser> gameUsers = game.getParticipants();
+            GameUser gameUser = findGameUser(gameUsers, guess.getUserId());
 
-            for (GameUser gameUser : gameUsers) {
-                if (gameUser.getUsername().equals(guess.getUsername())) {
-                    if (countryRepository.findNameByCountryId(game.getCurrentCountryId()).equals(guess.getGuess())) {
-                        if (game.getRemainingTime() >= 25) {
-                            gameUser.setGamePoints(100L);
-                        }
-                        // TODO: Logic right guess
-                        break;
-                    }
-                    else {
-                        // TODO: Logic wrong guess
-                        gameUser.setGamePoints(0L);
-                        throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Your guess was wrong");
-                    }
-                }
-                else {
-                    throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not allowed to guess!");
-                }
+            if (countryRepository.findNameByCountryId(game.getCurrentCountryId()).equals(guess.getGuess())) {
+                gameUser.setGamePoints(game.getRemainingRoundPoints());
+                System.out.println("The user " + gameUser.getUsername() + " got " + gameUser.getGamePoints() + " points");
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Your guess was right you get " + game.getRemainingRoundPoints() + " points");
             }
+            else {
+                gameUser.setGamePoints(0L);
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Your guess was wrong you get 0 points");
+            }
+
         }
         catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.toString());

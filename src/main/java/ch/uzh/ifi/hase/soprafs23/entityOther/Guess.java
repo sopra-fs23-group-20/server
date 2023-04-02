@@ -2,7 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.entityOther;
 
 public class Guess {
     private String guess;
-    private String username;
+    private Long userId;
 
     public String getGuess() {
         return guess;
@@ -12,11 +12,11 @@ public class Guess {
         this.guess = guess;
     }
 
-    public String getUsername() {
-        return username;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

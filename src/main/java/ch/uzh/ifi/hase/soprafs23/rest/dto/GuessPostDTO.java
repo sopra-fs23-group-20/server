@@ -4,7 +4,7 @@ public class GuessPostDTO {
 
     private String guess;
 
-    private String username;
+    private Long userId;
 
     public String getGuess() {
         return guess;
@@ -14,11 +14,11 @@ public class GuessPostDTO {
         this.guess = guess;
     }
 
-    public String getUsername() {
-        return username;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

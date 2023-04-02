@@ -8,7 +8,7 @@ public class GameUser {
     private Long userId;
     private String token;
     private String username;
-    private Long currentRoundPoints;
+
     private Long gamePoints;
 
 
@@ -26,14 +26,6 @@ public class GameUser {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public Long getCurrentRoundPoints() {
-        return currentRoundPoints;
-    }
-
-    public void setCurrentRoundPoints(Long currentRoundPoints) {
-        this.currentRoundPoints = currentRoundPoints;
     }
 
     public Long getGamePoints() {
@@ -57,7 +49,6 @@ public class GameUser {
         gameUser.setUserId(user.getUserId());
         gameUser.setUsername(user.getUsername());
         gameUser.setToken(user.getToken());
-        gameUser.setCurrentRoundPoints(0L);
         gameUser.setGamePoints(0L);
         return gameUser;
     }

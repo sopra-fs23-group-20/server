@@ -49,6 +49,15 @@ public class Game {
 
     private Long currentCountryId;
 
+    private Long remainingRoundPoints;
+
+    public Long getRemainingRoundPoints() {
+        return remainingRoundPoints;
+    }
+
+    public void setRemainingRoundPoints(Long remainingRoundPoints) {
+        this.remainingRoundPoints = remainingRoundPoints;
+    }
 
     public Long getTotalRoundTime() {
         return totalRoundTime;
