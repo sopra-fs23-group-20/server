@@ -4,7 +4,10 @@ import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.WebsocketType;
 import ch.uzh.ifi.hase.soprafs23.entityDB.*;
-import ch.uzh.ifi.hase.soprafs23.entityOther.*;
+import ch.uzh.ifi.hase.soprafs23.entityOther.Category;
+import ch.uzh.ifi.hase.soprafs23.entityOther.Guess;
+import ch.uzh.ifi.hase.soprafs23.entityOther.Location;
+import ch.uzh.ifi.hase.soprafs23.entityOther.WebsocketPackage;
 import ch.uzh.ifi.hase.soprafs23.repository.CountryRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
@@ -36,9 +39,8 @@ public class GameService {
     private final UserRepository userRepository;
 
 
-
     @Autowired
-    public GameService(@Qualifier("gameRepository")GameRepository gameRepository, @Qualifier("countryRepository") CountryRepository countryRepository, @Qualifier("userRepository") UserRepository userRepository, CountryService countryService, MyHandler myHandler){
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, @Qualifier("countryRepository") CountryRepository countryRepository, @Qualifier("userRepository") UserRepository userRepository, CountryService countryService, MyHandler myHandler) {
         this.gameRepository = gameRepository;
         this.countryService = countryService;
         this.countryRepository = countryRepository;
@@ -46,21 +48,21 @@ public class GameService {
         this.myHandler = myHandler;
     }
 
-    public List<Game> getGames(){
+    public List<Game> getGames() {
         return this.gameRepository.findAll();
     }
 
-    public List<String> getGameCountriesNames(Long gameId){
+    public List<String> getGameCountriesNames(Long gameId) {
         Game game = gameRepository.findByGameId(gameId);
         List<String> countryNames = new ArrayList<>();
         Set<Long> countryIds = game.getCountriesToPlayIds();
-        for(Long countryId : countryIds){
+        for (Long countryId : countryIds) {
             countryNames.add(countryRepository.findNameByCountryId(countryId));
         }
         return countryNames;
     }
 
-    private Category transformToCategory(CategoryEnum type, Long countryId){
+    private Category transformToCategory(CategoryEnum type, Long countryId) {
         Category category = new Category();
         category.setType(type);
         switch (type) {
@@ -92,46 +94,28 @@ public class GameService {
         }
     }
 
-
-    private class GameUpdater implements Runnable {
-        private final Long gameId;
-
-        public GameUpdater(Long gameId, String topic) {
-            this.gameId = gameId;
-        }
-
-        @Override
-        public void run() {
-            try {
-                updateGameEverySecond(gameId);
-            } catch (Exception e) {
-                log.error("Error during game update execution", e);
-            }
-        }
-    }
-
-    private void initializePoints(Game game){
-        for(GameUser gameUser : game.getParticipants()){
+    private void initializePoints(Game game) {
+        for (GameUser gameUser : game.getParticipants()) {
             gameUser.setCurrentRoundPoints(100L);
-            WebsocketPackage websocketPackage = new WebsocketPackage(WebsocketType.POINTSUPDATE,100L );
+            WebsocketPackage websocketPackage = new WebsocketPackage(WebsocketType.POINTSUPDATE, 100L);
             sendWebsocketPackageToPlayer(gameUser, websocketPackage);
         }
     }
 
-    private void reduceCurrentPoints(Game game){
+    private void reduceCurrentPoints(Game game) {
 
         long roundTime = game.getTotalRoundTime();
-        double pointsDeducted =  100.0 / roundTime;
+        double pointsDeducted = 100.0 / roundTime;
         Long pDeducted = (long) Math.floor(pointsDeducted);
-        Set<GameUser> gameUsers =  game.getParticipants();
+        Set<GameUser> gameUsers = game.getParticipants();
 
-        for(GameUser gameUser : gameUsers){
-            if(gameUser.getCurrentRoundPoints() - pointsDeducted <=0){
+        for (GameUser gameUser : gameUsers) {
+            if (gameUser.getCurrentRoundPoints() - pointsDeducted <= 0) {
                 continue;
             }
-            Long newCurrentPoints = gameUser.getCurrentRoundPoints() -  pDeducted;
+            Long newCurrentPoints = gameUser.getCurrentRoundPoints() - pDeducted;
             gameUser.setCurrentRoundPoints(newCurrentPoints);
-            WebsocketPackage websocketPackage = new WebsocketPackage(WebsocketType.POINTSUPDATE,newCurrentPoints );
+            WebsocketPackage websocketPackage = new WebsocketPackage(WebsocketType.POINTSUPDATE, newCurrentPoints);
             sendWebsocketPackageToPlayer(gameUser, websocketPackage);
             System.out.println("The player: " + gameUser.getUsername() + " has remianing points: " + gameUser.getCurrentRoundPoints());
 
@@ -139,15 +123,13 @@ public class GameService {
         game.setParticipants(gameUsers);
     }
 
-
-
     public Game createGame(Long lobbyCreatorId) {
         User lobbyCreatorUser = userRepository.findByUserId(lobbyCreatorId);
         Game game = new Game();
 
         GameUser lobbyCreator = GameUser.transformUserToGameUser(lobbyCreatorUser);
 
-        Long initialCountryId= countryService.getAllCountryIdsWithRandomId();
+        Long initialCountryId = countryService.getAllCountryIdsWithRandomId();
 
 
         Set<GameUser> gameUsers = new HashSet<>();
@@ -177,8 +159,8 @@ public class GameService {
         User user = userRepository.findByUserId(userId);
         GameUser gameUser = GameUser.transformUserToGameUser(user);
         Set<GameUser> participants = game.getParticipants();
-        for(GameUser participant : participants){
-            if(participant.getUserId().equals(userId)){
+        for (GameUser participant : participants) {
+            if (participant.getUserId().equals(userId)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is already in game");
             }
         }
@@ -211,8 +193,7 @@ public class GameService {
         return game;
     }
 
-
-    private void sendWebsocketPackageToLobby(Long gameId, WebsocketPackage websocketPackage){
+    private void sendWebsocketPackageToLobby(Long gameId, WebsocketPackage websocketPackage) {
         Game game = gameRepository.findByGameId(gameId);
         for (GameUser gameUser : game.getParticipants()) {
             System.out.println("Sending websocket package to user: " + gameUser.getUsername());
@@ -220,23 +201,40 @@ public class GameService {
         }
     }
 
-    private void sendWebsocketPackageToPlayer(GameUser gameUser, WebsocketPackage websocketPackage){
+    private void sendWebsocketPackageToPlayer(GameUser gameUser, WebsocketPackage websocketPackage) {
         System.out.println("Sending websocket package to user: " + gameUser.getUsername());
         myHandler.sendWebsocketPackage(gameUser.getToken(), websocketPackage);
     }
 
-
     public void submitGuess(Long gameId, Guess guess) {
         try {
             System.out.println("The guess submitted is:" + guess.getGuess());
-        Game game = gameRepository.findByGameId(gameId);
-        if (countryRepository.findNameByCountryId(game.getCurrentCountryId()).equals(guess.getGuess())) {
-        }else{
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Your guess was wrong");
-        }
-        }catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.toString());
+            Game game = gameRepository.findByGameId(gameId);
+            Set<GameUser> gameUsers = game.getParticipants();
+
+            for (GameUser gameUser : gameUsers) {
+                if (gameUser.getUsername().equals(guess.getUsername())) {
+                    if (countryRepository.findNameByCountryId(game.getCurrentCountryId()).equals(guess.getGuess())) {
+                        if (game.getRemainingTime() >= 25) {
+                            gameUser.setGamePoints(100L);
+                        }
+                        // TODO: Logic right guess
+                        break;
+                    }
+                    else {
+                        // TODO: Logic wrong guess
+                        gameUser.setGamePoints(0L);
+                        throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Your guess was wrong");
+                    }
+                }
+                else {
+                    throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not allowed to guess!");
+                }
             }
+        }
+        catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.toString());
+        }
 
     }
 
@@ -247,8 +245,7 @@ public class GameService {
         // decrement the time remaining by 1 second
         Long timeRemaining = game.getRemainingTime();
 
-        if (timeRemaining > 0 && game.getCurrentState() == GameState.GUESSING){
-
+        if (timeRemaining > 0 && game.getCurrentState() == GameState.GUESSING) {
 
 
             game.setRemainingTime(timeRemaining - 1);
@@ -260,9 +257,9 @@ public class GameService {
 
             reduceCurrentPoints(game);
 
-            if(timeRemaining % 5 == 0){
+            if (timeRemaining % 5 == 0) {
                 CategoryStack remainingCategories = game.getCategoryStack();
-                if(!remainingCategories.isEmpty()){
+                if (!remainingCategories.isEmpty()) {
                     System.out.println("Remaining categories: " + remainingCategories);
 
 
@@ -279,7 +276,8 @@ public class GameService {
             }
             gameRepository.saveAndFlush(game);
 
-        }else{
+        }
+        else {
             game.setCurrentState(GameState.SCOREBOARD);
             gameRepository.saveAndFlush(game);
             stopGame(gameId);
@@ -300,22 +298,41 @@ public class GameService {
         }
     }
 
-    public String getGameCountryName(Long gameId){
+    public String getGameCountryName(Long gameId) {
         Game game = gameRepository.findByGameId(gameId);
         return countryRepository.findNameByCountryId(game.getCurrentCountryId());
     }
-    public Game getGameById(Long id){
+
+    public Game getGameById(Long id) {
         return gameRepository.findByGameId(id);
     }
 
-    public Game getGameByIdAndAuth(Long id, String token){
+    public Game getGameByIdAndAuth(Long id, String token) {
         Game game = gameRepository.findByGameId(id);
-        for(GameUser gameUser : game.getParticipants()){
-            if(gameUser.getToken().equals(token)){
+        for (GameUser gameUser : game.getParticipants()) {
+            if (gameUser.getToken().equals(token)) {
                 return game;
             }
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized to view this game, press the button to join");
+    }
+
+    private class GameUpdater implements Runnable {
+        private final Long gameId;
+
+        public GameUpdater(Long gameId, String topic) {
+            this.gameId = gameId;
+        }
+
+        @Override
+        public void run() {
+            try {
+                updateGameEverySecond(gameId);
+            }
+            catch (Exception e) {
+                log.error("Error during game update execution", e);
+            }
+        }
     }
 
 
