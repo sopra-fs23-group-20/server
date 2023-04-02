@@ -24,14 +24,14 @@ public class GuessPostDTOTest {
     public void testSetAndGetUsername() {
         // Given
         GuessPostDTO guessPostDTO = new GuessPostDTO();
-        String expectedUsername = "johndoe";
+        Long expectedUserId = 63L ;
 
         // When
-        guessPostDTO.setUsername(expectedUsername);
-        String actualUsername = guessPostDTO.getUsername();
+        guessPostDTO.setUserId(expectedUserId);
+        Long actualUserId = guessPostDTO.getUserId();
 
         // Then
-        assertEquals(expectedUsername, actualUsername);
+        assertEquals(expectedUserId, actualUserId);
     }
 
 }
