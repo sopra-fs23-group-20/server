@@ -23,7 +23,7 @@ description: I finished the login and register pages, the dashboard (which had n
 <br />
 Jamo:
 <br />
-#72 #81 #100 #24
+
 (https://github.com/sopra-fs23-group-20/server/issues/72)
 (https://github.com/sopra-fs23-group-20/server/issues/81)
 (https://github.com/sopra-fs23-group-20/server/issues/100)
