@@ -22,15 +22,12 @@ Louis:
 description: I finished the login and register pages, the dashboard (which had no issue) has now the needed navbar + cards to navigate and I created the "lobbybrowser".
 <br />
 Jamo:
-<br />
-
 (https://github.com/sopra-fs23-group-20/server/issues/72)
 (https://github.com/sopra-fs23-group-20/server/issues/81)
 (https://github.com/sopra-fs23-group-20/server/issues/100)
 (https://github.com/sopra-fs23-group-20/client/issues/24)
 <br />
 description: Guess correctly within 5s --> 100 points. Guess not correct --> 0 points. Points decrease linearly with the remaining time. Players current roundPoint displayed on the screen.
-<br />
 <br />
 Jonas:
 <br />
