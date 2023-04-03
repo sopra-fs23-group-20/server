@@ -105,6 +105,10 @@ public class Game {
 
     public void setCurrentState(GameState currentState) {
         this.currentState = currentState;
+        Set<GameUser> gamesUsers = getParticipants();
+        for(GameUser gameUser: gamesUsers){
+            gameUser.setCurrentState(currentState);
+        }
     }
 
     public long getGameEndingCriteria() {

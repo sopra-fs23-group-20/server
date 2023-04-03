@@ -1,5 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.entityDB;
 
+import ch.uzh.ifi.hase.soprafs23.constant.GameState;
+
 import javax.persistence.*;
 
 @Embeddable
@@ -11,9 +13,17 @@ public class GameUser {
 
     private Long gamePoints;
 
+    private GameState userPlayingState;
 
     public Long getUserId() {
         return userId;
+    }
+
+    public GameState getCurrentState() {
+        return userPlayingState;
+    }
+    public void setCurrentState(GameState userPlayingState) {
+        this.userPlayingState = userPlayingState;
     }
 
     public void setUserId(Long userId) {

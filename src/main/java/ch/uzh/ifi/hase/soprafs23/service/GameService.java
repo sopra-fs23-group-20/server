@@ -209,19 +209,29 @@ public class GameService {
             Game game = gameRepository.findByGameId(gameId);
             Set<GameUser> gameUsers = game.getParticipants();
             GameUser gameUser = findGameUser(gameUsers, guess.getUserId());
-
+            gameUser.setCurrentState(GameState.SCOREBOARD);
+            String returnString = "";
             if (countryRepository.findNameByCountryId(game.getCurrentCountryId()).equals(guess.getGuess())) {
                 gameUser.setGamePoints(game.getRemainingRoundPoints());
-                String returnString = "Your guess was right you get " + game.getRemainingRoundPoints() + " points";
+                returnString = "Your guess was right you get " + game.getRemainingRoundPoints() + " points";
                 System.out.println("The user " + gameUser.getUsername() + " got " + gameUser.getGamePoints() + " points");
-                game.setCurrentState(GameState.SCOREBOARD);
-                return returnString;
             }
             else {
                 gameUser.setGamePoints(0L);
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Your guess was wrong you get 0 points");
+                returnString = "Your guess was wrong you get 0 points";
             }
-
+            boolean haveAllGuessed = true;
+            Set<GameUser> participants = game.getParticipants();
+            for(GameUser participant: participants){
+                if (participant.getCurrentState() != GameState.SCOREBOARD) {
+                    haveAllGuessed = false;
+                    break;
+                }
+            }
+            if(haveAllGuessed){
+                game.setCurrentState(GameState.SCOREBOARD);
+            }
+            return returnString;
         }
         catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.toString());
