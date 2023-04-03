@@ -202,7 +202,7 @@ public class GameService {
     }
 
     //Logic fixed; not tested
-    public void submitGuess(Long gameId, Guess guess) {
+    public String submitGuess(Long gameId, Guess guess) {
         try {
             System.out.println("THe guess username: "+ guess.getUserId());
             System.out.println("The guess submitted is:" + guess.getGuess());
@@ -212,8 +212,9 @@ public class GameService {
 
             if (countryRepository.findNameByCountryId(game.getCurrentCountryId()).equals(guess.getGuess())) {
                 gameUser.setGamePoints(game.getRemainingRoundPoints());
+                String returnString = "Your guess was right you get " + game.getRemainingRoundPoints() + " points";
                 System.out.println("The user " + gameUser.getUsername() + " got " + gameUser.getGamePoints() + " points");
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Your guess was right you get " + game.getRemainingRoundPoints() + " points");
+                return returnString;
             }
             else {
                 gameUser.setGamePoints(0L);

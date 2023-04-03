@@ -94,9 +94,9 @@ public class GameController {
 
     @PostMapping("/games/{gameId}/guesses")
     @ResponseStatus(HttpStatus.CREATED)
-    public void submitGuess(@PathVariable Long gameId, @RequestBody GuessPostDTO guessPostDTO) {
+    public String submitGuess(@PathVariable Long gameId, @RequestBody GuessPostDTO guessPostDTO) {
         Guess guess = DTOMapper.INSTANCE.convertGuessPostDTOtoEntity(guessPostDTO);
-        gameService.submitGuess(gameId, guess);
+        return gameService.submitGuess(gameId, guess);
     }
 
 }
