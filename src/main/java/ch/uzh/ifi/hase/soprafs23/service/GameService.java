@@ -214,6 +214,7 @@ public class GameService {
                 gameUser.setGamePoints(game.getRemainingRoundPoints());
                 String returnString = "Your guess was right you get " + game.getRemainingRoundPoints() + " points";
                 System.out.println("The user " + gameUser.getUsername() + " got " + gameUser.getGamePoints() + " points");
+                game.setCurrentState(GameState.SCOREBOARD);
                 return returnString;
             }
             else {
