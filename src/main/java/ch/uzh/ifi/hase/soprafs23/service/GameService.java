@@ -11,6 +11,7 @@ import ch.uzh.ifi.hase.soprafs23.entityOther.WebsocketPackage;
 import ch.uzh.ifi.hase.soprafs23.repository.CountryRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.GamePostDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,14 +109,15 @@ public class GameService {
 
     }
 
-    public Game createGame(Long lobbyCreatorId) {
-        User lobbyCreatorUser = userRepository.findByUserId(lobbyCreatorId);
-        Game game = new Game();
-
+    public Game createGame(Game game) {
+        System.out.println(game.getRoundDuration());
+        System.out.println(game.getLobbyCreatorUserId());
+        Long lobbyCreatorUserId = Long.parseLong(game.getLobbyCreatorUserId());
+        User lobbyCreatorUser = userRepository.findByUserId(lobbyCreatorUserId);
+        System.out.println(lobbyCreatorUser);
         GameUser lobbyCreator = GameUser.transformUserToGameUser(lobbyCreatorUser);
 
         Long initialCountryId = countryService.getAllCountryIdsWithRandomId();
-
 
         Set<GameUser> gameUsers = new HashSet<>();
         gameUsers.add(lobbyCreator);
@@ -125,13 +127,11 @@ public class GameService {
         game.setCurrentState(GameState.SETUP);
         game.setCurrentCountryId(initialCountryId);
 
+
         CategoryStack categoryStack = new CategoryStack();
         categoryStack.addAll(Arrays.asList(CategoryEnum.values()));
 
         game.setCategoryStack(categoryStack);
-        game.setRemainingTime(30L);
-        game.setTotalRoundTime(30L);
-
 
         gameRepository.saveAndFlush(game);
         WebsocketPackage websocketPackage = new WebsocketPackage(WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
@@ -236,13 +236,11 @@ public class GameService {
 
         if (timeRemaining > 0 && game.getCurrentState() == GameState.GUESSING) {
 
-
             game.setRemainingTime(timeRemaining - 1);
             WebsocketPackage websocketPackage1 = new WebsocketPackage();
             websocketPackage1.setType(WebsocketType.TIMEUPDATE);
             websocketPackage1.setPayload(game.getRemainingTime());
             sendWebsocketPackageToLobby(gameId, websocketPackage1);
-
 
             reduceCurrentPoints(game);
 
@@ -250,7 +248,6 @@ public class GameService {
                 CategoryStack remainingCategories = game.getCategoryStack();
                 if (!remainingCategories.isEmpty()) {
                     System.out.println("Remaining categories: " + remainingCategories);
-
 
                     CategoryEnum currentCategoryEnum = remainingCategories.pop();
                     remainingCategories.setCurrentCategory(currentCategoryEnum);
@@ -265,18 +262,26 @@ public class GameService {
             }
             gameRepository.saveAndFlush(game);
 
-        }
-        else {
-            game.setCurrentState(GameState.SCOREBOARD);
-            gameRepository.saveAndFlush(game);
-            stopGame(gameId);
+        } else {
+            int remainingRounds = game.getRemainingRounds();
+            if (remainingRounds > 0) {
+                // Decrement remaining rounds and reset the time remaining
+                game.setRemainingRounds(remainingRounds - 1);
+                game.setRemainingTime(game.getRoundDuration());
+                gameRepository.saveAndFlush(game);
+            } else {
+                game.setCurrentState(GameState.SCOREBOARD);
+                gameRepository.saveAndFlush(game);
+                stopGame(gameId);
 
-            WebsocketPackage websocketPackage3 = new WebsocketPackage();
-            websocketPackage3.setType(WebsocketType.GAMESTATEUPDATE);
-            websocketPackage3.setPayload(game.getCurrentState());
-            sendWebsocketPackageToLobby(gameId, websocketPackage3);
+                WebsocketPackage websocketPackage3 = new WebsocketPackage();
+                websocketPackage3.setType(WebsocketType.GAMESTATEUPDATE);
+                websocketPackage3.setPayload(game.getCurrentState());
+                sendWebsocketPackageToLobby(gameId, websocketPackage3);
+            }
         }
     }
+
 
     public void stopGame(Long gameId) {
         System.out.println("Stopping game");

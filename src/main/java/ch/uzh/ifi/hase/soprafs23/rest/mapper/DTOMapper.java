@@ -72,6 +72,12 @@ public interface DTOMapper {
     Guess convertGuessPostDTOtoEntity(GuessPostDTO guessPostDTO);
 
 
-    @Mapping(source = "userId", target = "userId")
-    User convertGametoUser(GameCreateDTO gameCreateDTO);
+    @Mapping(source = "lobbyCreatorUserId", target = "lobbyCreatorUserId")
+    @Mapping(source = "roundSeconds", target ="roundSeconds" )
+    @Mapping(source = "randomizedHints", target ="randomizedHints" )
+    @Mapping(source = "allCountries", target ="allCountries" )
+    @Mapping(source = "numberOfRounds", target ="numberOfRounds" )
+    @Mapping(source = "openLobby", target ="openLobby" )
+    @Mapping(source = "hints", target ="availableHints" )
+    Game convertGamePostDTOToGame(GamePostDTO gamePostDTO);
 }

@@ -1,9 +1,8 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.entityDB.Game;
-import ch.uzh.ifi.hase.soprafs23.entityDB.User;
 import ch.uzh.ifi.hase.soprafs23.entityOther.Guess;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.GameCreateDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GameGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GuessPostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
@@ -44,9 +43,12 @@ public class GameController {
     @PostMapping("/games")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public GameGetDTO createGame(@RequestBody GameCreateDTO gameCreateDTO) {
-        User user = DTOMapper.INSTANCE.convertGametoUser(gameCreateDTO);
-        Game createdGame = gameService.createGame(user.getUserId());
+    public GameGetDTO createGame(@RequestBody GamePostDTO gamePostDTO) {
+        System.out.println(gamePostDTO.isOpenLobby());
+        System.out.println(gamePostDTO.getLobbyCreatorUserId());
+        System.out.println("Game Post DTO" + gamePostDTO);
+        Game gameToCreate = DTOMapper.INSTANCE.convertGamePostDTOToGame(gamePostDTO);
+        Game createdGame = gameService.createGame(gameToCreate);
         // convert internal representation of game back to API
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(createdGame);
     }
@@ -57,8 +59,8 @@ public class GameController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GameGetDTO getGameInfo(@PathVariable Long gameId, @RequestHeader("Authorization") String authHeader) {
-       Game game = gameService.getGameByIdAndAuth(gameId, authHeader);
-         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
+        Game game = gameService.getGameByIdAndAuth(gameId, authHeader);
+        return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 
     @GetMapping("/games/{gameId}/country")
@@ -86,9 +88,9 @@ public class GameController {
     @PostMapping("/games/{gameId}/join")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public GameGetDTO joinGame(@PathVariable Long gameId, @RequestBody GameCreateDTO gameCreateDTO) {
-        User user = DTOMapper.INSTANCE.convertGametoUser(gameCreateDTO);
-        Game game = gameService.joinGame(gameId, user.getUserId());
+    public GameGetDTO joinGame(@PathVariable Long gameId, @RequestBody GamePostDTO gamePostDTO) {
+        Game gameToJoin = DTOMapper.INSTANCE.convertGamePostDTOToGame(gamePostDTO);
+        Game game = gameService.joinGame(gameId, Long.parseLong(gameToJoin.getLobbyCreatorUserId()));
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 
@@ -100,3 +102,4 @@ public class GameController {
     }
 
 }
+

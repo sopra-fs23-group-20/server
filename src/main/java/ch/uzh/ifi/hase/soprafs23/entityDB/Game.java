@@ -1,10 +1,12 @@
 package ch.uzh.ifi.hase.soprafs23.entityDB;
 
+import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -17,6 +19,17 @@ public class Game {
 
     @Embedded
     private GameUser lobbyCreator;
+
+    @Column()
+    private String lobbyCreatorUserId;
+
+    public String getLobbyCreatorUserId() {
+        return lobbyCreatorUserId;
+    }
+
+    public void setLobbyCreatorUserId(String lobbyCreatorUserId) {
+        this.lobbyCreatorUserId = lobbyCreatorUserId;
+    }
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "participants", joinColumns = @JoinColumn(name = "gameId"))
@@ -50,6 +63,65 @@ public class Game {
     private Long currentCountryId;
 
     private Long remainingRoundPoints;
+
+    private int remainingRounds = 0;
+
+    private int roundSeconds;
+    private Boolean randomizedHints;
+    private Boolean allCountries;
+    private int numberOfRounds;
+    private Boolean openLobby;
+
+    public int getRoundSeconds() {
+        return roundSeconds;
+    }
+
+    public void setRoundSeconds(int roundSeconds) {
+        this.roundSeconds = roundSeconds;
+    }
+
+    public Boolean getRandomizedHints() {
+        return randomizedHints;
+    }
+
+    public void setRandomizedHints(Boolean randomizedHints) {
+        this.randomizedHints = randomizedHints;
+    }
+
+    public Boolean getAllCountries() {
+        return allCountries;
+    }
+
+    public void setAllCountries(Boolean allCountries) {
+        this.allCountries = allCountries;
+    }
+
+    public int getNumberOfRounds() {
+        return numberOfRounds;
+    }
+
+    public void setNumberOfRounds(int numberOfRounds) {
+        this.numberOfRounds = numberOfRounds;
+    }
+
+    public Boolean getOpenLobby() {
+        return openLobby;
+    }
+
+    public void setOpenLobby(Boolean openLobby) {
+        this.openLobby = openLobby;
+    }
+
+    public List<CategoryEnum> getAvailableHints() {
+        return availableHints;
+    }
+
+    public void setAvailableHints(List<CategoryEnum> availableHints) {
+        this.availableHints = availableHints;
+    }
+
+    @ElementCollection(targetClass = CategoryEnum.class)
+    private List<CategoryEnum> availableHints;
 
     public Long getRemainingRoundPoints() {
         return remainingRoundPoints;
@@ -171,4 +243,13 @@ public class Game {
         this.currentCountryId = currentCountryId;
     }
 
+
+    public int getRemainingRounds() {
+        return remainingRounds;
+    }
+
+    public void setRemainingRounds(int remainingRounds) {
+        this.remainingRounds = remainingRounds;
+    }
 }
+
