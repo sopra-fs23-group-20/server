@@ -49,66 +49,6 @@ public class GameService {
         this.myHandler = myHandler;
     }
 
-    public List<Game> getGames() {
-        return this.gameRepository.findAll();
-    }
-
-    public List<String> getGameCountriesNames(Long gameId) {
-        Game game = gameRepository.findByGameId(gameId);
-        List<String> countryNames = new ArrayList<>();
-        Set<Long> countryIds = game.getCountriesToPlayIds();
-        for (Long countryId : countryIds) {
-            countryNames.add(countryRepository.findNameByCountryId(countryId));
-        }
-        return countryNames;
-    }
-
-    private Category transformToCategory(CategoryEnum type, Long countryId) {
-        Category category = new Category();
-        category.setType(type);
-        switch (type) {
-            case POPULATION -> {
-                category.setPopulation(countryRepository.findPopulationByCountryId(countryId));
-                return category;
-            }
-            case OUTLINE -> {
-                Outline outline = countryRepository.findOutlineByCountryId(countryId);
-                category.setOutline(outline.getOutline());
-                return category;
-            }
-            case FLAG -> {
-                category.setFlag(countryRepository.findFlagByCountryId(countryId));
-                return category;
-            }
-            case LOCATION -> {
-                Location location = countryRepository.findLocationByCountryId(countryId);
-                category.setLocation(location);
-                return category;
-            }
-            case CAPITAL -> {
-                category.setCapital(countryRepository.findCapitalByCountryId(countryId));
-                return category;
-            }
-            default -> {
-                return null;
-            }
-        }
-    }
-
-
-
-    private void reduceCurrentPoints(Game game) {
-
-        long roundTime = game.getRoundDuration();
-        double pointsDeducted = 100.0 / roundTime;
-        Long pDeducted = (long) Math.floor(pointsDeducted);
-        Long newCurrentPoints = game.getRemainingRoundPoints() - pDeducted;
-        game.setRemainingRoundPoints(newCurrentPoints);
-        WebsocketPackage websocketPackage = new WebsocketPackage(WebsocketType.POINTSUPDATE, newCurrentPoints);
-        sendWebsocketPackageToLobby(game.getGameId(), websocketPackage);
-
-    }
-
     public Game createGame(GamePostDTO gamePostDTO) {
         Game game = new Game();
 
@@ -132,7 +72,7 @@ public class GameService {
 
         //Set Category Stack
         CategoryStack categoryStack = new CategoryStack();
-        categoryStack.addAll(gamePostDTO.getHints());
+        categoryStack.addAll(Arrays.asList(CategoryEnum.values()));
         game.setCategoryStack(categoryStack);
 
         //Set game round duration and number of rounds
@@ -192,28 +132,6 @@ public class GameService {
         return game;
     }
 
-    private void sendWebsocketPackageToLobby(Long gameId, WebsocketPackage websocketPackage) {
-        Game game = gameRepository.findByGameId(gameId);
-        for (GameUser gameUser : game.getParticipants()) {
-            System.out.println("Sending websocket package to user: " + gameUser.getUsername());
-            myHandler.sendWebsocketPackage(gameUser.getToken(), websocketPackage);
-        }
-    }
-
-    private void sendWebsocketPackageToPlayer(GameUser gameUser, WebsocketPackage websocketPackage) {
-        System.out.println("Sending websocket package to user: " + gameUser.getUsername());
-        myHandler.sendWebsocketPackage(gameUser.getToken(), websocketPackage);
-    }
-
-    private GameUser findGameUser(Set<GameUser> gameUsers, Long userId){
-        for (GameUser gameUser : gameUsers) {
-            if (gameUser.getUserId().equals(userId)) {
-                return gameUser;
-            }
-        }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not in game");
-    }
-
     //Logic fixed; not tested
     public String submitGuess(Long gameId, Guess guess) {
         try {
@@ -259,17 +177,32 @@ public class GameService {
         // decrement the time remaining by 1 second
         Long timeRemaining = game.getRemainingTime();
 
-        if (timeRemaining > 0 && game.getCurrentState() == GameState.GUESSING) {
+        // if the time remaining is 0 and there are still rounds left, start a new round
+        if (timeRemaining == 0 && game.getNumberOfRounds() >0){
+            game.setNumberOfRounds(game.getNumberOfRounds() - 1);
+            game.setRemainingTime(game.getRoundDuration());
+            game.setRemainingRoundPoints(100L);
+            game.getCategoryStack().refillStack();
+            game.setCategoryStack(game.getCategoryStack());
+            game.setCurrentCountryId(countryService.getAllCountryIdsWithRandomId());
 
+        }
+        // if the time remaining is 0 and there are no rounds left, go to the scoreboard
+        else if (timeRemaining == 0 && game.getRemainingRounds() == 0) {
+            game.setCurrentState(GameState.SCOREBOARD);
+            WebsocketPackage websocketPackage = new WebsocketPackage(WebsocketType.GAMESTATEUPDATE, GameState.SCOREBOARD);
+            sendWebsocketPackageToLobby(gameId, websocketPackage);
+            stopGame(game.getGameId());
+        }
+        // if the time remaining is greater than 0 and the game is in the guessing state, decrement the time remaining and update the game
+        else if (timeRemaining > 0 && game.getCurrentState() == GameState.GUESSING){
             game.setRemainingTime(timeRemaining - 1);
-            WebsocketPackage websocketPackage1 = new WebsocketPackage();
-            websocketPackage1.setType(WebsocketType.TIMEUPDATE);
-            websocketPackage1.setPayload(game.getRemainingTime());
+            WebsocketPackage websocketPackage1 = new WebsocketPackage(WebsocketType.TIMEUPDATE, game.getRemainingTime());
             sendWebsocketPackageToLobby(gameId, websocketPackage1);
 
             reduceCurrentPoints(game);
 
-            if (timeRemaining % 5 == 0) {
+            if (timeRemaining % ((int) (game.getRoundDuration() / 5)) == 0) {
                 CategoryStack remainingCategories = game.getCategoryStack();
                 if (!remainingCategories.isEmpty()) {
                     System.out.println("Remaining categories: " + remainingCategories);
@@ -277,44 +210,25 @@ public class GameService {
                     CategoryEnum currentCategoryEnum = remainingCategories.pop();
                     remainingCategories.setCurrentCategory(currentCategoryEnum);
                     Category category = transformToCategory(currentCategoryEnum, game.getCurrentCountryId());
-                    gameRepository.saveAndFlush(game);
 
-                    WebsocketPackage websocketPackage = new WebsocketPackage();
-                    websocketPackage.setType(WebsocketType.CATEGORYUPDATE);
-                    websocketPackage.setPayload(category);
+                    WebsocketPackage websocketPackage = new WebsocketPackage(WebsocketType.CATEGORYUPDATE, category);
                     sendWebsocketPackageToLobby(gameId, websocketPackage);
                 }
             }
-            gameRepository.saveAndFlush(game);
-
-        } else {
-            int remainingRounds = game.getRemainingRounds();
-            if (remainingRounds > 0) {
-                // Decrement remaining rounds and reset the time remaining
-                game.setRemainingRounds(remainingRounds - 1);
-                game.setRemainingTime(game.getRoundDuration());
-                gameRepository.saveAndFlush(game);
-            } else {
-                game.setCurrentState(GameState.SCOREBOARD);
-                gameRepository.saveAndFlush(game);
-                stopGame(gameId);
-
-                WebsocketPackage websocketPackage3 = new WebsocketPackage();
-                websocketPackage3.setType(WebsocketType.GAMESTATEUPDATE);
-                websocketPackage3.setPayload(game.getCurrentState());
-                sendWebsocketPackageToLobby(gameId, websocketPackage3);
-            }
         }
+        gameRepository.saveAndFlush(game);
     }
 
+    private void reduceCurrentPoints(Game game) {
 
-    public void stopGame(Long gameId) {
-        System.out.println("Stopping game");
-        ScheduledFuture<?> scheduledFuture = scheduledFutures.get(gameId);
-        if (scheduledFuture != null) {
-            scheduledFuture.cancel(false);
-            scheduledFutures.remove(gameId);
-        }
+        long roundTime = game.getRoundDuration();
+        double pointsDeducted = 100.0 / roundTime;
+        Long pDeducted = (long) Math.floor(pointsDeducted);
+        Long newCurrentPoints = game.getRemainingRoundPoints() - pDeducted;
+        game.setRemainingRoundPoints(newCurrentPoints);
+        WebsocketPackage websocketPackage = new WebsocketPackage(WebsocketType.POINTSUPDATE, newCurrentPoints);
+        sendWebsocketPackageToLobby(game.getGameId(), websocketPackage);
+
     }
 
     public String getGameCountryName(Long gameId) {
@@ -326,6 +240,8 @@ public class GameService {
         return gameRepository.findByGameId(id);
     }
 
+
+
     public Game getGameByIdAndAuth(Long id, String token) {
         Game game = gameRepository.findByGameId(id);
         for (GameUser gameUser : game.getParticipants()) {
@@ -334,6 +250,19 @@ public class GameService {
             }
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized to view this game, press the button to join");
+    }
+
+    private void sendWebsocketPackageToLobby(Long gameId, WebsocketPackage websocketPackage) {
+        Game game = gameRepository.findByGameId(gameId);
+        for (GameUser gameUser : game.getParticipants()) {
+            System.out.println("Sending websocket package to user: " + gameUser.getUsername());
+            myHandler.sendWebsocketPackage(gameUser.getToken(), websocketPackage);
+        }
+    }
+
+    private void sendWebsocketPackageToPlayer(GameUser gameUser, WebsocketPackage websocketPackage) {
+        System.out.println("Sending websocket package to user: " + gameUser.getUsername());
+        myHandler.sendWebsocketPackage(gameUser.getToken(), websocketPackage);
     }
 
     private class GameUpdater implements Runnable {
@@ -350,6 +279,69 @@ public class GameService {
             }
             catch (Exception e) {
                 log.error("Error during game update execution", e);
+            }
+        }
+    }
+
+        public void stopGame(Long gameId) {
+            System.out.println("Stopping game");
+            ScheduledFuture<?> scheduledFuture = scheduledFutures.get(gameId);
+            if (scheduledFuture != null) {
+                scheduledFuture.cancel(false);
+                scheduledFutures.remove(gameId);
+            }
+        }
+    public List<Game> getGames() {
+        return this.gameRepository.findAll();
+    }
+
+    private GameUser findGameUser(Set<GameUser> gameUsers, Long userId){
+        for (GameUser gameUser : gameUsers) {
+            if (gameUser.getUserId().equals(userId)) {
+                return gameUser;
+            }
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not in game");
+    }
+
+    public List<String> getGameCountriesNames(Long gameId) {
+        Game game = gameRepository.findByGameId(gameId);
+        List<String> countryNames = new ArrayList<>();
+        Set<Long> countryIds = game.getCountriesToPlayIds();
+        for (Long countryId : countryIds) {
+            countryNames.add(countryRepository.findNameByCountryId(countryId));
+        }
+        return countryNames;
+    }
+
+    private Category transformToCategory(CategoryEnum type, Long countryId) {
+        Category category = new Category();
+        category.setType(type);
+        switch (type) {
+            case POPULATION -> {
+                category.setPopulation(countryRepository.findPopulationByCountryId(countryId));
+                return category;
+            }
+            case OUTLINE -> {
+                Outline outline = countryRepository.findOutlineByCountryId(countryId);
+                category.setOutline(outline.getOutline());
+                return category;
+            }
+            case FLAG -> {
+                category.setFlag(countryRepository.findFlagByCountryId(countryId));
+                return category;
+            }
+            case LOCATION -> {
+                Location location = countryRepository.findLocationByCountryId(countryId);
+                category.setLocation(location);
+                return category;
+            }
+            case CAPITAL -> {
+                category.setCapital(countryRepository.findCapitalByCountryId(countryId));
+                return category;
+            }
+            default -> {
+                return null;
             }
         }
     }
