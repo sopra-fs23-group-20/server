@@ -55,7 +55,7 @@ public class Game {
 
     private int roundSeconds;
     private Boolean randomizedHints;
-    private Boolean allCountries;
+
     private int numberOfRounds;
     private Boolean openLobby;
 
@@ -75,13 +75,6 @@ public class Game {
         this.randomizedHints = randomizedHints;
     }
 
-    public Boolean getAllCountries() {
-        return allCountries;
-    }
-
-    public void setAllCountries(Boolean allCountries) {
-        this.allCountries = allCountries;
-    }
 
     public int getNumberOfRounds() {
         return numberOfRounds;

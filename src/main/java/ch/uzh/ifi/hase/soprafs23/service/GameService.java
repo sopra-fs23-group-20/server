@@ -121,8 +121,10 @@ public class GameService {
         gameUsers.add(lobbyCreator);
         game.setParticipants(gameUsers);
 
+        Set<Long> countreiss = countryRepository.getAllCountryIds();
+        System.out.println(countreiss);
         //Set Countries to Play
-        game.setCountriesToPlayIds(countryRepository.getAllCountryIds());
+        game.setCountriesToPlayIds(countreiss);
         game.setLobbyCreatorUserId(lobbyCreator.getUserId());
 
         //Set SETUP State
@@ -143,6 +145,7 @@ public class GameService {
         gameRepository.saveAndFlush(game);
         WebsocketPackage websocketPackage = new WebsocketPackage(WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
         sendWebsocketPackageToLobby(game.getGameId(), websocketPackage);
+        System.out.println(game);
         return game;
     }
 

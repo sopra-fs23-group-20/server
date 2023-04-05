@@ -7,5 +7,4 @@ public enum RegionEnum
     EUROPE,
     AMERICA,
     OCEANIA,
-    ALL
 }
