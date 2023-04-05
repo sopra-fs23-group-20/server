@@ -55,7 +55,7 @@ public class GameController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GameGetDTO getGameInfo(@PathVariable Long gameId, @RequestHeader("Authorization") String authHeader) {
-        Game game = gameService.getGameByIdAndAuth(gameId, authHeader);
+        Game game = gameService.getGame(gameId);
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 
@@ -85,7 +85,6 @@ public class GameController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GameGetDTO joinGame(@PathVariable Long gameId, @RequestBody String userId) {
-
         Game game = gameService.joinGame(gameId, Long.parseLong(userId));
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }

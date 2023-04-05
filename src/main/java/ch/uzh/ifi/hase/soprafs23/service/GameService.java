@@ -113,6 +113,7 @@ public class GameService {
         Long initialCountryId = countryService.getAllCountryIdsWithRandomId();
         game.setCurrentCountryId(initialCountryId);
         game.setRemainingTime(game.getRoundDuration());
+        game.setRemainingRounds(game.getNumberOfRounds()-1);
 
         final Game game2 = gameRepository.saveAndFlush(game);
 
@@ -178,8 +179,8 @@ public class GameService {
         Long timeRemaining = game.getRemainingTime();
 
         // if the time remaining is 0 and there are still rounds left, start a new round
-        if (timeRemaining == 0 && game.getNumberOfRounds() >0){
-            game.setNumberOfRounds(game.getNumberOfRounds() - 1);
+        if (timeRemaining == 0 && game.getRemainingRounds() >0){
+            game.setRemainingRounds(game.getRemainingRounds()- 1);
             game.setRemainingTime(game.getRoundDuration());
             game.setRemainingRoundPoints(100L);
             game.getCategoryStack().refillStack();
@@ -293,6 +294,10 @@ public class GameService {
         }
     public List<Game> getGames() {
         return this.gameRepository.findAll();
+    }
+
+    public Game getGame(Long gameId) {
+        return this.gameRepository.findByGameId(gameId);
     }
 
     private GameUser findGameUser(Set<GameUser> gameUsers, Long userId){
