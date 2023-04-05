@@ -11,6 +11,7 @@ import ch.uzh.ifi.hase.soprafs23.entityOther.WebsocketPackage;
 import ch.uzh.ifi.hase.soprafs23.repository.CountryRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.GamePostDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,30 +109,36 @@ public class GameService {
 
     }
 
-    public Game createGame(Long lobbyCreatorId) {
-        User lobbyCreatorUser = userRepository.findByUserId(lobbyCreatorId);
+    public Game createGame(GamePostDTO gamePostDTO) {
         Game game = new Game();
 
+        Long lobbyCreatorUserId = Long.parseLong(gamePostDTO.getLobbyCreatorUserId());
+        User lobbyCreatorUser = userRepository.findByUserId(lobbyCreatorUserId);
         GameUser lobbyCreator = GameUser.transformUserToGameUser(lobbyCreatorUser);
 
-        Long initialCountryId = countryService.getAllCountryIdsWithRandomId();
-
-
+        //Set participants
         Set<GameUser> gameUsers = new HashSet<>();
         gameUsers.add(lobbyCreator);
         game.setParticipants(gameUsers);
+
+        //Set Countries to Play
         game.setCountriesToPlayIds(countryRepository.getAllCountryIds());
-        game.setLobbyCreator(lobbyCreator);
+        game.setLobbyCreatorUserId(lobbyCreator.getUserId());
+
+        //Set SETUP State
         game.setCurrentState(GameState.SETUP);
-        game.setCurrentCountryId(initialCountryId);
 
+        //Set Category Stack
         CategoryStack categoryStack = new CategoryStack();
-        categoryStack.addAll(Arrays.asList(CategoryEnum.values()));
-
+        categoryStack.addAll(gamePostDTO.getHints());
         game.setCategoryStack(categoryStack);
-        game.setRemainingTime(30L);
-        game.setTotalRoundTime(30L);
 
+        //Set game round duration and number of rounds
+        game.setRoundDuration(gamePostDTO.getRoundSeconds());
+        game.setNumberOfRounds(gamePostDTO.getNumberOfRounds());
+
+        game.setRandomizedHints(gamePostDTO.isRandomizedHints());
+        game.setOpenLobby(gamePostDTO.isOpenLobby());
 
         gameRepository.saveAndFlush(game);
         WebsocketPackage websocketPackage = new WebsocketPackage(WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
@@ -160,6 +167,9 @@ public class GameService {
         Game game = gameRepository.findByGameId(gameId);
         game.setCurrentState(GameState.GUESSING);
         game.setRemainingRoundPoints(100L);
+        Long initialCountryId = countryService.getAllCountryIdsWithRandomId();
+        game.setCurrentCountryId(initialCountryId);
+        game.setRemainingTime(game.getRoundDuration());
 
         final Game game2 = gameRepository.saveAndFlush(game);
 
@@ -248,13 +258,11 @@ public class GameService {
 
         if (timeRemaining > 0 && game.getCurrentState() == GameState.GUESSING) {
 
-
             game.setRemainingTime(timeRemaining - 1);
             WebsocketPackage websocketPackage1 = new WebsocketPackage();
             websocketPackage1.setType(WebsocketType.TIMEUPDATE);
             websocketPackage1.setPayload(game.getRemainingTime());
             sendWebsocketPackageToLobby(gameId, websocketPackage1);
-
 
             reduceCurrentPoints(game);
 
@@ -262,7 +270,6 @@ public class GameService {
                 CategoryStack remainingCategories = game.getCategoryStack();
                 if (!remainingCategories.isEmpty()) {
                     System.out.println("Remaining categories: " + remainingCategories);
-
 
                     CategoryEnum currentCategoryEnum = remainingCategories.pop();
                     remainingCategories.setCurrentCategory(currentCategoryEnum);
@@ -277,18 +284,26 @@ public class GameService {
             }
             gameRepository.saveAndFlush(game);
 
-        }
-        else {
-            game.setCurrentState(GameState.SCOREBOARD);
-            gameRepository.saveAndFlush(game);
-            stopGame(gameId);
+        } else {
+            int remainingRounds = game.getRemainingRounds();
+            if (remainingRounds > 0) {
+                // Decrement remaining rounds and reset the time remaining
+                game.setRemainingRounds(remainingRounds - 1);
+                game.setRemainingTime(game.getRoundDuration());
+                gameRepository.saveAndFlush(game);
+            } else {
+                game.setCurrentState(GameState.SCOREBOARD);
+                gameRepository.saveAndFlush(game);
+                stopGame(gameId);
 
-            WebsocketPackage websocketPackage3 = new WebsocketPackage();
-            websocketPackage3.setType(WebsocketType.GAMESTATEUPDATE);
-            websocketPackage3.setPayload(game.getCurrentState());
-            sendWebsocketPackageToLobby(gameId, websocketPackage3);
+                WebsocketPackage websocketPackage3 = new WebsocketPackage();
+                websocketPackage3.setType(WebsocketType.GAMESTATEUPDATE);
+                websocketPackage3.setPayload(game.getCurrentState());
+                sendWebsocketPackageToLobby(gameId, websocketPackage3);
+            }
         }
     }
+
 
     public void stopGame(Long gameId) {
         System.out.println("Stopping game");

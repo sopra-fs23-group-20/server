@@ -57,7 +57,6 @@ public interface DTOMapper {
 
 
     @Mapping(source = "gameId", target = "gameId")
-    @Mapping(source = "lobbyCreator", target = "lobbyCreator")
     @Mapping(source = "participants", target = "participants")
     @Mapping(source = "creationDate", target = "creationDate")
     @Mapping(source = "gameEndingCriteria", target = "gameEndingCriteria")
@@ -72,6 +71,4 @@ public interface DTOMapper {
     Guess convertGuessPostDTOtoEntity(GuessPostDTO guessPostDTO);
 
 
-    @Mapping(source = "userId", target = "userId")
-    User convertGametoUser(GameCreateDTO gameCreateDTO);
 }

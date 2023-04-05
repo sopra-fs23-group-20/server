@@ -66,6 +66,7 @@ public class CategoryStack {
     }
 
     public void refillStack(){
+        remainingCategories.clear();
         remainingCategories.addAll(selectedCategories);
         stackIdx = remainingCategories.size()-1;
     }
