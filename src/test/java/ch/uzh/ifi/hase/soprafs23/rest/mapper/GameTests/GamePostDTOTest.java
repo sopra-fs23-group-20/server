@@ -1,18 +1,19 @@
 package ch.uzh.ifi.hase.soprafs23.rest.mapper.GameTests;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.GameCreateDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.GamePostDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.GamePostDTO;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class GameCreateDTOTest {
+public class GamePostDTOTest {
 
     @Test
     public void testGetUserId() {
         // Given
-        GameCreateDTO gameCreateDTO = new GameCreateDTO();
-        gameCreateDTO.setUserId("testUser");
+        GamePostDTO gamePostDTO = new GamePostDTO();
+        gamePostDTO.setLobbyCreatorUserId("testUser");
 
         // When
-        String userId = gameCreateDTO.getUserId();
+        String userId = gamePostDTO.getLobbyCreatorUserId();
 
         // Then
         assertEquals("testUser", userId);
@@ -21,12 +22,12 @@ public class GameCreateDTOTest {
     @Test
     public void testSetUserId() {
         // Given
-        GameCreateDTO gameCreateDTO = new GameCreateDTO();
+        GamePostDTO gamePostDTO = new GamePostDTO();
 
         // When
-        gameCreateDTO.setUserId("testUser");
+        gamePostDTO.setLobbyCreatorUserId("testUser");
 
         // Then
-        assertEquals("testUser", gameCreateDTO.getUserId());
+        assertEquals("testUser", gamePostDTO.getLobbyCreatorUserId());
     }
 }
