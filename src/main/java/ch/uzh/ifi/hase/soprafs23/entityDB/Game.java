@@ -17,19 +17,8 @@ public class Game {
     @GeneratedValue
     private Long gameId;
 
-    @Embedded
-    private GameUser lobbyCreator;
 
-    @Column()
-    private String lobbyCreatorUserId;
-
-    public String getLobbyCreatorUserId() {
-        return lobbyCreatorUserId;
-    }
-
-    public void setLobbyCreatorUserId(String lobbyCreatorUserId) {
-        this.lobbyCreatorUserId = lobbyCreatorUserId;
-    }
+    private Long lobbyCreatorUserId;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "participants", joinColumns = @JoinColumn(name = "gameId"))
@@ -147,12 +136,12 @@ public class Game {
         this.gameId = gameId;
     }
 
-    public GameUser getLobbyCreator() {
-        return lobbyCreator;
+    public Long getLobbyCreatorUserId() {
+        return lobbyCreatorUserId;
     }
 
-    public void setLobbyCreator(GameUser lobbyCreator) {
-        this.lobbyCreator = lobbyCreator;
+    public void setLobbyCreatorUserId(Long lobbyCreatorUserId) {
+        this.lobbyCreatorUserId = lobbyCreatorUserId;
     }
 
     public Set<GameUser> getParticipants() {

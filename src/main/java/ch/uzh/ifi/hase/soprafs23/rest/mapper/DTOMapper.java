@@ -57,7 +57,6 @@ public interface DTOMapper {
 
 
     @Mapping(source = "gameId", target = "gameId")
-    @Mapping(source = "lobbyCreator", target = "lobbyCreator")
     @Mapping(source = "participants", target = "participants")
     @Mapping(source = "creationDate", target = "creationDate")
     @Mapping(source = "gameEndingCriteria", target = "gameEndingCriteria")
@@ -72,12 +71,4 @@ public interface DTOMapper {
     Guess convertGuessPostDTOtoEntity(GuessPostDTO guessPostDTO);
 
 
-    @Mapping(source = "lobbyCreatorUserId", target = "lobbyCreatorUserId")
-    @Mapping(source = "roundSeconds", target ="roundSeconds" )
-    @Mapping(source = "randomizedHints", target ="randomizedHints" )
-    @Mapping(source = "allCountries", target ="allCountries" )
-    @Mapping(source = "numberOfRounds", target ="numberOfRounds" )
-    @Mapping(source = "openLobby", target ="openLobby" )
-    @Mapping(source = "hints", target ="availableHints" )
-    Game convertGamePostDTOToGame(GamePostDTO gamePostDTO);
 }

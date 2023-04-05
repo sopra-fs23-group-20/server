@@ -44,11 +44,7 @@ public class GameController {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public GameGetDTO createGame(@RequestBody GamePostDTO gamePostDTO) {
-        System.out.println(gamePostDTO.isOpenLobby());
-        System.out.println(gamePostDTO.getLobbyCreatorUserId());
-        System.out.println("Game Post DTO" + gamePostDTO);
-        Game gameToCreate = DTOMapper.INSTANCE.convertGamePostDTOToGame(gamePostDTO);
-        Game createdGame = gameService.createGame(gameToCreate);
+        Game createdGame = gameService.createGame(gamePostDTO);
         // convert internal representation of game back to API
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(createdGame);
     }
@@ -88,9 +84,9 @@ public class GameController {
     @PostMapping("/games/{gameId}/join")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public GameGetDTO joinGame(@PathVariable Long gameId, @RequestBody GamePostDTO gamePostDTO) {
-        Game gameToJoin = DTOMapper.INSTANCE.convertGamePostDTOToGame(gamePostDTO);
-        Game game = gameService.joinGame(gameId, Long.parseLong(gameToJoin.getLobbyCreatorUserId()));
+    public GameGetDTO joinGame(@PathVariable Long gameId, @RequestBody String userId) {
+
+        Game game = gameService.joinGame(gameId, Long.parseLong(userId));
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 
