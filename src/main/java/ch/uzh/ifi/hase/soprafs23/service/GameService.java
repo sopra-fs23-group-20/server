@@ -99,7 +99,7 @@ public class GameService {
 
     private void reduceCurrentPoints(Game game) {
 
-        long roundTime = game.getTotalRoundTime();
+        long roundTime = game.getRoundDuration();
         double pointsDeducted = 100.0 / roundTime;
         Long pDeducted = (long) Math.floor(pointsDeducted);
         Long newCurrentPoints = game.getRemainingRoundPoints() - pDeducted;

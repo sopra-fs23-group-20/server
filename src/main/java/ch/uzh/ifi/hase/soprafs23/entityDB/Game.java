@@ -46,8 +46,6 @@ public class Game {
     @Column()
     private Long remainingTime;
 
-    @Column(nullable = true)
-    private Long totalRoundTime;
 
     private Long currentCountryId;
 
@@ -120,13 +118,6 @@ public class Game {
         this.remainingRoundPoints = remainingRoundPoints;
     }
 
-    public Long getTotalRoundTime() {
-        return totalRoundTime;
-    }
-
-    public void setTotalRoundTime(Long totalRoundTime) {
-        this.totalRoundTime = totalRoundTime;
-    }
 
     public Long getGameId() {
         return gameId;
