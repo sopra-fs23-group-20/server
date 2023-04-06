@@ -44,7 +44,7 @@ private final OutlineRepository outlineRepository;
         return this.countryRepository.findAll();
     }
 
-    public Long getAllCountryIdsWithRandomId() {
+    public Long getARandomCountryId() {
         List<Long> allCountryIds = new ArrayList<>(this.countryRepository.getAllCountryIds());
                 Collections.shuffle(allCountryIds);
         return allCountryIds.get(0);

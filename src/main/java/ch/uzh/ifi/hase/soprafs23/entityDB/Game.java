@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.entityDB;
 
+import ch.uzh.ifi.hase.soprafs23.StatePattern.*;
 import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
@@ -16,8 +17,6 @@ public class Game {
     @Id
     @GeneratedValue
     private Long gameId;
-
-
     private Long lobbyCreatorUserId;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -29,17 +28,17 @@ public class Game {
     @Column()
     private GameState currentState;
     @Column()
-    private long gameEndingCriteria;
+    private Long gameEndingCriteria;
     @Column()
-    private long roundDuration;
+    private Long roundDuration;
     @Column()
     private RegionEnum region;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "countriesToPlay", joinColumns = @JoinColumn(name = "gameId"))
     @Column(name = "countryId")
+
     private Set<Long> countriesToPlayIds;
-    @Column()
-    private long currentRound;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "categoryStackId")
     private CategoryStack categoryStack;
@@ -51,21 +50,12 @@ public class Game {
 
     private Long remainingRoundPoints;
 
-    private int remainingRounds = 0;
-
-    private int roundSeconds;
+    private Long remainingRounds;
     private Boolean randomizedHints;
 
-    private int numberOfRounds;
+    private Long numberOfRounds;
     private Boolean openLobby;
 
-    public int getRoundSeconds() {
-        return roundSeconds;
-    }
-
-    public void setRoundSeconds(int roundSeconds) {
-        this.roundSeconds = roundSeconds;
-    }
 
     public Boolean getRandomizedHints() {
         return randomizedHints;
@@ -76,11 +66,11 @@ public class Game {
     }
 
 
-    public int getNumberOfRounds() {
+    public Long getNumberOfRounds() {
         return numberOfRounds;
     }
 
-    public void setNumberOfRounds(int numberOfRounds) {
+    public void setNumberOfRounds(Long numberOfRounds) {
         this.numberOfRounds = numberOfRounds;
     }
 
@@ -188,13 +178,6 @@ public class Game {
         this.countriesToPlayIds = countriesToPlay;
     }
 
-    public long getCurrentRound() {
-        return currentRound;
-    }
-
-    public void setCurrentRound(long currentRound) {
-        this.currentRound = currentRound;
-    }
 
     public CategoryStack getCategoryStack() {
         return categoryStack;
@@ -221,12 +204,27 @@ public class Game {
     }
 
 
-    public int getRemainingRounds() {
+    public Long getRemainingRounds() {
         return remainingRounds;
     }
 
-    public void setRemainingRounds(int remainingRounds) {
+    public void setRemainingRounds(Long remainingRounds) {
         this.remainingRounds = remainingRounds;
+    }
+
+    public GameStateClass getGameStateClass() {
+        GameStateClass gameStateClass = null;
+        switch (this.currentState){
+            case SETUP:
+                gameStateClass = new SetupStateClass();
+            case GUESSING:
+                gameStateClass = new GuessingStateClass();
+            case SCOREBOARD:
+                gameStateClass = new ScoreboardStateClass();
+            case ENDED:
+                gameStateClass= new EndedStateClass();
+        }
+        return gameStateClass;
     }
 }
 

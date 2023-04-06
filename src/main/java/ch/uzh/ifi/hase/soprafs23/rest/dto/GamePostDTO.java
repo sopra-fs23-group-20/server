@@ -8,18 +8,18 @@ public class GamePostDTO {
 
     private String lobbyCreatorUserId;
 
-    private int roundSeconds;
+    private Long roundSeconds;
     private boolean randomizedHints;
     private boolean allCountries;
-    private int numberOfRounds;
+    private Long numberOfRounds;
     private boolean openLobby;
     private List<CategoryEnum> hints;
 
-    public int getRoundSeconds() {
+    public Long getRoundSeconds() {
         return roundSeconds;
     }
 
-    public void setRoundSeconds(int roundSeconds) {
+    public void setRoundSeconds(Long roundSeconds) {
         this.roundSeconds = roundSeconds;
     }
 
@@ -39,11 +39,11 @@ public class GamePostDTO {
         this.allCountries = allCountries;
     }
 
-    public int getNumberOfRounds() {
+    public Long getNumberOfRounds() {
         return numberOfRounds;
     }
 
-    public void setNumberOfRounds(int numberOfRounds) {
+    public void setNumberOfRounds(Long numberOfRounds) {
         this.numberOfRounds = numberOfRounds;
     }
 

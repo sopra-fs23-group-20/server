@@ -20,6 +20,7 @@ public class GameGetDTO {
     private long currentRound;
     private CategoryStack categoryStack;
     private Long remainingTime;
+    private GameState currentState;
 
     public Long getGameId() {
         return gameId;
@@ -108,5 +109,4 @@ public class GameGetDTO {
     public void setRemainingTime(Long remainingTime) {
         this.remainingTime = remainingTime;
     }
-
 }

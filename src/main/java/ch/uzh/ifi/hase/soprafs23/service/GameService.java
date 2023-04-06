@@ -106,22 +106,11 @@ public class GameService {
 
     public Game startGame(Long gameId) {
         Game game = gameRepository.findByGameId(gameId);
-        game.setCurrentState(GameState.GUESSING);
-        game.setRemainingRoundPoints(100L);
-        Long initialCountryId = countryService.getAllCountryIdsWithRandomId();
-        game.setCurrentCountryId(initialCountryId);
-        game.setRemainingTime(game.getRoundDuration());
-        game.setRemainingRounds(game.getNumberOfRounds()-1);
 
-        final Game game2 = gameRepository.saveAndFlush(game);
-
-        updateGameState(gameId, WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
-
-        String topic = "/topic/game/" + game2.getGameId();
-        GameUpdater gameUpdater = new GameUpdater(game2.getGameId(), topic);
-
+        //Initialize the gameUpdating thread
+        String topic = "/topic/game/" + gameId;
+        GameUpdater gameUpdater = new GameUpdater(gameId, topic);
         ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(gameUpdater, 1, 1, TimeUnit.SECONDS);
-
         scheduledFutures.put(gameId, scheduledFuture);
 
         return game;
@@ -170,10 +159,10 @@ public class GameService {
 
     private void updateGameEverySecond(Long gameId) {
         System.out.println("Updating game every second");
-        // get the latest game state from the GameRepository
         Game game = gameRepository.findByGameId(gameId);
-        // decrement the time remaining by 1 second
-        Long timeRemaining = game.getRemainingTime();
+        game.getGameStateClass().updateGameEverySecond(game, this);
+        gameRepository.saveAndFlush(game);
+        }
 
         // if the time remaining is 0 and there are still rounds left, start a new round
         if (timeRemaining == 0 && game.getRemainingRounds() >0){
@@ -182,7 +171,7 @@ public class GameService {
             game.setRemainingRoundPoints(100L);
             game.getCategoryStack().refillStack();
             game.setCategoryStack(game.getCategoryStack());
-            game.setCurrentCountryId(countryService.getAllCountryIdsWithRandomId());
+            game.setCurrentCountryId(countryService.getARandomCountryId());
 
         }
         // if the time remaining is 0 and there are no rounds left, go to the scoreboard
@@ -193,10 +182,7 @@ public class GameService {
         }
         // if the time remaining is greater than 0 and the game is in the guessing state, decrement the time remaining and update the game
         else if (timeRemaining > 0 && game.getCurrentState() == GameState.GUESSING){
-            game.setRemainingTime(timeRemaining - 1);
-            updateGameState(gameId, WebsocketType.TIMEUPDATE, game.getRemainingTime());
 
-            reduceCurrentPoints(game);
 
             if (timeRemaining % ((int) (game.getRoundDuration() / 5)) == 0) {
                 CategoryStack remainingCategories = game.getCategoryStack();
@@ -211,7 +197,28 @@ public class GameService {
                 }
             }
         }
-        gameRepository.saveAndFlush(game);
+
+
+    //Shouldn't be in SETUP case
+    private Game handleSetupCase(Game game){
+        game.setCurrentState(GameState.ENDED);
+        stopGame(game.getGameId());
+        return game;
+    }
+
+    private Game handleGuessingCase(Game game){
+        Long timeRemaining = game.getRemainingTime();
+        Long remainingRounds = game.getRemainingRounds();
+
+        if(timeRemaining > 0){
+            game.setRemainingTime(timeRemaining - 1);
+            updateGameState(game.getRemainingTime(), WebsocketType.TIMEUPDATE, game.getRemainingTime());
+            reduceCurrentPoints(game);
+        }
+        else if (timeRemaining == 0 && remainingRounds > 0) {
+
+        }
+        return game;
     }
 
     private void reduceCurrentPoints(Game game) {
@@ -343,7 +350,7 @@ public class GameService {
         }
     }
 
-    private void updateGameState(Long gameId, WebsocketType websocketType, Object websocketParam) {
+    public void updateGameState(Long gameId, WebsocketType websocketType, Object websocketParam) {
         WebsocketPackage websocketPackage = new WebsocketPackage(websocketType, websocketParam);
         sendWebsocketPackageToLobby(gameId, websocketPackage);
     }
