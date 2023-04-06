@@ -1,12 +1,25 @@
 package ch.uzh.ifi.hase.soprafs23.entityDB;
 
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
-@Embeddable
-public class GameUser {
-
+@Entity
+@Table(name = "GAME_USER")
+@JsonIgnoreProperties({"GAME"})
+public class GameUser implements Serializable {
+    @Id
+    @GeneratedValue
+    private Long gameUserId;
+    @ManyToOne
+    @JoinColumn(name = "gameId")
+    @JsonBackReference
+    private Game game;
     private Long userId;
     private String token;
     private String username;
@@ -22,13 +35,7 @@ public class GameUser {
     public GameState getCurrentState() {
         return userPlayingState;
     }
-    public void setCurrentState(GameState userPlayingState) {
-        this.userPlayingState = userPlayingState;
-    }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
 
     public String getUsername() {
         return username;
@@ -54,12 +61,42 @@ public class GameUser {
         this.token = token;
     }
 
-    public static GameUser transformUserToGameUser(User user){
+    public Long getGameUserId() {
+        return gameUserId;
+    }
+
+    public void setGameUserId(Long gameUserId) {
+        this.gameUserId = gameUserId;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public GameState getUserPlayingState() {
+        return userPlayingState;
+    }
+
+    public void setUserPlayingState(GameState userPlayingState) {
+        this.userPlayingState = userPlayingState;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public static GameUser transformUserToGameUser(User user, Game game) {
         GameUser gameUser = new GameUser();
+        gameUser.setGame(game);
         gameUser.setUserId(user.getUserId());
         gameUser.setUsername(user.getUsername());
         gameUser.setToken(user.getToken());
-        gameUser.setGamePoints(0L);
+        gameUser.setGamePoints(100L);
+        gameUser.setUserPlayingState(GameState.SETUP);
         return gameUser;
     }
 }

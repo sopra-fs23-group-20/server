@@ -9,17 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-/**
- * DTOMapper
- * This class is responsible for generating classes that will automatically
- * transform/map the internal representation
- * of an entity (e.g., the User) to the external/API representation (e.g.,
- * UserGetDTO for getting, UserPostDTO for creating)
- * and vice versa.
- * Additional mappers can be defined for new entities.
- * Always created one mapper for getting information (GET) and one mapper for
- * creating information (POST).
- */
+
 @Mapper
 public interface DTOMapper {
 
@@ -57,13 +47,19 @@ public interface DTOMapper {
 
 
     @Mapping(source = "gameId", target = "gameId")
+    @Mapping(source = "lobbyCreator", target = "lobbyCreator")
     @Mapping(source = "participants", target = "participants")
     @Mapping(source = "creationDate", target = "creationDate")
-    @Mapping(source = "gameEndingCriteria", target = "gameEndingCriteria")
+    @Mapping(source = "currentState", target = "currentState")
     @Mapping(source = "roundDuration", target = "roundDuration")
-    @Mapping(source = "region", target = "region")
-    @Mapping(source = "currentRound", target = "currentRound")
     @Mapping(source = "remainingTime", target = "remainingTime")
+    @Mapping(source = "numberOfRounds", target = "numberOfRounds")
+    @Mapping(source = "remainingRounds", target = "remainingRounds")
+    @Mapping(source = "remainingRoundPoints", target = "remainingRoundPoints")
+    @Mapping(source = "regionsSelected", target = "regionsSelected")
+    @Mapping(source = "categoryStack", target = "categoryStack")
+    @Mapping(source="randomizedHints", target="randomizedHints")
+    @Mapping(source="openLobby", target="openLobby")
     GameGetDTO convertEntityToGameGetDTO(Game game);
 
     @Mapping(source = "userId", target = "userId")

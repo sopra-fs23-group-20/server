@@ -1,8 +1,12 @@
 package ch.uzh.ifi.hase.soprafs23.entityDB;
 
+import ch.uzh.ifi.hase.soprafs23.StatePattern.*;
 import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -17,62 +21,46 @@ public class Game {
     @GeneratedValue
     private Long gameId;
 
-    private Long lobbyCreatorUserId;
+    @ManyToOne
+    @JoinColumn(name = "lobbyCreatorId")
+    @JsonBackReference
+    private GameUser lobbyCreator;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "participants", joinColumns = @JoinColumn(name = "gameId"))
+    @OneToMany(mappedBy = "game", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonBackReference
     private Set<GameUser> participants;
 
     @Column()
     private Date creationDate;
-
     @Column()
     private GameState currentState;
-
     @Column()
-    private long gameEndingCriteria;
-
+    private Long roundDuration;
     @Column()
-    private long roundDuration;
-
+    private Long remainingTime;
     @Column()
-    private RegionEnum region;
+    private Long numberOfRounds;
+    @Column()
+    private Long remainingRounds;
+    @Column()
+    private Long remainingRoundPoints;
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "countriesToPlay", joinColumns = @JoinColumn(name = "gameId"))
-
-    @Column(name = "countryId")
-    private Set<Long> countriesToPlayIds;
-
-    @Column()
-    private long currentRound;
+    @CollectionTable(name = "regionsSelected", joinColumns = @JoinColumn(name = "gameId"))
+    private Set<RegionEnum> regionsSelected;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "categoryStackId")
     private CategoryStack categoryStack;
-
     @Column()
-    private Long remainingTime;
-
-    private Long currentCountryId;
-
-    private Long remainingRoundPoints;
-
-    private int remainingRounds = 0;
-
-    private int roundSeconds;
-
     private Boolean randomizedHints;
-
-    private int numberOfRounds;
-
+    @Column()
     private Boolean openLobby;
 
-    public int getRoundSeconds() {
-        return roundSeconds;
-    }
-
-    public void setRoundSeconds(int roundSeconds) {
-        this.roundSeconds = roundSeconds;
-    }
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "countriesToPlay", joinColumns = @JoinColumn(name = "gameId"))
+    @Column(name = "countryId")
+    private Set<Long> countriesToPlayIds;
+    @Column()
+    private Long currentCountryId;
 
     public Boolean getRandomizedHints() {
         return randomizedHints;
@@ -82,11 +70,12 @@ public class Game {
         this.randomizedHints = randomizedHints;
     }
 
-    public int getNumberOfRounds() {
+
+    public Long getNumberOfRounds() {
         return numberOfRounds;
     }
 
-    public void setNumberOfRounds(int numberOfRounds) {
+    public void setNumberOfRounds(Long numberOfRounds) {
         this.numberOfRounds = numberOfRounds;
     }
 
@@ -106,7 +95,7 @@ public class Game {
         this.availableHints = availableHints;
     }
 
-    @ElementCollection(targetClass = CategoryEnum.class, fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = CategoryEnum.class)
     private List<CategoryEnum> availableHints;
 
     public Long getRemainingRoundPoints() {
@@ -126,13 +115,8 @@ public class Game {
         this.gameId = gameId;
     }
 
-    public Long getLobbyCreatorUserId() {
-        return lobbyCreatorUserId;
-    }
 
-    public void setLobbyCreatorUserId(Long lobbyCreatorUserId) {
-        this.lobbyCreatorUserId = lobbyCreatorUserId;
-    }
+
 
     public Set<GameUser> getParticipants() {
         return participants;
@@ -157,17 +141,9 @@ public class Game {
     public void setCurrentState(GameState currentState) {
         this.currentState = currentState;
         Set<GameUser> gamesUsers = getParticipants();
-        for (GameUser gameUser : gamesUsers) {
-            gameUser.setCurrentState(currentState);
+        for(GameUser gameUser: gamesUsers){
+            gameUser.setUserPlayingState(currentState);
         }
-    }
-
-    public long getGameEndingCriteria() {
-        return gameEndingCriteria;
-    }
-
-    public void setGameEndingCriteria(long gameEndingCriteria) {
-        this.gameEndingCriteria = gameEndingCriteria;
     }
 
     public long getRoundDuration() {
@@ -178,12 +154,12 @@ public class Game {
         this.roundDuration = roundDuration;
     }
 
-    public RegionEnum getRegion() {
-        return region;
+    public Set<RegionEnum> getRegionsSelected() {
+        return regionsSelected;
     }
 
-    public void setRegion(RegionEnum region) {
-        this.region = region;
+    public void setRegionsSelected(Set<RegionEnum> regionsSelected) {
+        this.regionsSelected = regionsSelected;
     }
 
     public Set<Long> getCountriesToPlayIds() {
@@ -194,13 +170,6 @@ public class Game {
         this.countriesToPlayIds = countriesToPlay;
     }
 
-    public long getCurrentRound() {
-        return currentRound;
-    }
-
-    public void setCurrentRound(long currentRound) {
-        this.currentRound = currentRound;
-    }
 
     public CategoryStack getCategoryStack() {
         return categoryStack;
@@ -226,12 +195,44 @@ public class Game {
         this.currentCountryId = currentCountryId;
     }
 
-    public int getRemainingRounds() {
+
+    public Long getRemainingRounds() {
         return remainingRounds;
     }
 
-    public void setRemainingRounds(int remainingRounds) {
+    public void setRemainingRounds(Long remainingRounds) {
         this.remainingRounds = remainingRounds;
+    }
+
+    public GameUser getLobbyCreator() {
+        return lobbyCreator;
+    }
+
+    public void setLobbyCreator(GameUser lobbyCreator) {
+        this.lobbyCreator = lobbyCreator;
+    }
+
+    public void setRoundDuration(Long roundDuration) {
+        this.roundDuration = roundDuration;
+    }
+
+    public static GameStateClass getGameStateClass(GameState gameState) {
+        GameStateClass gameStateClass = null;
+        switch (gameState){
+            case SETUP:
+                gameStateClass = new SetupStateClass();
+                break;
+            case GUESSING:
+                gameStateClass = new GuessingStateClass();
+                break;
+            case SCOREBOARD:
+                gameStateClass = new ScoreboardStateClass();
+                break;
+            case ENDED:
+                gameStateClass= new EndedStateClass();
+                break;
+        }
+        return gameStateClass;
     }
 }
 

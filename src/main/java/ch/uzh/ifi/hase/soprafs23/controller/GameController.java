@@ -4,7 +4,6 @@ import ch.uzh.ifi.hase.soprafs23.entityDB.Game;
 import ch.uzh.ifi.hase.soprafs23.entityOther.Guess;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GameGetDTO;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.GamePutDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GuessPostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
@@ -49,20 +48,11 @@ public class GameController {
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(createdGame);
     }
 
-    @PutMapping("/games/{gameId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ResponseBody
-    public GameGetDTO UpdateGameConfiguration(@PathVariable Long gameId, @RequestBody GamePutDTO gamePutDTO, @RequestHeader("Authorization") String authHeader) {
-        Game updatedGame = gameService.updateGameConfig(gamePutDTO);
-        // convert internal representation of game back to API
-        return DTOMapper.INSTANCE.convertEntityToGameGetDTO(updatedGame);
-    }
-
 
     @GetMapping("/games/{gameId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public GameGetDTO getGameInfo(@PathVariable Long gameId, @RequestHeader("Authorization") String authHeader) {
+    public GameGetDTO getGameInfo(@PathVariable Long gameId) {
         Game game = gameService.getGame(gameId);
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }

@@ -4,21 +4,32 @@ import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import ch.uzh.ifi.hase.soprafs23.entityDB.CategoryStack;
 import ch.uzh.ifi.hase.soprafs23.entityDB.GameUser;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import java.util.Date;
 import java.util.Set;
 
 public class GameGetDTO {
     private Long gameId;
+    @JsonManagedReference
     private GameUser lobbyCreator;
+    @JsonManagedReference
     private Set<GameUser> participants;
     private Date creationDate;
     private GameState currentState;
-    private long gameEndingCriteria;
-    private long roundDuration;
-    private RegionEnum region;
-    private long currentRound;
-    private CategoryStack categoryStack;
+    private Long roundDuration;
     private Long remainingTime;
+    private Long numberOfRounds;
+    private Long remainingRounds;
+    private Long remainingRoundPoints;
+    private Set<RegionEnum> regionsSelected;
+    private CategoryStack categoryStack;
+    private Boolean randomizedHints;
+    private Boolean openLobby;
 
 
     public Long getGameId() {
@@ -61,44 +72,12 @@ public class GameGetDTO {
         this.currentState = currentState;
     }
 
-    public long getGameEndingCriteria() {
-        return gameEndingCriteria;
-    }
-
-    public void setGameEndingCriteria(long gameEndingCriteria) {
-        this.gameEndingCriteria = gameEndingCriteria;
-    }
-
-    public long getRoundDuration() {
+    public Long getRoundDuration() {
         return roundDuration;
     }
 
-    public void setRoundDuration(long roundDuration) {
+    public void setRoundDuration(Long roundDuration) {
         this.roundDuration = roundDuration;
-    }
-
-    public RegionEnum getRegion() {
-        return region;
-    }
-
-    public void setRegion(RegionEnum region) {
-        this.region = region;
-    }
-
-    public long getCurrentRound() {
-        return currentRound;
-    }
-
-    public void setCurrentRound(long currentRound) {
-        this.currentRound = currentRound;
-    }
-
-    public CategoryStack getCategoryStack() {
-        return categoryStack;
-    }
-
-    public void setCategoryStack(CategoryStack categoryStack) {
-        this.categoryStack = categoryStack;
     }
 
     public Long getRemainingTime() {
@@ -109,4 +88,59 @@ public class GameGetDTO {
         this.remainingTime = remainingTime;
     }
 
+    public Long getNumberOfRounds() {
+        return numberOfRounds;
+    }
+
+    public void setNumberOfRounds(Long numberOfRounds) {
+        this.numberOfRounds = numberOfRounds;
+    }
+
+    public Long getRemainingRounds() {
+        return remainingRounds;
+    }
+
+    public void setRemainingRounds(Long remainingRounds) {
+        this.remainingRounds = remainingRounds;
+    }
+
+    public Long getRemainingRoundPoints() {
+        return remainingRoundPoints;
+    }
+
+    public void setRemainingRoundPoints(Long remainingRoundPoints) {
+        this.remainingRoundPoints = remainingRoundPoints;
+    }
+
+    public Set<RegionEnum> getRegionsSelected() {
+        return regionsSelected;
+    }
+
+    public void setRegionsSelected(Set<RegionEnum> regionsSelected) {
+        this.regionsSelected = regionsSelected;
+    }
+
+    public CategoryStack getCategoryStack() {
+        return categoryStack;
+    }
+
+    public void setCategoryStack(CategoryStack categoryStack) {
+        this.categoryStack = categoryStack;
+    }
+
+    public Boolean getRandomizedHints() {
+        return randomizedHints;
+    }
+
+    public void setRandomizedHints(Boolean randomizedHints) {
+        this.randomizedHints = randomizedHints;
+    }
+
+    public Boolean getOpenLobby() {
+        return openLobby;
+    }
+
+    public void setOpenLobby(Boolean openLobby) {
+        this.openLobby = openLobby;
+    }
 }
