@@ -4,7 +4,7 @@ import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 
 import java.util.List;
 
-public class GamePostDTO {
+public class GamePutDTO {
 
     private String lobbyCreatorUserId;
     private int roundSeconds;
@@ -13,6 +13,7 @@ public class GamePostDTO {
     private int numberOfRounds;
     private boolean openLobby;
     private List<CategoryEnum> hints;
+    private Long gameId;
 
     public int getRoundSeconds() {
         return roundSeconds;
@@ -70,5 +71,11 @@ public class GamePostDTO {
         this.lobbyCreatorUserId = lobbyCreatorUserId;
     }
 
-}
+    public Long getGameId() {
+        return gameId;
+    }
 
+    public void setGameId(Long gameId) {
+        this.gameId = gameId;
+    }
+}
