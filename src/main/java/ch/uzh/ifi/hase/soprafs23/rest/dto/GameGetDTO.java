@@ -11,7 +11,6 @@ public class GameGetDTO {
     private Long gameId;
     private GameUser lobbyCreator;
     private Set<GameUser> participants;
-
     private Date creationDate;
     private GameState currentState;
     private long gameEndingCriteria;
@@ -20,6 +19,7 @@ public class GameGetDTO {
     private long currentRound;
     private CategoryStack categoryStack;
     private Long remainingTime;
+
 
     public Long getGameId() {
         return gameId;

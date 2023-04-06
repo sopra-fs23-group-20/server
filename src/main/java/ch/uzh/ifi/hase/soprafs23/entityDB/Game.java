@@ -17,7 +17,6 @@ public class Game {
     @GeneratedValue
     private Long gameId;
 
-
     private Long lobbyCreatorUserId;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -26,26 +25,32 @@ public class Game {
 
     @Column()
     private Date creationDate;
+
     @Column()
     private GameState currentState;
+
     @Column()
     private long gameEndingCriteria;
+
     @Column()
     private long roundDuration;
+
     @Column()
     private RegionEnum region;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "countriesToPlay", joinColumns = @JoinColumn(name = "gameId"))
+
     @Column(name = "countryId")
     private Set<Long> countriesToPlayIds;
+
     @Column()
     private long currentRound;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "categoryStackId")
     private CategoryStack categoryStack;
+
     @Column()
     private Long remainingTime;
-
 
     private Long currentCountryId;
 
@@ -54,9 +59,11 @@ public class Game {
     private int remainingRounds = 0;
 
     private int roundSeconds;
+
     private Boolean randomizedHints;
 
     private int numberOfRounds;
+
     private Boolean openLobby;
 
     public int getRoundSeconds() {
@@ -74,7 +81,6 @@ public class Game {
     public void setRandomizedHints(Boolean randomizedHints) {
         this.randomizedHints = randomizedHints;
     }
-
 
     public int getNumberOfRounds() {
         return numberOfRounds;
@@ -151,7 +157,7 @@ public class Game {
     public void setCurrentState(GameState currentState) {
         this.currentState = currentState;
         Set<GameUser> gamesUsers = getParticipants();
-        for(GameUser gameUser: gamesUsers){
+        for (GameUser gameUser : gamesUsers) {
             gameUser.setCurrentState(currentState);
         }
     }
@@ -219,7 +225,6 @@ public class Game {
     public void setCurrentCountryId(Long currentCountryId) {
         this.currentCountryId = currentCountryId;
     }
-
 
     public int getRemainingRounds() {
         return remainingRounds;
