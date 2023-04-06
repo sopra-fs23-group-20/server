@@ -12,6 +12,8 @@ import ch.uzh.ifi.hase.soprafs23.repository.CountryRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GamePostDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.GamePutDTO;
+import com.sun.xml.bind.v2.TODO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +50,13 @@ public class GameService {
         this.userRepository = userRepository;
         this.myHandler = myHandler;
     }
+
+    /**
+    public static x getScoreboard(Long gameId) {
+        //TODO figure out logic behind scoreboard
+        return
+    }
+     */
 
     public Game createGame(GamePostDTO gamePostDTO) {
         Game game = new Game();
@@ -263,6 +272,14 @@ public class GameService {
     private void sendWebsocketPackageToPlayer(GameUser gameUser, WebsocketPackage websocketPackage) {
         System.out.println("Sending websocket package to user: " + gameUser.getUsername());
         myHandler.sendWebsocketPackage(gameUser.getToken(), websocketPackage);
+    }
+
+    public Game updateGameConfig(GamePutDTO gamePutDTO) {
+        Game oldGameConfig = gameRepository.findByGameId(gamePutDTO.getGameId());
+
+        //TODO add the update logic and switch return to updatedGame
+
+        return oldGameConfig;
     }
 
     private class GameUpdater implements Runnable {
