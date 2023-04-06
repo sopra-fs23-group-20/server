@@ -186,16 +186,15 @@ public class GameService {
 
         }
         // if the time remaining is 0 and there are no rounds left, go to the scoreboard
-        else if (timeRemaining == 0 && game.getRemainingRounds() == 0) {
+        else if (timeRemaining == 0 && game.getRemainingRounds() == 0 && game.getCurrentState() != GameState.SCOREBOARD) {
             game.setCurrentState(GameState.SCOREBOARD);
             updateGameState(gameId, WebsocketType.GAMESTATEUPDATE, GameState.SCOREBOARD);
-            stopGame(game.getGameId());
+            //stopGame(game.getGameId());
         }
         // if the time remaining is greater than 0 and the game is in the guessing state, decrement the time remaining and update the game
         else if (timeRemaining > 0 && game.getCurrentState() == GameState.GUESSING){
             game.setRemainingTime(timeRemaining - 1);
             updateGameState(gameId, WebsocketType.TIMEUPDATE, game.getRemainingTime());
-
             reduceCurrentPoints(game);
 
             if (timeRemaining % ((int) (game.getRoundDuration() / 5)) == 0) {
@@ -210,6 +209,12 @@ public class GameService {
                     updateGameState(gameId, WebsocketType.CATEGORYUPDATE, category);
                 }
             }
+        }
+        else if(game.getCurrentState() == GameState.SCOREBOARD && game.getRemainingTime() > 0){
+            game.setRemainingTime(timeRemaining - 1);
+            updateGameState(gameId, WebsocketType.SCOREBOARDUPDATE, game);
+        } else if(game.getCurrentState() == GameState.SCOREBOARD && game.getRemainingTime() == 0){
+            stopGame(game.getGameId());
         }
         gameRepository.saveAndFlush(game);
     }

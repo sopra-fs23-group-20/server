@@ -100,7 +100,7 @@ public class Game {
         this.availableHints = availableHints;
     }
 
-    @ElementCollection(targetClass = CategoryEnum.class)
+    @ElementCollection(targetClass = CategoryEnum.class, fetch = FetchType.EAGER)
     private List<CategoryEnum> availableHints;
 
     public Long getRemainingRoundPoints() {
