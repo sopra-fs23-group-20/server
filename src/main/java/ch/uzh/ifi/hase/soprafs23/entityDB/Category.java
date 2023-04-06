@@ -1,17 +1,21 @@
-package ch.uzh.ifi.hase.soprafs23.entityOther;
+package ch.uzh.ifi.hase.soprafs23.entityDB;
 
 import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
+import ch.uzh.ifi.hase.soprafs23.entityOther.Location;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+
+@Embeddable
 public class Category {
 
     private CategoryEnum type;
-
     private String capital;
     private String flag;
     private long population;
-
     private Location location;
-
+    @Column(length = 10000000)
     private String outline;
 
     public CategoryEnum getType() {

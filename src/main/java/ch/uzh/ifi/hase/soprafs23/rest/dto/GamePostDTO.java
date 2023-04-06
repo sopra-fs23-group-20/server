@@ -1,42 +1,34 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
+import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 
 import java.util.List;
 
 public class GamePostDTO {
-
     private String lobbyCreatorUserId;
-
-    private Long roundSeconds;
-    private boolean randomizedHints;
-    private boolean allCountries;
+    private Long roundDuration;
     private Long numberOfRounds;
+    private List<CategoryEnum> categoriesSelected;
+    private List<RegionEnum> regionsSelected;
+    private boolean randomizedCategories;
     private boolean openLobby;
-    private List<CategoryEnum> hints;
 
-    public Long getRoundSeconds() {
-        return roundSeconds;
+
+    public String getLobbyCreatorUserId() {
+        return lobbyCreatorUserId;
     }
 
-    public void setRoundSeconds(Long roundSeconds) {
-        this.roundSeconds = roundSeconds;
+    public void setLobbyCreatorUserId(String lobbyCreatorUserId) {
+        this.lobbyCreatorUserId = lobbyCreatorUserId;
     }
 
-    public boolean isRandomizedHints() {
-        return randomizedHints;
+    public Long getRoundDuration() {
+        return roundDuration;
     }
 
-    public void setRandomizedHints(boolean randomizedHints) {
-        this.randomizedHints = randomizedHints;
-    }
-
-    public boolean isAllCountries() {
-        return allCountries;
-    }
-
-    public void setAllCountries(boolean allCountries) {
-        this.allCountries = allCountries;
+    public void setRoundDuration(Long roundDuration) {
+        this.roundDuration = roundDuration;
     }
 
     public Long getNumberOfRounds() {
@@ -47,6 +39,30 @@ public class GamePostDTO {
         this.numberOfRounds = numberOfRounds;
     }
 
+    public List<CategoryEnum> getCategoriesSelected() {
+        return categoriesSelected;
+    }
+
+    public void setCategoriesSelected(List<CategoryEnum> categoriesSelected) {
+        this.categoriesSelected = categoriesSelected;
+    }
+
+    public List<RegionEnum> getRegionsSelected() {
+        return regionsSelected;
+    }
+
+    public void setRegionsSelected(List<RegionEnum> regionsSelected) {
+        this.regionsSelected = regionsSelected;
+    }
+
+    public boolean isRandomizedCategories() {
+        return randomizedCategories;
+    }
+
+    public void setRandomizedCategories(boolean randomizedCategories) {
+        this.randomizedCategories = randomizedCategories;
+    }
+
     public boolean isOpenLobby() {
         return openLobby;
     }
@@ -54,22 +70,5 @@ public class GamePostDTO {
     public void setOpenLobby(boolean openLobby) {
         this.openLobby = openLobby;
     }
-
-    public List<CategoryEnum> getHints() {
-        return hints;
-    }
-
-    public void setHints(List<CategoryEnum> hints) {
-        this.hints = hints;
-    }
-
-    public String getLobbyCreatorUserId() {
-        return lobbyCreatorUserId;
-    }
-
-    public void setLobbyCreatorUserId(String lobbyCreatorUserId) {
-        this.lobbyCreatorUserId = lobbyCreatorUserId;
-    }
-
 }
 

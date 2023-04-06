@@ -8,16 +8,21 @@ import ch.uzh.ifi.hase.soprafs23.service.GameService;
 public class ScoreboardStateClass implements GameStateClass{
     @Override
     public Game updateGameEverySecond(Game game, GameService gameService) {
-        if(game.getRemainingRounds() == 0){
-            game.setCurrentState(GameState.ENDED);
+        System.out.println("In Scoreboard State Class, updating every Second");
+        if (game.getRemainingTime() == 0) {
+            if (game.getRemainingRounds() == 0) {
+                game.setCurrentState(GameState.ENDED);
+                gameService.updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
+            }
+            else {
+                //Let SETUP State handle the rest
+                game.setRemainingRounds(game.getRemainingRounds() - 1);
+                game.setCurrentState(GameState.SETUP);
+            }
             return game;
         }
-        if(game.getRemainingTime()>0) {
-            game.setRemainingTime(game.getRemainingTime() - 1);
-            gameService.updateGameState(game.getGameId(), WebsocketType.TIMEUPDATE, game.getRemainingTime());
-            return game;
-        }
-        game.setRemainingTime(game.get);
+        game.setRemainingTime(game.getRemainingTime() - 1);
+        gameService.updateGameState(game.getGameId(), WebsocketType.TIMEUPDATE, game.getRemainingTime());
         return game;
     }
 }

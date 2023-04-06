@@ -14,7 +14,8 @@ public class CategoryStack {
     @GeneratedValue
     private Long categoryStackId;
 
-    private CategoryEnum currentCategory;
+    @Embedded
+    private Category currentCategory;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "SELECTEDCATEGORIES", joinColumns = @JoinColumn(name = "categoryStackId"))
     @Column(name = "categoryEnum")
@@ -33,6 +34,7 @@ public class CategoryStack {
     public CategoryStack() {
         remainingCategories = new ArrayList<>();
         selectedCategories = new ArrayList<>();
+        currentCategory = new Category();
         stackIdx = -1;
     }
 
@@ -81,11 +83,11 @@ public class CategoryStack {
         this.categoryStackId = categoryStackId;
     }
 
-    public CategoryEnum getCurrentCategory() {
+    public Category getCurrentCategory() {
         return currentCategory;
     }
 
-    public void setCurrentCategory(CategoryEnum currentCategory) {
+    public void setCurrentCategory(Category currentCategory) {
         this.currentCategory = currentCategory;
     }
 
