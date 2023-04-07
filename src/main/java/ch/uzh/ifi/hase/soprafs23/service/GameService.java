@@ -231,6 +231,9 @@ public class GameService {
     public List<Game> getGames() {
         return this.gameRepository.findAll();
     }
+    public List<Game> getOpenLobbyGames() {
+        return this.gameRepository.findByOpenLobby(TRUE);
+    }
 
     public Game getGame(Long gameId) {
         return this.gameRepository.findByGameId(gameId);
