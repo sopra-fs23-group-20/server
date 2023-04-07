@@ -9,6 +9,6 @@ import java.util.List;
 @Repository("gameRepository")
 public interface GameRepository extends JpaRepository<Game, Long> {
     Game findByGameId(Long id);
-
     List<Game> findAll();
+    List<Game> findByOpenLobby(Boolean OpenLobbyStatus);
 }

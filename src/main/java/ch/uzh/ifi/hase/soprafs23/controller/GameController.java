@@ -28,7 +28,21 @@ public class GameController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<GameGetDTO> getAllGames() {
-        // fetch all games in the internal representation
+        // fetch all games in the internal representation which are public thus openlobby is TRUE
+        List<Game> games = gameService.getOpenLobbyGames();
+        List<GameGetDTO> gameGetDTOs = new ArrayList<>();
+
+        // convert each game to the API representation
+        for (Game game : games) {
+            gameGetDTOs.add(DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
+        }
+        return gameGetDTOs;
+    }
+    @GetMapping("/allGames")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<GameGetDTO> getAllPublicGames() {
+        // fetch all games in the internal representation incl. the private Game lobbies
         List<Game> games = gameService.getGames();
         List<GameGetDTO> gameGetDTOs = new ArrayList<>();
 

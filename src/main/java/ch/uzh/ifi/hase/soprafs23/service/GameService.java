@@ -22,8 +22,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
+import java.util.Random;
+
+
 import java.util.*;
 import java.util.concurrent.*;
+
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 @Service
 @Transactional
@@ -63,6 +70,9 @@ public class GameService {
         Long lobbyCreatorUserId = Long.parseLong(gamePostDTO.getLobbyCreatorUserId());
         User lobbyCreatorUser = userRepository.findByUserId(lobbyCreatorUserId);
         GameUser lobbyCreator = GameUser.transformUserToGameUser(lobbyCreatorUser, game);
+
+        //Set GameID which is now generated randomly
+        game.setGameId(generateGameID());
 
         //Set participants
         Set<GameUser> gameUsers = new HashSet<>();
@@ -221,6 +231,9 @@ public class GameService {
     public List<Game> getGames() {
         return this.gameRepository.findAll();
     }
+    public List<Game> getOpenLobbyGames() {
+        return this.gameRepository.findByOpenLobby(TRUE);
+    }
 
     public Game getGame(Long gameId) {
         return this.gameRepository.findByGameId(gameId);
@@ -299,4 +312,34 @@ public class GameService {
         // websocketPackage = new WebsocketPackage(websocketType, websocketParam);
         //sendWebsocketPackageToPlayer(gameUser, websocketPackage);
     }
+    public long generateGameID(){
+        //this function creates an ID between 10000 and 99999 to define the game id
+        Random rand = new Random();
+        long rndNumber = rand.nextInt(89999);
+        long GameID= rndNumber+10000;
+        System.out.println("The random GameID is" + (GameID) );
+
+        //Now we check if it is already used by another name:
+        if(CheckGeneratedGameID(GameID)){
+            return GameID;
+        }
+        else {
+            //if the GameID is already used, the function is called again
+            generateGameID();
+        }
+        return GameID;
+    }
+    public Boolean CheckGeneratedGameID(long GameID){
+        //this function checks if the generated ID from generateGameID() is not already used, thus is unique
+        try {
+            Game foundGame = gameRepository.findByGameId(GameID);
+            if (foundGame.getGameId() == GameID){
+                return FALSE;
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return TRUE;
+    }
+
 }
