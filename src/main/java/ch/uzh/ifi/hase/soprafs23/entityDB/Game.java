@@ -18,7 +18,6 @@ import java.util.Set;
 public class Game {
 
     @Id
-    @GeneratedValue
     private Long gameId;
 
     @ManyToOne
