@@ -253,6 +253,95 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[0].status", is(user.getStatus().toString())));
     }
 
+    @Test
+    public void createUser_invalidInput_badRequest() throws Exception {
+        UserPostDTO userPostDTO = new UserPostDTO();
+        userPostDTO.setUsername("");
+
+        given(userService.createUser(Mockito.any())).willThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
+
+        MockHttpServletRequestBuilder postRequest = post("/users/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userPostDTO));
+
+        mockMvc.perform(postRequest)
+                .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    public void putUser_invalidInput_badRequest() throws Exception {
+        User user = new User();
+        user.setUserId(1L);
+        user.setUsername("testUsername");
+        user.setToken("1");
+        user.setStatus(UserStatus.ONLINE);
+
+        UserPutDTO userPutDTO = new UserPutDTO();
+        userPutDTO.setStatus(UserStatus.OFFLINE);
+        userPutDTO.setUsername("");
+        userPutDTO.setBirthday(new Date("01/01/2000"));
+
+        given(userService.updateUser(Mockito.anyLong(), Mockito.anyString(), Mockito.any())).willThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
+
+        MockHttpServletRequestBuilder putRequest = put("/users/{userId}", user.getUserId())
+                .content(asJsonString(userPutDTO))
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "1");
+
+        mockMvc.perform(putRequest)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void loginUser_invalidInput_badRequest() throws Exception {
+        UserPostDTO userPostDTO = new UserPostDTO();
+        userPostDTO.setUsername("");
+
+        given(userService.loginUser(Mockito.any())).willThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
+
+        MockHttpServletRequestBuilder postRequest = post("/users/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userPostDTO));
+
+        mockMvc.perform(postRequest)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void getUserById_invalidUserId_badRequest() throws Exception {
+
+        given(userService.getUserByIdGeneralAuth(Mockito.anyLong(), Mockito.anyString())).willThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
+
+        MockHttpServletRequestBuilder getRequest = get("/users/{userId}", -1) // negative userId
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "1");
+
+        mockMvc.perform(getRequest)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void putUser_invalidUserId_badRequest() throws Exception {
+        UserPutDTO userPutDTO = new UserPutDTO();
+        userPutDTO.setStatus(UserStatus.OFFLINE);
+        userPutDTO.setUsername("changedUsername");
+        userPutDTO.setBirthday(new Date("01/01/2000"));
+
+        given(userService.updateUser(Mockito.anyLong(), Mockito.anyString(), Mockito.any(User.class)))
+                .willThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
+
+        MockHttpServletRequestBuilder putRequest = put("/users/{userId}", -1)
+                .content(asJsonString(userPutDTO))
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "1");
+
+        mockMvc.perform(putRequest)
+                .andExpect(status().isBadRequest());
+    }
+
+
+
 
     private String asJsonString(final Object object) {
         try {
