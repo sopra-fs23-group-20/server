@@ -42,12 +42,26 @@ public class GameControllerTest {
     private GameService gameService;
 
     @Test
-    public void getAllGames_noGamesFound_emptyListReturned() throws Exception {
+    public void getGames_noGamesFound_emptyListReturned() throws Exception {
         // given
         given(gameService.getGames()).willReturn(Collections.emptyList());
 
         // when/then -> do the request + validate the result
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/games")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        // then
+        mockMvc.perform(getRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+    @Test
+    public void getAllGames_noGamesFound_emptyListReturned() throws Exception {
+        // given
+        given(gameService.getGames()).willReturn(Collections.emptyList());
+
+        // when/then -> do the request + validate the result
+        MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/allGames")
                 .contentType(MediaType.APPLICATION_JSON);
 
         // then
