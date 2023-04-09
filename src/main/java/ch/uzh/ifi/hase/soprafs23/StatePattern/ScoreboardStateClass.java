@@ -24,6 +24,7 @@ public class ScoreboardStateClass implements GameStateClass{
                 Set<Long> allCountriesIds = game.getCountriesToPlayIds();
                 selectNewRandomCountry(game);
                 game.setRemainingTime(game.getRoundDuration());
+                game.getCategoryStack().refillStack();
                 gameService.updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
                 gameService.updateGameState(game.getGameId(), WebsocketType.TIMEUPDATE, game.getRemainingTime());
             }
