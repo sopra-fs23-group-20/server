@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -140,6 +141,9 @@ public class Game {
     public void setCurrentState(GameState currentState) {
         this.currentState = currentState;
         Set<GameUser> gamesUsers = getParticipants();
+        if (gamesUsers == null) {
+            throw new IllegalStateException("Game has no participants.");
+        }
         for(GameUser gameUser: gamesUsers){
             gameUser.setUserPlayingState(currentState);
         }

@@ -130,6 +130,9 @@ public class GameService {
 
     public Game startGame(Long gameId) {
         Game game = gameRepository.findByGameId(gameId);
+        if (game == null) {
+            throw new RuntimeException("Game not found");
+        }
         game.setRemainingRounds(game.getNumberOfRounds()-1);
         game.setCurrentState(GameState.SETUP);
         gameRepository.saveAndFlush(game);
@@ -320,7 +323,7 @@ public class GameService {
         System.out.println("The random GameID is" + (GameID) );
 
         //Now we check if it is already used by another name:
-        if(CheckGeneratedGameID(GameID)){
+        if(checkGeneratedGameID(GameID)){
             return GameID;
         }
         else {
@@ -329,17 +332,16 @@ public class GameService {
         }
         return GameID;
     }
-    public Boolean CheckGeneratedGameID(long GameID){
-        //this function checks if the generated ID from generateGameID() is not already used, thus is unique
+    public boolean checkGeneratedGameID(long gameID) {
         try {
-            Game foundGame = gameRepository.findByGameId(GameID);
-            if (foundGame.getGameId() == GameID){
-                return FALSE;
+            Game foundGame = gameRepository.findByGameId(gameID);
+            if (foundGame != null && foundGame.getGameId() == gameID) {
+                return false;
             }
         } catch(Exception e) {
             e.printStackTrace();
         }
-        return TRUE;
+        return true;
     }
 
 }
