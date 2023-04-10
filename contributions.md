@@ -93,6 +93,16 @@ Jonas and I also connected a Postgres Database to Google Cloud.
 ---
 
 ## Week 3.4 - 9.4
+
+### Dario
+https://github.com/sopra-fs23-group-20/client/issues/33 </br>
+https://github.com/sopra-fs23-group-20/server/issues/36 </br>
+
+#### Description:
+I added a message that signifies the game's conclusion, implemented the logic for the settings page, and enabled the game to end after a number of rounds chosen by the lobby creator. Additionally, I developed tests for the server repository.
+
+---
+
 ## Week 17.4 - 23.4
 ## Week 24.4 - 30.4
 ## Week 1.5 - 7.5
