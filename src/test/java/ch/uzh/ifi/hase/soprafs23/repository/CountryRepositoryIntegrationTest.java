@@ -26,7 +26,7 @@ public class CountryRepositoryIntegrationTest {
         Country country = new Country();
         country.setName("Switzerland");
         country.setCapital("Bern");
-        country.setFlag("switzerland_flag.png");
+        country.setFlag("https://flagpedia.net/data/flags/w580/ch.png");
         country.setLocation(new Location());
         entityManager.persist(country);
         entityManager.flush();
@@ -45,7 +45,7 @@ public class CountryRepositoryIntegrationTest {
         Country country = new Country();
         country.setName("Switzerland");
         country.setCapital("Bern");
-        country.setFlag("switzerland_flag.png");
+        country.setFlag("https://flagpedia.net/data/flags/w580/ch.png");
         country.setLocation(new Location());
         country.setPopulation(8591365L);
         entityManager.persist(country);
@@ -65,7 +65,7 @@ public class CountryRepositoryIntegrationTest {
         Country country = new Country();
         country.setName("Switzerland");
         country.setCapital("Bern");
-        country.setFlag("switzerland_flag.png");
+        country.setFlag("https://flagpedia.net/data/flags/w580/ch.png");
         country.setLocation(new Location());
         entityManager.persist(country);
         entityManager.flush();
@@ -84,7 +84,7 @@ public class CountryRepositoryIntegrationTest {
         Country country = new Country();
         country.setName("Switzerland");
         country.setCapital("Bern");
-        country.setFlag("switzerland_flag.png");
+        country.setFlag("https://flagpedia.net/data/flags/w580/ch.png");
         country.setLocation(new Location());
         entityManager.persist(country);
         entityManager.flush();
@@ -103,7 +103,7 @@ public class CountryRepositoryIntegrationTest {
         Country country = new Country();
         country.setName("Switzerland");
         country.setCapital("Bern");
-        country.setFlag("switzerland_flag.png");
+        country.setFlag("https://flagpedia.net/data/flags/w580/ch.png");
         Location location = new Location();
         location.setLatitude(46.8182);
         location.setLongitude(8.2275);
