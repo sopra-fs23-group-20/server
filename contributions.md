@@ -100,6 +100,18 @@ https://github.com/sopra-fs23-group-20/server/issues/36 </br>
 #### Description:
 I added a message that signifies the game's conclusion, implemented the logic for the settings page, and enabled the game to end after a number of rounds chosen by the lobby creator. Additionally, I developed tests for the server repository.
 
+### Jamo
+https://github.com/sopra-fs23-group-20/client/issues/22 </br>
+https://github.com/sopra-fs23-group-20/client/issues/29 </br>
+https://github.com/sopra-fs23-group-20/client/issues/30 </br>
+https://github.com/sopra-fs23-group-20/server/issues/40 </br>
+https://github.com/sopra-fs23-group-20/client/issues/31 </br>
+https://github.com/sopra-fs23-group-20/client/issues/32 </br>
+https://github.com/sopra-fs23-group-20/client/issues/54 </br>
+https://github.com/sopra-fs23-group-20/server/issues/105 </br>
+https://github.com/sopra-fs23-group-20/server/issues/106 </br>
+https://github.com/sopra-fs23-group-20/server/issues/108 </br>
+
 ---
 ## Week 17.4 - 23.4
 ## Week 24.4 - 30.4
