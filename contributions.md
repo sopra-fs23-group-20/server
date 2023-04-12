@@ -92,7 +92,7 @@ Jonas and I also connected a Postgres Database to Google Cloud.
 
 ---
 
-## Week 3.4 - 9.4
+## (OPTIONAL Week 3.4 - 9.4 OPTIONAL) ## Week 17.4 - 23.4
 
 ### Dario
 https://github.com/sopra-fs23-group-20/client/issues/33 </br>
@@ -103,7 +103,6 @@ I added a message that signifies the game's conclusion, implemented the logic fo
 
 ---
 
-## Week 17.4 - 23.4
 ## Week 24.4 - 30.4
 ## Week 1.5 - 7.5
 ## Week 8.5 - 14.5
