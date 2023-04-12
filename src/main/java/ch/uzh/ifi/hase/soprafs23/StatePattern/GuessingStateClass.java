@@ -13,10 +13,15 @@ public class GuessingStateClass implements GameStateClass{
     public Game updateGameEverySecond(Game game, GameService gameService) {
         System.out.println("In GuessingState Class, updating every Second");
         if (game.getRemainingTime() == 0) {
-            game.setCurrentState(GameState.SCOREBOARD);
-            gameService.updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
-            game.setRemainingTime(7L);
-            gameService.updateGameState(game.getGameId(), WebsocketType.TIMEUPDATE, game.getRemainingTime());
+            if(game.getRemainingRounds() == 0){
+                game.setCurrentState(GameState.ENDED);
+                gameService.updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
+            }else {
+                game.setCurrentState(GameState.SCOREBOARD);
+                gameService.updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
+                game.setRemainingTime(7L);
+                gameService.updateGameState(game.getGameId(), WebsocketType.TIMEUPDATE, game.getRemainingTime());
+            }
         }
 
         //Make a Category Update
