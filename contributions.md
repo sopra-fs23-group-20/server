@@ -91,8 +91,7 @@ I created tests for all functions of the User entity meaning all function of the
 Jonas and I also connected a Postgres Database to Google Cloud.
 
 ---
-
-## (OPTIONAL Week 3.4 - 9.4 OPTIONAL) ## Week 17.4 - 23.4
+## Week 3.4 - 9.4 (Week 10.4 - 16.4 was OPTIONAL!) 
 
 ### Dario
 https://github.com/sopra-fs23-group-20/client/issues/33 </br>
@@ -102,7 +101,7 @@ https://github.com/sopra-fs23-group-20/server/issues/36 </br>
 I added a message that signifies the game's conclusion, implemented the logic for the settings page, and enabled the game to end after a number of rounds chosen by the lobby creator. Additionally, I developed tests for the server repository.
 
 ---
-
+## Week 17.4 - 23.4
 ## Week 24.4 - 30.4
 ## Week 1.5 - 7.5
 ## Week 8.5 - 14.5
