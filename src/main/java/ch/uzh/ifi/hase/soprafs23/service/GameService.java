@@ -158,12 +158,12 @@ public class GameService {
 
             String returnString = "";
             if (countryRepository.findNameByCountryId(game.getCurrentCountryId()).equals(guess.getGuess())) {
-                gameUser.setGamePoints(game.getRemainingRoundPoints());
+                gameUser.setGamePoints(game.getRemainingRoundPoints() + gameUser.getGamePoints());
                 returnString = "Your guess was right you get " + game.getRemainingRoundPoints() + " points";
                 System.out.println("The user " + gameUser.getUsername() + " got " + gameUser.getGamePoints() + " points");
             }
             else {
-                gameUser.setGamePoints(0L);
+                gameUser.setGamePoints(gameUser.getGamePoints());
                 returnString = "Your guess was wrong you get 0 points";
             }
             boolean haveAllGuessed = true;

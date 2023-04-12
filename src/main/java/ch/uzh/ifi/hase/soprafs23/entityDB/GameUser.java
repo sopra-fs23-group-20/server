@@ -95,7 +95,7 @@ public class GameUser implements Serializable {
         gameUser.setUserId(user.getUserId());
         gameUser.setUsername(user.getUsername());
         gameUser.setToken(user.getToken());
-        gameUser.setGamePoints(100L);
+        gameUser.setGamePoints(0L);
         gameUser.setUserPlayingState(GameState.SETUP);
         return gameUser;
     }
