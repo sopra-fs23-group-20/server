@@ -18,6 +18,15 @@ public class UserPutDTO {
 
     private String profilePicture;
 
+    public int getGamesWon() {
+        return gamesWon;
+    }
+
+    public void setGamesWon(int gamesWon) {
+        this.gamesWon = gamesWon;
+    }
+
+    private int gamesWon;
     public String getUsername() {
         return username;
     }

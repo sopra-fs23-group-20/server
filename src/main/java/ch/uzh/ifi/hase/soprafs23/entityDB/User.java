@@ -39,6 +39,9 @@ public class User implements Serializable {
     @Column(length = 1000000)
     private String profilePicture;
 
+    @Column()
+    private int gamesWon;
+
 
     public Long getUserId() {
         return userId;
@@ -101,6 +104,9 @@ public class User implements Serializable {
 
     public String getProfilePicture() {return profilePicture; }
     public void setProfilePicture(String profilePicture) {this.profilePicture = profilePicture; }
+
+    public int getGamesWon() {return gamesWon; }
+    public void setGamesWon(int gamesWon) {this.gamesWon = gamesWon; }
 
 
 }

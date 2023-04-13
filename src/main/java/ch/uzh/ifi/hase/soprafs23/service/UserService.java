@@ -155,6 +155,10 @@ public class UserService {
         if (userInput.getProfilePicture() != null) {
             originalUser.setProfilePicture(userInput.getProfilePicture());
         }
+
+        if (!(userInput.getGamesWon() < 0)) {
+            originalUser.setGamesWon(userInput.getGamesWon());
+        }
         userRepository.save(originalUser);
         //userRepository.flush();
         log.debug("Updated Information for User: {}", originalUser);
