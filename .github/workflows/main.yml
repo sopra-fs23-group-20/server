@@ -67,6 +67,7 @@ jobs:
   deployRaspberryPi:
     name: Deploying to Raspberry Pi
     runs-on: ubuntu-latest
+    needs: deploy
     steps:
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
