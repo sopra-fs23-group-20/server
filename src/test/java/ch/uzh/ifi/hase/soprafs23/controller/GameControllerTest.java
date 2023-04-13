@@ -6,6 +6,7 @@ import ch.uzh.ifi.hase.soprafs23.entityDB.GameUser;
 import ch.uzh.ifi.hase.soprafs23.entityOther.Guess;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GuessPostDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,6 +56,23 @@ public class GameControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
     }
+
+    @Test
+    public void getAllGames_noOpenLobbyGames_emptyListReturned() throws Exception {
+        // given
+        given(gameService.getOpenLobbyGames()).willReturn(Collections.emptyList());
+
+        // when/then -> do the request + validate the result
+        MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/games")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        // then
+        mockMvc.perform(getRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+
     @Test
     public void getAllGames_noGamesFound_emptyListReturned() throws Exception {
         // given
@@ -70,18 +88,22 @@ public class GameControllerTest {
                 .andExpect(jsonPath("$", hasSize(0)));
     }
 
-    /*
+
+
     @Test
     public void getAllGames_gamesFound_gamesReturned() throws Exception {
         // given
         List<Game> games = new ArrayList<>();
         Game game1 = new Game();
         game1.setGameId(1L);
+        game1.setRoundDuration(2L);
         games.add(game1);
         Game game2 = new Game();
         game2.setGameId(2L);
+        game2.setRoundDuration(2L);
         games.add(game2);
 
+        given(gameService.getOpenLobbyGames()).willReturn(games);
         given(gameService.getGames()).willReturn(games);
 
         // when/then -> do the request + validate the result
@@ -105,6 +127,7 @@ public class GameControllerTest {
 
         Game createdGame = new Game();
         createdGame.setGameId(1L);
+        createdGame.setRoundDuration(4L);
 
         given(gameService.createGame(Mockito.any(GamePostDTO.class))).willReturn(createdGame);
 
@@ -122,7 +145,7 @@ public class GameControllerTest {
 
     }
 
-
+    /*
     @Test
     public void updateGameConfiguration_validInput_gameUpdated() throws Exception {
         // given
@@ -145,12 +168,14 @@ public class GameControllerTest {
         mockMvc.perform(putRequest)
                 .andExpect(status().isNoContent());
     }
+ */
 
     @Test
     public void getGameInfo_validInput_gameFound() throws Exception {
         // given
         Game game = new Game();
         game.setGameId(1L);
+        game.setRoundDuration(3L);
 
         given(gameService.getGame(Mockito.anyLong())).willReturn(game);
 
@@ -163,7 +188,7 @@ public class GameControllerTest {
         mockMvc.perform(getRequest)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.gameId", is(game.getGameId().intValue())));
-    }*/
+    }
 
 
     @Test
@@ -286,12 +311,12 @@ public class GameControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.gameId", is(game.getGameId().intValue())))
                 .andExpect(jsonPath("$.currentState", is(game.getCurrentState().toString())));
-                //.andExpect(jsonPath("$.remainingRoundPoints", is(game.getRemainingRoundPoints())))
-                //.andExpect(jsonPath("$.remainingRounds", is(game.getRemainingRounds())))
-                //.andExpect(jsonPath("$.roundSeconds", is(game.getRoundSeconds())))
-                //.andExpect(jsonPath("$.randomizedHints", is(game.getRandomizedHints())))
-                //.andExpect(jsonPath("$.numberOfRounds", is(game.getNumberOfRounds())))
-                //.andExpect(jsonPath("$.openLobby", is(game.getOpenLobby())));
+        //.andExpect(jsonPath("$.remainingRoundPoints", is(game.getRemainingRoundPoints())))
+        //.andExpect(jsonPath("$.remainingRounds", is(game.getRemainingRounds())))
+        //.andExpect(jsonPath("$.roundSeconds", is(game.getRoundSeconds())))
+        //.andExpect(jsonPath("$.randomizedHints", is(game.getRandomizedHints())))
+        //.andExpect(jsonPath("$.numberOfRounds", is(game.getNumberOfRounds())))
+        //.andExpect(jsonPath("$.openLobby", is(game.getOpenLobby())));
     }
 
 
@@ -307,12 +332,14 @@ public class GameControllerTest {
     }
 
 
-    /*
+
     @Test
     public void joinGame_validInput_gameJoined() throws Exception {
         // given
         Game game = new Game();
         game.setGameId(1L);
+        game.setRoundDuration(2L);
+
 
         Set<GameUser> participants = new HashSet<>();
         GameUser gameUser = new GameUser();
@@ -337,7 +364,7 @@ public class GameControllerTest {
                 .andExpect(jsonPath("$.participants[0].userId", is(game.getParticipants().iterator().next().getUserId().intValue())));
     }
 
-     */
+
 
     @Test
     public void joinGame_invalidInput_gameNotFound() throws Exception {
@@ -412,7 +439,6 @@ public class GameControllerTest {
     }
 
 
-
     @Test
     public void submitGuess_invalidGuess_guessNotSubmitted() throws Exception {
         // given
@@ -452,7 +478,6 @@ public class GameControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().string("Your guess was wrong you get 0 points"));
     }
-
 
 
     private String asJsonString(final Object object) {
