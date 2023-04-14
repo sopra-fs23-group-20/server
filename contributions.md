@@ -112,6 +112,14 @@ https://github.com/sopra-fs23-group-20/server/issues/105 </br>
 https://github.com/sopra-fs23-group-20/server/issues/106 </br>
 https://github.com/sopra-fs23-group-20/server/issues/108 </br>
 
+
+### Jonathan
+https://github.com/sopra-fs23-group-20/client/issues/59 </br>
+https://github.com/sopra-fs23-group-20/server/issues/103 </br>
+https://github.com/sopra-fs23-group-20/server/issues/109 </br>
+
+
+
 ---
 ## Week 17.4 - 23.4
 ## Week 24.4 - 30.4
