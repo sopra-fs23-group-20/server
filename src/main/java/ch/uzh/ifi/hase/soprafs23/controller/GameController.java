@@ -38,6 +38,7 @@ public class GameController {
         }
         return gameGetDTOs;
     }
+
     @GetMapping("/allGames")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -109,12 +110,11 @@ public class GameController {
     }
 
     /**
-    @GetMapping("/games/{gameId}/scoreboard")
-    @ResponseStatus(HttpStatus.OK)
-    public x getScoreboard(@PathVariable Long gameId) {
-        //TODO work out how the scoreboard is stored and returned
-        return GameService.getScoreboard(gameId);
-    }
-    */
+     @GetMapping("/games/{gameId}/scoreboard")
+     @ResponseStatus(HttpStatus.OK) public x getScoreboard(@PathVariable Long gameId) {
+     //TODO work out how the scoreboard is stored and returned
+     return GameService.getScoreboard(gameId);
+     }
+     */
 }
 
