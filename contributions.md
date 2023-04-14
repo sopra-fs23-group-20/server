@@ -118,7 +118,17 @@ https://github.com/sopra-fs23-group-20/client/issues/59 </br>
 https://github.com/sopra-fs23-group-20/server/issues/103 </br>
 https://github.com/sopra-fs23-group-20/server/issues/109 </br>
 
-
+### Louis
+https://github.com/sopra-fs23-group-20/client/issues/4
+</br>
+https://github.com/sopra-fs23-group-20/server/issues/91
+#### Description:
+added funcion that a user can enter a lobby by using the GameID as a code, created code = GameId
+#### Additional Tasks:
+https://github.com/sopra-fs23-group-20/client/issues/15
+</br>
+https://github.com/sopra-fs23-group-20/client/issues/53
+like described in the email
 
 ---
 ## Week 17.4 - 23.4
