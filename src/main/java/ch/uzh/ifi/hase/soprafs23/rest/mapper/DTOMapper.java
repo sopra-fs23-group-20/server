@@ -35,6 +35,7 @@ public interface DTOMapper {
     @Mapping(source = "birthday", target = "birthday")
     @Mapping(source = "nationality", target = "nationality")
     @Mapping(source = "profilePicture", target = "profilePicture")
+    @Mapping(source = "gamesWon", target = "gamesWon")
     UserGetDTO convertEntityToUserGetDTO(User user);
 
 
@@ -57,7 +58,7 @@ public interface DTOMapper {
     @Mapping(source = "numberOfRounds", target = "numberOfRounds")
     @Mapping(source = "remainingRounds", target = "remainingRounds")
     @Mapping(source = "remainingRoundPoints", target = "remainingRoundPoints")
-    @Mapping(source = "regionsSelected", target = "regionsSelected")
+    @Mapping(source = "regionSet", target = "regionSet")
     @Mapping(source = "categoryStack", target = "categoryStack")
     @Mapping(source="randomizedHints", target="randomizedHints")
     @Mapping(source="openLobby", target="openLobby")

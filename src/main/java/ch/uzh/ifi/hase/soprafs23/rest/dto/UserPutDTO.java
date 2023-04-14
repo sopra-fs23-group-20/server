@@ -75,7 +75,17 @@ public class UserPutDTO {
         this.profilePicture = profilePicture;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "UserPutDTO{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", birthday=" + birthday +
+                ", status=" + status +
+                ", nationality='" + nationality + '\'' +
+                ", profilePicture='" + profilePicture + '\'' +
+                ", gamesWon=" + gamesWon +
+                '}';
+    }
 
 }

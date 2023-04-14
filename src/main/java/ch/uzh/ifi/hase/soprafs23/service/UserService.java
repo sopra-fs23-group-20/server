@@ -157,7 +157,10 @@ public class UserService {
         }
 
         if (!(userInput.getGamesWon() < 0)) {
+            System.out.println("Updated Games Won attribute");
+            System.out.println(userInput.getGamesWon());
             originalUser.setGamesWon(userInput.getGamesWon());
+            System.out.println(originalUser.getGamesWon());
         }
         userRepository.save(originalUser);
         //userRepository.flush();

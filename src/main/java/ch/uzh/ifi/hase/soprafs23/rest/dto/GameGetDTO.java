@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import ch.uzh.ifi.hase.soprafs23.entityDB.CategoryStack;
 import ch.uzh.ifi.hase.soprafs23.entityDB.GameUser;
+import ch.uzh.ifi.hase.soprafs23.entityDB.RegionSet;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.CascadeType;
@@ -26,7 +27,7 @@ public class GameGetDTO {
     private Long numberOfRounds;
     private Long remainingRounds;
     private Long remainingRoundPoints;
-    private Set<RegionEnum> regionsSelected;
+    private RegionSet regionSet;
     private CategoryStack categoryStack;
     private Boolean randomizedHints;
     private Boolean openLobby;
@@ -112,12 +113,12 @@ public class GameGetDTO {
         this.remainingRoundPoints = remainingRoundPoints;
     }
 
-    public Set<RegionEnum> getRegionsSelected() {
-        return regionsSelected;
+    public RegionSet getRegionSet() {
+        return regionSet;
     }
 
-    public void setRegionsSelected(Set<RegionEnum> regionsSelected) {
-        this.regionsSelected = regionsSelected;
+    public void setRegionSet(RegionSet regionSet) {
+        this.regionSet = regionSet;
     }
 
     public CategoryStack getCategoryStack() {

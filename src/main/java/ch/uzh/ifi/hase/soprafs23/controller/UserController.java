@@ -92,6 +92,12 @@ public class UserController {
     public void updateUser(@PathVariable Long userId, @RequestBody UserPutDTO userPutDTO, @RequestHeader("Authorization") String authHeader) {
         //Update User
         User userInput = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
+        System.out.println("Updating user with ID: " + userId);
+        System.out.println("Received user input: " + userInput.toString());
+        System.out.println("Received PUT request for user ID: " + userId);
+        System.out.println("UserPutDTO: " + userPutDTO.toString());
+        System.out.println("AuthHeader: " + authHeader);
+
         userService.updateUser(userId, authHeader, userInput);
     }
 

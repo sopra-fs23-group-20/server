@@ -5,8 +5,6 @@ import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -44,9 +42,10 @@ public class Game {
     private Long remainingRounds;
     @Column()
     private Long remainingRoundPoints;
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "regionsSelected", joinColumns = @JoinColumn(name = "gameId"))
-    private Set<RegionEnum> regionsSelected;
+
+    @OneToOne
+    @CollectionTable(name = "regionSet", joinColumns = @JoinColumn(name = "gameId"))
+    private RegionSet regionSet;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "categoryStackId")
     private CategoryStack categoryStack;
@@ -97,6 +96,14 @@ public class Game {
 
     @ElementCollection(targetClass = CategoryEnum.class)
     private List<CategoryEnum> availableHints;
+
+    public RegionSet getRegionSet() {
+        return regionSet;
+    }
+
+    public void setRegionSet(RegionSet regionSet) {
+        this.regionSet = regionSet;
+    }
 
     public Long getRemainingRoundPoints() {
         return remainingRoundPoints;
@@ -158,11 +165,11 @@ public class Game {
     }
 
     public Set<RegionEnum> getRegionsSelected() {
-        return regionsSelected;
+        return regionSet.getSelectedRegions();
     }
 
     public void setRegionsSelected(Set<RegionEnum> regionsSelected) {
-        this.regionsSelected = regionsSelected;
+        this.regionSet.setSelectedRegions(regionsSelected);
     }
 
     public Set<Long> getCountriesToPlayIds() {
