@@ -303,15 +303,24 @@ public class GameService {
     }
 
     public void updateGameState(Long gameId, WebsocketType websocketType, Object websocketParam) {
-        WebsocketPackage websocketPackage = new WebsocketPackage(websocketType, websocketParam);
-        System.out.println("Sending game state update to all players on game " + gameId);
-        messagingTemplate.convertAndSend("/topic/games/" + gameId, websocketPackage);
+        try{
+            WebsocketPackage websocketPackage = new WebsocketPackage(websocketType, websocketParam);
+            System.out.println("Sending game state update to all players on game " + gameId);
+            messagingTemplate.convertAndSend("/topic/games/" + gameId, websocketPackage);
+        }catch (Exception e){
+            System.out.println("Error sending game state update to all players on game " + gameId);
+        }
+
     }
 
     private void updatePlayerState(Long gameUserId, Long gameId, WebsocketType websocketType, Object websocketParam){
-        WebsocketPackage websocketPackage = new WebsocketPackage(websocketType, websocketParam);
-        System.out.println("Sending player state update to player " + gameUserId + " on game " + gameId);
-        messagingTemplate.convertAndSend("/topic/games/" + gameId + "/" + gameUserId, websocketPackage);
+        try {
+            WebsocketPackage websocketPackage = new WebsocketPackage(websocketType, websocketParam);
+            System.out.println("Sending player state update to player " + gameUserId + " on game " + gameId);
+            messagingTemplate.convertAndSend("/topic/games/" + gameId + "/" + gameUserId, websocketPackage);
+        }catch (Exception e){
+            System.out.println("Error sending player state update to player " + gameUserId + " on game " + gameId);
+        }
     }
 
     public long generateGameID(){
