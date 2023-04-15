@@ -7,6 +7,6 @@ public enum WebsocketType {
     PLAYERUPDATE,
 
     POINTSUPDATE,
-    SCOREBOARDUPDATE
+    ROUNDUPDATE,
 
 }

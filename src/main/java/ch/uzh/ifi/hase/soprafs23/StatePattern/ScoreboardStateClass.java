@@ -1,8 +1,12 @@
 package ch.uzh.ifi.hase.soprafs23.StatePattern;
 
+import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.WebsocketType;
+import ch.uzh.ifi.hase.soprafs23.entityDB.Category;
+import ch.uzh.ifi.hase.soprafs23.entityDB.CategoryStack;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Game;
+import ch.uzh.ifi.hase.soprafs23.entityDB.GameUser;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 
 import java.util.*;
@@ -11,22 +15,30 @@ public class ScoreboardStateClass implements GameStateClass{
     @Override
     public Game updateGameEverySecond(Game game, GameService gameService) {
         System.out.println("In Scoreboard State Class, updating every Second");
-        if (game.getRemainingTime() == 0) {
+        if (game.getRemainingTime() == 1) {
             if (game.getRemainingRounds() == 0) {
                 game.setCurrentState(GameState.ENDED);
                 gameService.updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
             }
             else {
-                //Let SETUP State handle the rest
                 game.setRemainingRounds(game.getRemainingRounds() - 1);
                 game.setCurrentState(GameState.GUESSING);
                 game.setRemainingRoundPoints(100L);
                 Set<Long> allCountriesIds = game.getCountriesToPlayIds();
                 selectNewRandomCountry(game);
                 game.setRemainingTime(game.getRoundDuration());
+                resetAlreadyGuess(game);
                 game.getCategoryStack().refillStack();
+                CategoryStack categoryStack = game.getCategoryStack();
+                CategoryEnum categoryEnum = categoryStack.pop();
+                Category currentCategory = gameService.transformToCategory(categoryEnum, game.getCurrentCountryId());
+                categoryStack.setCurrentCategory(currentCategory);
+                gameService.updateGameState(game.getGameId(), WebsocketType.CATEGORYUPDATE, categoryStack);
                 gameService.updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
                 gameService.updateGameState(game.getGameId(), WebsocketType.TIMEUPDATE, game.getRemainingTime());
+                gameService.updateGameState(game.getGameId(), WebsocketType.ROUNDUPDATE, game.getRemainingRounds());
+                gameService.updateGameState(game.getGameId(), WebsocketType.PLAYERUPDATE, game.getParticipants());
+                gameService.updateGameState(game.getGameId(), WebsocketType.POINTSUPDATE, game.getRemainingRoundPoints());
             }
             return game;
         }
@@ -42,5 +54,11 @@ public class ScoreboardStateClass implements GameStateClass{
         game.setCurrentCountryId(myList.get(randomIndex));
         myList.remove(randomIndex);
         game.setCountriesToPlayIds(new HashSet<>(myList));
+    }
+
+    private void resetAlreadyGuess(Game game){
+        for (GameUser gameUser : game.getParticipants()) {
+            gameUser.setHasAlreadyGuessed(false);
+        }
     }
 }

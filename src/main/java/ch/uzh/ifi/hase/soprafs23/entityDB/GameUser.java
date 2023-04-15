@@ -24,9 +24,20 @@ public class GameUser implements Serializable {
     private String token;
     private String username;
 
+    private boolean hasAlreadyGuessed;
+
     private Long gamePoints;
 
     private GameState userPlayingState;
+
+
+    public boolean isHasAlreadyGuessed() {
+        return hasAlreadyGuessed;
+    }
+
+    public void setHasAlreadyGuessed(boolean hasAlreadyGuessed) {
+        this.hasAlreadyGuessed = hasAlreadyGuessed;
+    }
 
     public Long getUserId() {
         return userId;

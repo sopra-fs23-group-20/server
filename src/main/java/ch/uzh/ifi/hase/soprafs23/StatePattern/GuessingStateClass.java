@@ -12,7 +12,7 @@ public class GuessingStateClass implements GameStateClass{
     @Override
     public Game updateGameEverySecond(Game game, GameService gameService) {
         System.out.println("In GuessingState Class, updating every Second");
-        if (game.getRemainingTime() == 0) {
+        if (game.getRemainingTime() == 1) {
             if(game.getRemainingRounds() == 0){
                 game.setCurrentState(GameState.ENDED);
                 gameService.updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
@@ -25,7 +25,10 @@ public class GuessingStateClass implements GameStateClass{
         }
 
         //Make a Category Update
-        if (game.getRemainingTime() % ((int) (game.getRoundDuration() / game.getCategoryStack().getSelectedCategories().size())) == 0) {
+        Long timeBetweenCategoryUpdates = game.getRoundDuration() / game.getCategoryStack().getSelectedCategories().size();
+        System.out.println("Time between Category Updates: " + timeBetweenCategoryUpdates);
+        System.out.println("Time between times size " + timeBetweenCategoryUpdates * game.getCategoryStack().getSelectedCategories().size());
+        if (game.getRemainingTime() < timeBetweenCategoryUpdates * game.getCategoryStack().getRemainingCategories().size()) {
             if(!game.getCategoryStack().isEmpty()){
                 CategoryStack categoryStack = game.getCategoryStack();
                 CategoryEnum categoryEnum = categoryStack.pop();
