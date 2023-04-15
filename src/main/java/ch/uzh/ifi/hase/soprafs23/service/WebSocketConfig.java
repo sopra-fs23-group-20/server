@@ -18,7 +18,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/socket")
-                .setAllowedOrigins("http://localhost:3000") // Replace with your frontend application's origin
+                .setAllowedOrigins("http://localhost:3000", "https://sopra-fs23-group20-client.pktriot.net/","https://sopra-fs23-group-20-client.oa.r.appspot.com/") // Replace with your frontend application's origin
                 .withSockJS();
     }
 }
