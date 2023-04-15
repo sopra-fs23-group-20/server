@@ -7,7 +7,7 @@ runtime_config:
 
 
 network:
-  session_affinity: true
+  session_affinity: false
 
 env_variables:
   SPRING_PROFILES_ACTIVE: 'dev'
