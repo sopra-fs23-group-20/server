@@ -69,7 +69,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .headers(responseHeaders)
                 .body(userGetDTO);
-
     }
 
     @PostMapping("/users/login")
