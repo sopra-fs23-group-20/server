@@ -93,12 +93,16 @@ Jonas and I also connected a Postgres Database to Google Cloud.
 ---
 ## Week 3.4 - 9.4 (Week 10.4 - 16.4 was OPTIONAL!) 
 
+---
+
 ### Dario
 https://github.com/sopra-fs23-group-20/client/issues/33 </br>
 https://github.com/sopra-fs23-group-20/server/issues/36 </br>
 
 #### Description:
 I added a message that signifies the game's conclusion, implemented the logic for the settings page, and enabled the game to end after a number of rounds chosen by the lobby creator. Additionally, I developed tests for the server repository.
+
+---
 
 ### Jamo
 https://github.com/sopra-fs23-group-20/client/issues/22 </br>
@@ -112,6 +116,7 @@ https://github.com/sopra-fs23-group-20/server/issues/105 </br>
 https://github.com/sopra-fs23-group-20/server/issues/106 </br>
 https://github.com/sopra-fs23-group-20/server/issues/108 </br>
 
+---
 
 ### Jonathan
 https://github.com/sopra-fs23-group-20/client/issues/59 </br>
@@ -119,6 +124,7 @@ https://github.com/sopra-fs23-group-20/server/issues/103 </br>
 https://github.com/sopra-fs23-group-20/server/issues/109 </br>
 https://github.com/sopra-fs23-group-20/server/issues/111 </br>
 
+---
 
 ### Louis
 https://github.com/sopra-fs23-group-20/client/issues/4
@@ -131,6 +137,24 @@ https://github.com/sopra-fs23-group-20/client/issues/15
 </br>
 https://github.com/sopra-fs23-group-20/client/issues/53
 like described in the email
+
+---
+
+### Jonas
+
+https://github.com/sopra-fs23-group-20/server/issues/58 </br>
+https://github.com/sopra-fs23-group-20/client/issues/49 </br>
+https://github.com/sopra-fs23-group-20/client/issues/50 </br>
+https://github.com/sopra-fs23-group-20/server/issues/48 </br>
+
+#### Description:
+I refactored the backend using the State pattern for the different game states (SETUP, GUESSING, SCOREBOARD, ENDED) and implemented websocket connections on /topic/games/{gameId} and /topic/games/{gameId}/{userId} to send game updates to the players.
+
+#### Tasks for next week:
+https://github.com/sopra-fs23-group-20/client/issues/63 (Bug fix: The current round in the game allways says "Nan") </br>
+https://github.com/sopra-fs23-group-20/client/issues/64 (When joining a lobby via link without being logged in the user should be redirected to the register page and then after registering automatically be redirected to the game he/she tried to join) </br>
+https://github.com/sopra-fs23-group-20/client/issues/51  (There should be a websocket connection on /topic/gameLobbies where newly created lobbies should be sent to the client so the gameLobbyOverview page is always up-to-date without needing to manually refresh the page) </br>
+
 
 ---
 ## Week 17.4 - 23.4
