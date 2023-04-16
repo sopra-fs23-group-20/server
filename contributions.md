@@ -117,6 +117,8 @@ https://github.com/sopra-fs23-group-20/server/issues/108 </br>
 https://github.com/sopra-fs23-group-20/client/issues/59 </br>
 https://github.com/sopra-fs23-group-20/server/issues/103 </br>
 https://github.com/sopra-fs23-group-20/server/issues/109 </br>
+https://github.com/sopra-fs23-group-20/server/issues/111 </br>
+
 
 ### Louis
 https://github.com/sopra-fs23-group-20/client/issues/4
