@@ -116,6 +116,8 @@ https://github.com/sopra-fs23-group-20/server/issues/105 </br>
 https://github.com/sopra-fs23-group-20/server/issues/106 </br>
 https://github.com/sopra-fs23-group-20/server/issues/108 </br>
 
+#### Description:
+I mainly worked on the scoreboard and its corresponding features. The scoreboard will now appear after each round showing the points and ranks of each player. At the end the final Scoreboard with the corresponding points will be displayed. 
 ---
 
 ### Jonathan
