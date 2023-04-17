@@ -90,7 +90,7 @@ public class UserIntegrationTest {
     public void testLoginUser() throws Exception {
         // create user entity
         User userEntity = new User();
-        userEntity.setUsername("john_doe");
+        userEntity.setUsername("john_doe3");
         userEntity.setPassword("password123");
         userEntity.setCreation_date(new Date());
         userEntity.setStatus(UserStatus.OFFLINE);
@@ -102,7 +102,7 @@ public class UserIntegrationTest {
 
         // create login user object
         User loginUser = new User();
-        loginUser.setUsername("john_doe");
+        loginUser.setUsername("john_doe3");
         loginUser.setPassword("password123");
 
         // login user and verify user status
