@@ -69,7 +69,7 @@ public class UserIntegrationTest {
 
         // update user with new data
         User updatedUser = new User();
-        updatedUser.setUsername("jane_doe");
+        updatedUser.setUsername("jane_doe_new");
         updatedUser.setPassword("new_password");
         updatedUser.setNationality("Canada");
         updatedUser.setGamesWon(15);
