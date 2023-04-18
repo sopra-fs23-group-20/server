@@ -7,6 +7,7 @@ import ch.uzh.ifi.hase.soprafs23.entityDB.Category;
 import ch.uzh.ifi.hase.soprafs23.entityDB.CategoryStack;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Game;
 import ch.uzh.ifi.hase.soprafs23.entityDB.GameUser;
+import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 
 import java.util.*;
@@ -27,12 +28,7 @@ public class SetupStateClass implements GameStateClass {
         categoryStack.setCurrentCategory(currentCategory);
         resetAlreadyGuess(game);
         game.setRemainingTime(game.getRoundDuration());
-        gameService.updateGameState(game.getGameId(), WebsocketType.CATEGORYUPDATE, categoryStack);
-        gameService.updateGameState(game.getGameId(), WebsocketType.PLAYERUPDATE, game.getParticipants());
-        gameService.updateGameState(game.getGameId(), WebsocketType.POINTSUPDATE, game.getRemainingRoundPoints());
-        gameService.updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
-        gameService.updateGameState(game.getGameId(), WebsocketType.TIMEUPDATE, game.getRemainingTime());
-        gameService.updateGameState(game.getGameId(), WebsocketType.ROUNDUPDATE, game.getRemainingRounds());
+        gameService.updateGameState(game.getGameId(), WebsocketType.GAMEUPDATE, DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
         return game;
     }
 

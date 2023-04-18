@@ -8,5 +8,6 @@ public enum WebsocketType {
 
     POINTSUPDATE,
     ROUNDUPDATE,
+    GAMEUPDATE,
 
 }
