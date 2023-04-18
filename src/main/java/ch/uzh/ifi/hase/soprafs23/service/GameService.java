@@ -245,8 +245,12 @@ public class GameService {
     }
 
     public void checkForNecessaryGameUpdates() throws InterruptedException {
-        while (gameRepository.areGamesStillOngoing(GameState.GUESSING.ordinal(), GameState.SCOREBOARD.ordinal())) {
-            for (Game game : gameRepository.findGamesToUpdate(GameState.GUESSING.ordinal(), GameState.SCOREBOARD.ordinal())) {
+        List<Game> gamesToUpdate = gameRepository.findGamesToUpdateSimple(GameState.GUESSING.ordinal(), GameState.SCOREBOARD.ordinal());
+        while (gamesToUpdate.size() > 0) {
+            for (Game game : gamesToUpdate) {
+                if(checkIfLatestUpdateWasRecent(game)){
+                    continue;
+                }
                 System.out.println("Updating game with ID: " + game.getGameId());
                 Date lastUpdate = game.getLastUpdate();
                 Calendar calendar = Calendar.getInstance();
@@ -259,8 +263,18 @@ public class GameService {
                 updateGameEverySecond(game.getGameId());
             }
             Thread.sleep(100L );
+            gamesToUpdate = gameRepository.findGamesToUpdateSimple(GameState.GUESSING.ordinal(), GameState.SCOREBOARD.ordinal());
         }
         System.out.println("No more games to update");
+    }
+
+    private boolean checkIfLatestUpdateWasRecent(Game game){
+        Date now = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.add(Calendar.SECOND, -1);
+        Date oneSecondAgo = calendar.getTime();
+        return game.getLastUpdate().after(oneSecondAgo);
     }
 
 
