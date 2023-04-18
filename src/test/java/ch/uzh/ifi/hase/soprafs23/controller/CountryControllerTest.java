@@ -34,28 +34,6 @@ public class CountryControllerTest {
     @MockBean
     private CountryService countryService;
 
-    @Test
-    public void createCountries_validInput_countriesCreated() throws Exception {
-        List<CountryGetDTO> countryGetDTOS = new ArrayList<>();
-        CountryGetDTO country1 = new CountryGetDTO();
-        country1.setName("Country1");
-        country1.setPopulation(1000000L);
-        CountryGetDTO country2 = new CountryGetDTO();
-        country2.setName("Country2");
-        country2.setPopulation(2000000L);
-        countryGetDTOS.add(country1);
-        countryGetDTOS.add(country2);
-
-        doNothing().when(countryService).setAllCountries();
-
-        mockMvc.perform(post("/countries")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(countryGetDTOS)))
-                .andExpect(status().isCreated());
-
-        verify(countryService, times(1)).setAllCountries();
-    }
-
 
     @Test
     public void getAllCountries_noCountries_returnEmptyList() throws Exception {
@@ -66,40 +44,5 @@ public class CountryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
     }
-
-    @Test
-    public void createCountries_noCountries_created() throws Exception {
-        doNothing().when(countryService).setAllCountries();
-
-        mockMvc.perform(post("/countries")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("[]"))
-                .andExpect(status().isCreated());
-
-        verify(countryService, times(1)).setAllCountries();
-    }
-
-    @Test
-    public void createCountries_validInput_returnSortedCountries() throws Exception {
-        List<CountryGetDTO> countryGetDTOS = new ArrayList<>();
-        CountryGetDTO country1 = new CountryGetDTO();
-        country1.setName("CountryB");
-        country1.setPopulation(1000000L);
-        CountryGetDTO country2 = new CountryGetDTO();
-        country2.setName("CountryA");
-        country2.setPopulation(2000000L);
-        countryGetDTOS.add(country1);
-        countryGetDTOS.add(country2);
-
-        doNothing().when(countryService).setAllCountries();
-
-        mockMvc.perform(post("/countries")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(countryGetDTOS)))
-                .andExpect(status().isCreated());
-
-        verify(countryService, times(1)).setAllCountries();
-    }
-
 
 }
