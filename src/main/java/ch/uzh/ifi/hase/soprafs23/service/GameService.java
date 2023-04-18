@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.WebsocketType;
+import ch.uzh.ifi.hase.soprafs23.controller.GameController;
 import ch.uzh.ifi.hase.soprafs23.entityDB.*;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Category;
 import ch.uzh.ifi.hase.soprafs23.entityOther.Guess;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -42,7 +44,7 @@ public class GameService {
 
     private final GameRepository gameRepository;
 
-    private final MyHandler myHandler;
+
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final Map<Long, ScheduledFuture<?>> scheduledFutures = new ConcurrentHashMap<>();
 
@@ -50,14 +52,15 @@ public class GameService {
     private final CountryRepository countryRepository;
     private final UserRepository userRepository;
 
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
-    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, @Qualifier("countryRepository") CountryRepository countryRepository, @Qualifier("userRepository") UserRepository userRepository, CountryService countryService, MyHandler myHandler) {
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, @Qualifier("countryRepository") CountryRepository countryRepository, @Qualifier("userRepository") UserRepository userRepository, CountryService countryService, SimpMessagingTemplate messagingTemplate) {
         this.gameRepository = gameRepository;
         this.countryService = countryService;
         this.countryRepository = countryRepository;
         this.userRepository = userRepository;
-        this.myHandler = myHandler;
+        this.messagingTemplate = messagingTemplate;
     }
 
     /**
@@ -133,6 +136,7 @@ public class GameService {
 
         participants.add(gameUser);
         game.setParticipants(participants);
+        updateGameState(game.getGameId(), WebsocketType.PLAYERUPDATE, game.getParticipants());
         gameRepository.saveAndFlush(game);
         //updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
         System.out.println("User with Id " + userId + " joined game with ID: " + gameId);
@@ -144,15 +148,17 @@ public class GameService {
         if (game == null) {
             throw new RuntimeException("Game not found");
         }
-        game.setRemainingRounds(game.getNumberOfRounds()-1);
+
         game.setCurrentState(GameState.SETUP);
+        GameState currentGameState = game.getCurrentState();
+        GameStateClass currentGameStateClass = Game.getGameStateClass(currentGameState);
+        currentGameStateClass.updateGameEverySecond(game, this);
         gameRepository.saveAndFlush(game);
         //Initialize the gameUpdating thread
         String topic = "/topic/game/" + gameId;
         GameUpdater gameUpdater = new GameUpdater(gameId, topic);
-        ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(gameUpdater, 1, 1, TimeUnit.SECONDS);
+        ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(gameUpdater, 0, 1, TimeUnit.SECONDS);
         scheduledFutures.put(gameId, scheduledFuture);
-
         return game;
     }
 
@@ -165,7 +171,8 @@ public class GameService {
             Set<GameUser> gameUsers = new HashSet<>(game.getParticipants());
             GameUser gameUser = findGameUser(gameUsers, guess.getUserId());
             gameUser.setUserPlayingState(GameState.SCOREBOARD);
-            updatePlayerState(gameUser,WebsocketType.PLAYERUPDATE, GameState.SCOREBOARD);
+            gameUser.setHasAlreadyGuessed(true);
+
 
             String returnString = "";
             if (countryRepository.findNameByCountryId(game.getCurrentCountryId()).equals(guess.getGuess())) {
@@ -188,9 +195,11 @@ public class GameService {
             if(haveAllGuessed){
                 System.out.println("Everyone has guessed");
                 game.setCurrentState(GameState.SCOREBOARD);
+                game.setRemainingTime(7L);
                 updateGameState(game.getGameId(),  WebsocketType.GAMESTATEUPDATE, GameState.SCOREBOARD);
             }
             game.setParticipants(gameUsers);
+            updateGameState(gameId, WebsocketType.PLAYERUPDATE, game.getParticipants());
             gameRepository.saveAndFlush(game);
             return returnString;
         }
@@ -304,28 +313,27 @@ public class GameService {
         }
     }
 
-    private void sendWebsocketPackageToLobby(Long gameId, WebsocketPackage websocketPackage) {
-        Game game = gameRepository.findByGameId(gameId);
-        for (GameUser gameUser : game.getParticipants()) {
-            System.out.println("Sending websocket package to user: " + gameUser.getUsername());
-            myHandler.sendWebsocketPackage(gameUser.getToken(), websocketPackage);
+    public void updateGameState(Long gameId, WebsocketType websocketType, Object websocketParam) {
+        try{
+            WebsocketPackage websocketPackage = new WebsocketPackage(websocketType, websocketParam);
+            System.out.println("Sending game state update to all players on game " + gameId);
+            messagingTemplate.convertAndSend("/topic/games/" + gameId, websocketPackage);
+        }catch (Exception e){
+            System.out.println("Error sending game state update to all players on game " + gameId);
+        }
+
+    }
+
+    private void updatePlayerState(Long gameUserId, Long gameId, WebsocketType websocketType, Object websocketParam){
+        try {
+            WebsocketPackage websocketPackage = new WebsocketPackage(websocketType, websocketParam);
+            System.out.println("Sending player state update to player " + gameUserId + " on game " + gameId);
+            messagingTemplate.convertAndSend("/topic/games/" + gameId + "/" + gameUserId, websocketPackage);
+        }catch (Exception e){
+            System.out.println("Error sending player state update to player " + gameUserId + " on game " + gameId);
         }
     }
 
-    private void sendWebsocketPackageToPlayer(GameUser gameUser, WebsocketPackage websocketPackage) {
-        System.out.println("Sending websocket package to user: " + gameUser.getUsername());
-        myHandler.sendWebsocketPackage(gameUser.getToken(), websocketPackage);
-    }
-
-    public void updateGameState(Long gameId, WebsocketType websocketType, Object websocketParam) {
-        //WebsocketPackage websocketPackage = new WebsocketPackage(websocketType, websocketParam);
-        //sendWebsocketPackageToLobby(gameId, websocketPackage);
-    }
-
-    private void updatePlayerState(GameUser gameUser, WebsocketType websocketType, Object websocketParam){
-        // websocketPackage = new WebsocketPackage(websocketType, websocketParam);
-        //sendWebsocketPackageToPlayer(gameUser, websocketPackage);
-    }
     public long generateGameID(){
         //this function creates an ID between 10000 and 99999 to define the game id
         Random rand = new Random();

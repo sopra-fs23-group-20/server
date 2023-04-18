@@ -7,8 +7,13 @@ import ch.uzh.ifi.hase.soprafs23.rest.dto.GameGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GuessPostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +24,13 @@ public class GameController {
     private final GameService gameService;
 
 
-    GameController(GameService gameService) {
+    @Autowired
+    GameController(GameService gameService , SimpMessagingTemplate messagingTemplate) {
         this.gameService = gameService;
 
     }
+
+
 
     @GetMapping("/games")
     @ResponseStatus(HttpStatus.OK)

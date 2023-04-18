@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -41,6 +42,9 @@ public class GameControllerTest {
 
     @MockBean
     private GameService gameService;
+
+    @MockBean
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     @Test
     public void getGames_noGamesFound_emptyListReturned() throws Exception {
