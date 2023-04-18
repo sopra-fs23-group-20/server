@@ -370,7 +370,7 @@ public class GameService {
             case EUROPE -> "Europe";
             case AMERICA -> "Americas";
             case OCEANIA -> "Oceania";
-            case ANTARCTICA -> "Antarctic";
+            case ANTARCTIC -> "Antarctic";
         };
     }
 
