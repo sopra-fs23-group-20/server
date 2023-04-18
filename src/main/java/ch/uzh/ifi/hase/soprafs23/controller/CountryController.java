@@ -80,7 +80,7 @@ public class CountryController {
     @GetMapping("/countries/antarctica")
     @ResponseStatus(HttpStatus.OK)
     public List<CountryGetDTO> getCountriesAntarctica() {
-        return getCountryGetDTOSByRegion(regionEnumToString(RegionEnum.ANTARCTICA));
+        return getCountryGetDTOSByRegion(regionEnumToString(RegionEnum.ANTARCTIC));
     }
 
     private String regionEnumToString(RegionEnum regionEnum) {
@@ -95,7 +95,7 @@ public class CountryController {
                 return "Americas";
             case OCEANIA:
                 return "Oceania";
-            case ANTARCTICA:
+            case ANTARCTIC:
                 return "Antarctic";
             default:
                 throw new IllegalArgumentException("Invalid region enum: " + regionEnum);
