@@ -8,6 +8,5 @@ public enum RegionEnum
     AMERICA,
 
     OCEANIA,
-
-    ANTARCTICA
+    ANTARCTIC
 }
