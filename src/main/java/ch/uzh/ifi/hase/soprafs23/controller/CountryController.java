@@ -23,12 +23,6 @@ public class CountryController {
         this.countryService = countryService;
     }
 
-    @PostMapping("/countries")
-    @ResponseStatus(HttpStatus.CREATED)
-    public List<CountryGetDTO> createCountry() {
-        countryService.setAllCountries();
-        return getCountryGetDTOS();
-    }
 
     private List<CountryGetDTO> getCountryGetDTOS() {
         List<Country> countries = countryService.getAllCountries();
@@ -80,7 +74,7 @@ public class CountryController {
     @GetMapping("/countries/antarctica")
     @ResponseStatus(HttpStatus.OK)
     public List<CountryGetDTO> getCountriesAntarctica() {
-        return getCountryGetDTOSByRegion(regionEnumToString(RegionEnum.ANTARCTIC));
+        return getCountryGetDTOSByRegion(regionEnumToString(RegionEnum.ANTARCTICA));
     }
 
     private String regionEnumToString(RegionEnum regionEnum) {
@@ -95,7 +89,7 @@ public class CountryController {
                 return "Americas";
             case OCEANIA:
                 return "Oceania";
-            case ANTARCTIC:
+            case ANTARCTICA:
                 return "Antarctic";
             default:
                 throw new IllegalArgumentException("Invalid region enum: " + regionEnum);

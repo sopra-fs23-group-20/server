@@ -143,7 +143,7 @@ public class CountryService {
             case "Oceania":
                 return RegionEnum.OCEANIA;
             case "Antarctic":
-                return RegionEnum.ANTARCTIC;
+                return RegionEnum.ANTARCTICA;
             default:
                 throw new IllegalArgumentException("Invalid region string: " + region);
         }

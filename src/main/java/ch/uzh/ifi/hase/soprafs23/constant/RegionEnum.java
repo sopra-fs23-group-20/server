@@ -6,7 +6,6 @@ public enum RegionEnum
     ASIA,
     EUROPE,
     AMERICA,
-
     OCEANIA,
-    ANTARCTIC
+    ANTARCTICA
 }

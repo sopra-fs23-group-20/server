@@ -43,15 +43,11 @@ public class GameService {
     private final Logger log = LoggerFactory.getLogger(UserService.class);
 
     private final GameRepository gameRepository;
-
-
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final Map<Long, ScheduledFuture<?>> scheduledFutures = new ConcurrentHashMap<>();
-
     private final CountryService countryService;
     private final CountryRepository countryRepository;
     private final UserRepository userRepository;
-
     private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
@@ -361,17 +357,6 @@ public class GameService {
             e.printStackTrace();
         }
         return true;
-    }
-
-    private String regionEnumToString(RegionEnum regionEnum) {
-        return switch (regionEnum) {
-            case AFRICA -> "Africa";
-            case ASIA -> "Asia";
-            case EUROPE -> "Europe";
-            case AMERICA -> "Americas";
-            case OCEANIA -> "Oceania";
-            case ANTARCTIC -> "Antarctic";
-        };
     }
 
 }
