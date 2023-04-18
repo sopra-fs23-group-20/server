@@ -29,8 +29,10 @@ public class Game {
 
     @Column()
     private Date creationDate;
-    @Column()
+    @Column(columnDefinition = "integer")
+    @Enumerated(EnumType.ORDINAL)
     private GameState currentState;
+
     @Column()
     private Long roundDuration;
     @Column()
@@ -66,6 +68,16 @@ public class Game {
     @Enumerated(EnumType.STRING)
     @OrderColumn(name = "position")
     private List<RegionEnum> selectedRegions;
+
+    private Date lastUpdate;
+
+    public Date getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(Date lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
 
     public Boolean getRandomizedHints() {
         return randomizedHints;

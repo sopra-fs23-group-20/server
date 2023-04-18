@@ -5,7 +5,6 @@ import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.WebsocketType;
-import ch.uzh.ifi.hase.soprafs23.controller.GameController;
 import ch.uzh.ifi.hase.soprafs23.entityDB.*;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Category;
 import ch.uzh.ifi.hase.soprafs23.entityOther.Guess;
@@ -25,17 +24,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.swing.plaf.synth.Region;
-import java.io.IOException;
+import javax.annotation.PostConstruct;
 import java.util.Random;
 
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
+import static java.lang.Thread.sleep;
 
 @Service
 @Transactional
@@ -49,6 +47,8 @@ public class GameService {
     private final CountryRepository countryRepository;
     private final UserRepository userRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final AtomicBoolean gameUpdateRunning = new AtomicBoolean(false);
+
 
     @Autowired
     public GameService(@Qualifier("gameRepository") GameRepository gameRepository, @Qualifier("countryRepository") CountryRepository countryRepository, @Qualifier("userRepository") UserRepository userRepository, CountryService countryService, SimpMessagingTemplate messagingTemplate) {
@@ -65,6 +65,23 @@ public class GameService {
         return
     }
      */
+
+    @PostConstruct
+    public void initGameUpdater() {
+        if (gameUpdateRunning.compareAndSet(false, true)) {
+            new Thread(() -> {
+                try {
+                    System.out.println("GameUpdater started");
+                    checkForNecessaryGameUpdates();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    System.out.println("GameUpdater stopped");
+                    gameUpdateRunning.set(false);
+                }
+            }).start();
+        }
+    }
 
     public Game createGame(GamePostDTO gamePostDTO) {
 
@@ -146,15 +163,29 @@ public class GameService {
         }
 
         game.setCurrentState(GameState.SETUP);
+        game.setLastUpdate(new Date());
         GameState currentGameState = game.getCurrentState();
         GameStateClass currentGameStateClass = Game.getGameStateClass(currentGameState);
         currentGameStateClass.updateGameEverySecond(game, this);
         gameRepository.saveAndFlush(game);
         //Initialize the gameUpdating thread
         String topic = "/topic/game/" + gameId;
-        GameUpdater gameUpdater = new GameUpdater(gameId, topic);
-        ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(gameUpdater, 0, 1, TimeUnit.SECONDS);
-        scheduledFutures.put(gameId, scheduledFuture);
+
+        if (gameUpdateRunning.compareAndSet(false, true)) {
+            new Thread(() -> {
+                try {
+                    Thread.sleep(500L );
+                    System.out.println("GameUpdater started");
+                    checkForNecessaryGameUpdates();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                finally {
+                    gameUpdateRunning.set(false);
+                    System.out.println("GameUpdater stopped");
+                }
+            }).start();
+        }
         return game;
     }
 
@@ -205,13 +236,33 @@ public class GameService {
     }
 
     private void updateGameEverySecond(Long gameId) {
-        System.out.println("Updating game every second");
         Game game = gameRepository.findByGameId(gameId);
         GameState currentGameState = game.getCurrentState();
         GameStateClass currentGameStateClass = Game.getGameStateClass(currentGameState);
         currentGameStateClass.updateGameEverySecond(game, this);
+
         gameRepository.saveAndFlush(game);
     }
+
+    public void checkForNecessaryGameUpdates() throws InterruptedException {
+        while (gameRepository.areGamesStillOngoing(GameState.GUESSING.ordinal(), GameState.SCOREBOARD.ordinal())) {
+            for (Game game : gameRepository.findGamesToUpdate(GameState.GUESSING.ordinal(), GameState.SCOREBOARD.ordinal())) {
+                System.out.println("Updating game with ID: " + game.getGameId());
+                Date lastUpdate = game.getLastUpdate();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(lastUpdate);
+                calendar.add(Calendar.SECOND, 1);
+                Date newLastUpdate = calendar.getTime();
+                game.setLastUpdate(newLastUpdate);
+                gameRepository.saveAndFlush(game);
+
+                updateGameEverySecond(game.getGameId());
+            }
+            Thread.sleep(100L );
+        }
+        System.out.println("No more games to update");
+    }
+
 
 
     public String getGameCountryName(Long gameId) {
@@ -219,33 +270,6 @@ public class GameService {
         return countryRepository.findNameByCountryId(game.getCurrentCountryId());
     }
 
-
-    private class GameUpdater implements Runnable {
-        private final Long gameId;
-
-        public GameUpdater(Long gameId, String topic) {
-            this.gameId = gameId;
-        }
-
-        @Override
-        public void run() {
-            try {
-                updateGameEverySecond(gameId);
-            }
-            catch (Exception e) {
-                log.error("Error during game update execution", e);
-            }
-        }
-    }
-
-        public void stopGame(Long gameId) {
-            System.out.println("Stopping game");
-            ScheduledFuture<?> scheduledFuture = scheduledFutures.get(gameId);
-            if (scheduledFuture != null) {
-                scheduledFuture.cancel(false);
-                scheduledFutures.remove(gameId);
-            }
-        }
 
     public List<Game> getGames() {
         return this.gameRepository.findAll();
