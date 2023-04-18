@@ -20,8 +20,9 @@ public interface GameRepository extends JpaRepository<Game, Long> {
 
 
     // Query to check if any games are still ongoing
-    @Query(value = "SELECT EXISTS (SELECT 1 FROM game g WHERE g.current_state = 1 OR g.current_state = 2)",nativeQuery = true)
+    @Query(value = "SELECT CASE WHEN EXISTS (SELECT 1 FROM game g WHERE g.current_state = 1 OR g.current_state = 2) THEN TRUE ELSE FALSE END", nativeQuery = true)
     Boolean areGamesStillOngoing();
+
 
     @Query("SELECT g FROM Game g WHERE (g.currentState = 1 OR g.currentState = 2)")
     List<Game> findGamesToUpdateSimple(@Param("guessingStateOrdinal") int guessingStateOrdinal, @Param("scoreboardStateOrdinal") int scoreboardStateOrdinal);
