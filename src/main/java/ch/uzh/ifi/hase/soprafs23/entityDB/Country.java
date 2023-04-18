@@ -1,9 +1,11 @@
 package ch.uzh.ifi.hase.soprafs23.entityDB;
 
 
+import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import ch.uzh.ifi.hase.soprafs23.entityOther.Location;
 
 import javax.persistence.*;
+import javax.swing.plaf.synth.Region;
 
 @Entity
 @Table(name = "COUNTRY")
@@ -40,18 +42,18 @@ public class Country {
     private String countryCode;
 
     @Column()
-    private String region;
+    private RegionEnum region;
 
 
     public String getCountryCode() {
         return countryCode;
     }
 
-    public String getRegion() {
+    public RegionEnum getRegion() {
         return region;
     }
 
-    public void setRegion(String region) {
+    public void setRegion(RegionEnum region) {
         this.region = region;
     }
 

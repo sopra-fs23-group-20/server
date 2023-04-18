@@ -1,17 +1,13 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
-import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import ch.uzh.ifi.hase.soprafs23.entityDB.CategoryStack;
 import ch.uzh.ifi.hase.soprafs23.entityDB.GameUser;
-import ch.uzh.ifi.hase.soprafs23.entityDB.RegionSet;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import java.util.Date;
+import java.util.List;
+import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import java.util.Set;
 
 public class GameGetDTO {
@@ -27,7 +23,7 @@ public class GameGetDTO {
     private Long numberOfRounds;
     private Long remainingRounds;
     private Long remainingRoundPoints;
-    private RegionSet regionSet;
+    private List<String> selectedRegions;
     private CategoryStack categoryStack;
     private Boolean randomizedHints;
     private Boolean openLobby;
@@ -113,12 +109,13 @@ public class GameGetDTO {
         this.remainingRoundPoints = remainingRoundPoints;
     }
 
-    public RegionSet getRegionSet() {
-        return regionSet;
+
+    public List<String> getSelectedRegions() {
+        return selectedRegions;
     }
 
-    public void setRegionSet(RegionSet regionSet) {
-        this.regionSet = regionSet;
+    public void setSelectedRegions(List<String> selectedRegions) {
+        this.selectedRegions = selectedRegions;
     }
 
     public CategoryStack getCategoryStack() {

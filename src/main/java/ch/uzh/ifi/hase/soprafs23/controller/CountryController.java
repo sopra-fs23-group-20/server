@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
+import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Country;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.CountryGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
@@ -44,6 +45,73 @@ public class CountryController {
     @ResponseStatus(HttpStatus.OK)
     public List<CountryGetDTO> getCountries() {
         return getCountryGetDTOS();
+    }
+
+    @GetMapping("/countries/europe")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CountryGetDTO> getCountriesEurope() {
+        return getCountryGetDTOSByRegion(regionEnumToString(RegionEnum.EUROPE));
+    }
+
+    @GetMapping("/countries/asia")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CountryGetDTO> getCountriesAsia() {
+        return getCountryGetDTOSByRegion(regionEnumToString(RegionEnum.ASIA));
+    }
+
+    @GetMapping("/countries/america")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CountryGetDTO> getCountriesAmerica() {
+        return getCountryGetDTOSByRegion(regionEnumToString(RegionEnum.AMERICA));
+    }
+
+    @GetMapping("/countries/oceania")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CountryGetDTO> getCountriesOceania() {
+        return getCountryGetDTOSByRegion(regionEnumToString(RegionEnum.OCEANIA));
+    }
+
+    @GetMapping("/countries/africa")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CountryGetDTO> getCountriesAfrica() {
+        return getCountryGetDTOSByRegion(regionEnumToString(RegionEnum.AFRICA));
+    }
+
+    @GetMapping("/countries/antarctica")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CountryGetDTO> getCountriesAntarctica() {
+        return getCountryGetDTOSByRegion(regionEnumToString(RegionEnum.ANTARCTICA));
+    }
+
+    private String regionEnumToString(RegionEnum regionEnum) {
+        switch (regionEnum) {
+            case AFRICA:
+                return "Africa";
+            case ASIA:
+                return "Asia";
+            case EUROPE:
+                return "Europe";
+            case AMERICA:
+                return "Americas";
+            case OCEANIA:
+                return "Oceania";
+            case ANTARCTICA:
+                return "Antarctic";
+            default:
+                throw new IllegalArgumentException("Invalid region enum: " + regionEnum);
+        }
+    }
+
+
+
+    private List<CountryGetDTO> getCountryGetDTOSByRegion(String region) {
+        List<Country> countries = countryService.getCountriesByContinent(region);
+        List<CountryGetDTO> countryGetDTOS = new ArrayList<>();
+        for (Country country : countries) {
+            countryGetDTOS.add(DTOMapper.INSTANCE.convertEntityToCountryGetDTO(country));
+        }
+        countryGetDTOS.sort(Comparator.comparing(CountryGetDTO::getName));
+        return countryGetDTOS;
     }
 
 }

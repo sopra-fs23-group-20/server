@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
 
+import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Country;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Outline;
 import ch.uzh.ifi.hase.soprafs23.entityOther.Location;
@@ -10,31 +11,26 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.plaf.synth.Region;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class CountryService {
 
-    private final Logger log = LoggerFactory.getLogger(UserService.class);
-
     private final CountryRepository countryRepository;
-private final OutlineRepository outlineRepository;
+    private final OutlineRepository outlineRepository;
 
     @Autowired
-    public CountryService(@Qualifier("countryRepository") CountryRepository countryRepository, @Qualifier("outlineRepository") OutlineRepository outlineRepository){
+    public CountryService(@Qualifier("countryRepository") CountryRepository countryRepository, @Qualifier("outlineRepository") OutlineRepository outlineRepository) {
         this.countryRepository = countryRepository;
         this.outlineRepository = outlineRepository;
         this.setAllCountries();
@@ -44,44 +40,17 @@ private final OutlineRepository outlineRepository;
         return this.countryRepository.findAll();
     }
 
-    public Long getARandomCountryId() {
-        List<Long> allCountryIds = new ArrayList<>(this.countryRepository.getAllCountryIds());
-                Collections.shuffle(allCountryIds);
-        return allCountryIds.get(0);
-    }
 
-
-    private String getCountryOutline(String countryCode, JSONArray outlines){
+    private String getCountryOutline(String countryCode, JSONArray outlines) {
 
         for (Object featureObj : outlines) {
             JSONObject feature = (JSONObject) featureObj;
             JSONObject properties = (JSONObject) feature.get("properties");
             if (countryCode.equals(properties.get("ISO_A3"))) {
-                return  featureObj.toString();
+                return featureObj.toString();
             }
         }
         return null;
-    }
-
-    public JSONArray fetchCountriesAPI() throws IOException, ParseException{
-
-            URL url = new URL("https://restcountries.com/v3.1/all");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.connect();
-            InputStream stream = connection.getInputStream();
-            Scanner scanner = new Scanner(stream);
-            StringBuilder responseBuilder = new StringBuilder();
-            while (scanner.hasNext()) {
-                responseBuilder.append(scanner.nextLine());
-            }
-            String response = responseBuilder.toString();
-
-            // Parse the JSON response and extract the name and population of each country
-            JSONParser parser = new JSONParser();
-        JSONArray countries = (JSONArray) parser.parse(response);
-            System.out.println("Set countries with API");
-        return countries;
     }
 
     public void setAllCountries() {
@@ -101,10 +70,7 @@ private final OutlineRepository outlineRepository;
                     countries = (JSONArray) parser.parse(new FileReader("src/main/resources/countries.json"));
                     System.out.println("Set countries with File");
                 }
-                catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-                catch (ParseException ex) {
+                catch (IOException | ParseException ex) {
                     throw new RuntimeException(ex);
                 }
             }
@@ -125,7 +91,6 @@ private final OutlineRepository outlineRepository;
                         String countryCode;
                         String capital;
                         List<Double> latlngList;
-                        Set<Double> latlng = null;
                         latlngList = (List<Double>) ((JSONObject) country.get("capitalInfo")).get("latlng");
                         Location location = new Location();
                         location.setLatitude(latlngList.get(0));
@@ -138,7 +103,8 @@ private final OutlineRepository outlineRepository;
 
                         Country newCountry = new Country();
                         newCountry.setName(name);
-                        newCountry.setRegion(region);
+                        newCountry.setRegion(stringToRegionEnum(region));
+                        System.out.println("Region: " + region);
                         newCountry.setCountryCode(countryCode);
                         newCountry.setCapital(capital);
                         newCountry.setPopulation(population);
@@ -152,7 +118,7 @@ private final OutlineRepository outlineRepository;
 
                         countryRepository.save(newCountry);
                     }
-                    catch (Exception e) {
+                    catch (Exception ignored) {
                     }
                     countryRepository.flush();
                 }
@@ -162,6 +128,32 @@ private final OutlineRepository outlineRepository;
                 e.printStackTrace();
             }
         }
+    }
+
+    private RegionEnum stringToRegionEnum(String region) {
+        switch (region) {
+            case "Africa":
+                return RegionEnum.AFRICA;
+            case "Asia":
+                return RegionEnum.ASIA;
+            case "Europe":
+                return RegionEnum.EUROPE;
+            case "Americas":
+                return RegionEnum.AMERICA;
+            case "Oceania":
+                return RegionEnum.OCEANIA;
+            case "Antarctic":
+                return RegionEnum.ANTARCTICA;
+            default:
+                throw new IllegalArgumentException("Invalid region string: " + region);
+        }
+    }
+
+    public List<Country> getCountriesByContinent(String continent) {
+        List<Country> allCountries = getAllCountries();
+        return allCountries.stream()
+                .filter(country -> continent.equals(country.getRegion()))
+                .collect(Collectors.toList());
     }
 
 }

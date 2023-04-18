@@ -14,7 +14,6 @@ public class SetupStateClass implements GameStateClass {
         System.out.println("In Setup State Class, updating every Second");
         game.setCurrentState(GameState.GUESSING);
         game.setRemainingRoundPoints(100L);
-        Set<Long> allCountriesIds = game.getCountriesToPlayIds();
         selectNewRandomCountry(game);
         game.setRemainingTime(game.getRoundDuration());
         gameService.updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
@@ -24,6 +23,7 @@ public class SetupStateClass implements GameStateClass {
 
     private void selectNewRandomCountry(Game game) {
         List<Long> myList = new ArrayList<>(game.getCountriesToPlayIds());
+        System.out.println("Countries to play: " + myList);
         Random random = new Random();
         int randomIndex = random.nextInt(myList.size());
         game.setCurrentCountryId(myList.get(randomIndex));

@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs23.service;
 import ch.uzh.ifi.hase.soprafs23.StatePattern.GameStateClass;
 import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
+import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.WebsocketType;
 import ch.uzh.ifi.hase.soprafs23.entityDB.*;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Category;
@@ -22,12 +23,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.swing.plaf.synth.Region;
 import java.io.IOException;
 import java.util.Random;
 
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -65,6 +68,7 @@ public class GameService {
      */
 
     public Game createGame(GamePostDTO gamePostDTO) {
+
         Game game = new Game();
 
         Long lobbyCreatorUserId = Long.parseLong(gamePostDTO.getLobbyCreatorUserId());
@@ -79,9 +83,16 @@ public class GameService {
         gameUsers.add(lobbyCreator);
         game.setParticipants(gameUsers);
 
-        Set<Long> countreiss = countryRepository.getAllCountryIds();
-        //Set Countries to Play
-        game.setCountriesToPlayIds(countreiss);
+        List<RegionEnum> selectedRegions = gamePostDTO.getSelectedRegions();
+
+        game.setSelectedRegions(selectedRegions);
+        System.out.println("Selected Regions: " + selectedRegions);
+
+
+        Set<Long> countryIds = countryRepository.getCountryIdsByRegions(selectedRegions);
+
+        game.setCountriesToPlayIds(countryIds);
+        System.out.println("Country to play ids: " + game.getCountriesToPlayIds());
         game.setLobbyCreator(lobbyCreator);
 
         //Set SETUP State
@@ -342,6 +353,17 @@ public class GameService {
             e.printStackTrace();
         }
         return true;
+    }
+
+    private String regionEnumToString(RegionEnum regionEnum) {
+        return switch (regionEnum) {
+            case AFRICA -> "Africa";
+            case ASIA -> "Asia";
+            case EUROPE -> "Europe";
+            case AMERICA -> "Americas";
+            case OCEANIA -> "Oceania";
+            case ANTARCTICA -> "Antarctic";
+        };
     }
 
 }

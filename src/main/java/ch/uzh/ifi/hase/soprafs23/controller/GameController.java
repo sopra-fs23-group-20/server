@@ -28,7 +28,7 @@ public class GameController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<GameGetDTO> getAllGames() {
-        // fetch all games in the internal representation which are public thus openlobby is TRUE
+        // fetch all games in the internal representation which are public thus open lobby is TRUE
         List<Game> games = gameService.getOpenLobbyGames();
         List<GameGetDTO> gameGetDTOs = new ArrayList<>();
 

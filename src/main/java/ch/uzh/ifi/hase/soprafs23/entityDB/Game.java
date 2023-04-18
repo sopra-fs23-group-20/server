@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -43,9 +42,6 @@ public class Game {
     @Column()
     private Long remainingRoundPoints;
 
-    @OneToOne
-    @CollectionTable(name = "regionSet", joinColumns = @JoinColumn(name = "gameId"))
-    private RegionSet regionSet;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "categoryStackId")
     private CategoryStack categoryStack;
@@ -60,6 +56,14 @@ public class Game {
     private Set<Long> countriesToPlayIds;
     @Column()
     private Long currentCountryId;
+
+    @ElementCollection(targetClass = CategoryEnum.class)
+    private List<CategoryEnum> availableHints;
+
+    @ElementCollection(targetClass = RegionEnum.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "selected_regions", joinColumns = @JoinColumn(name = "game_id"))
+    @Column(name = "region")
+    private List<RegionEnum> selectedRegions;
 
     public Boolean getRandomizedHints() {
         return randomizedHints;
@@ -86,24 +90,6 @@ public class Game {
         this.openLobby = openLobby;
     }
 
-    public List<CategoryEnum> getAvailableHints() {
-        return availableHints;
-    }
-
-    public void setAvailableHints(List<CategoryEnum> availableHints) {
-        this.availableHints = availableHints;
-    }
-
-    @ElementCollection(targetClass = CategoryEnum.class)
-    private List<CategoryEnum> availableHints;
-
-    public RegionSet getRegionSet() {
-        return regionSet;
-    }
-
-    public void setRegionSet(RegionSet regionSet) {
-        this.regionSet = regionSet;
-    }
 
     public Long getRemainingRoundPoints() {
         return remainingRoundPoints;
@@ -164,14 +150,6 @@ public class Game {
         this.roundDuration = roundDuration;
     }
 
-    public Set<RegionEnum> getRegionsSelected() {
-        return regionSet.getSelectedRegions();
-    }
-
-    public void setRegionsSelected(Set<RegionEnum> regionsSelected) {
-        this.regionSet.setSelectedRegions(regionsSelected);
-    }
-
     public Set<Long> getCountriesToPlayIds() {
         return countriesToPlayIds;
     }
@@ -224,6 +202,22 @@ public class Game {
 
     public void setRoundDuration(Long roundDuration) {
         this.roundDuration = roundDuration;
+    }
+
+    public List<CategoryEnum> getAvailableHints() {
+        return availableHints;
+    }
+
+    public void setAvailableHints(List<CategoryEnum> availableHints) {
+        this.availableHints = availableHints;
+    }
+
+    public List<RegionEnum> getSelectedRegions() {
+        return selectedRegions;
+    }
+
+    public void setSelectedRegions(List<RegionEnum> selectedRegions) {
+        this.selectedRegions = selectedRegions;
     }
 
     public static GameStateClass getGameStateClass(GameState gameState) {

@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.repository;
 
+import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Country;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Outline;
 import ch.uzh.ifi.hase.soprafs23.entityOther.Location;
@@ -8,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+
+import java.util.List;
 import java.util.Set;
 
 @Repository("countryRepository")
@@ -35,4 +38,9 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
 
     @Query("SELECT DISTINCT c.countryId FROM Country c")
     Set<Long> getAllCountryIds();
+
+    @Query("SELECT c.countryId FROM Country c WHERE c.region IN :regions")
+    Set<Long> getCountryIdsByRegions(@Param("regions") List<RegionEnum> regions);
+
+
 }

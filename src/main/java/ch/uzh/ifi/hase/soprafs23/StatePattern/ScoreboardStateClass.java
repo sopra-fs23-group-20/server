@@ -21,7 +21,6 @@ public class ScoreboardStateClass implements GameStateClass{
                 game.setRemainingRounds(game.getRemainingRounds() - 1);
                 game.setCurrentState(GameState.GUESSING);
                 game.setRemainingRoundPoints(100L);
-                Set<Long> allCountriesIds = game.getCountriesToPlayIds();
                 selectNewRandomCountry(game);
                 game.setRemainingTime(game.getRoundDuration());
                 game.getCategoryStack().refillStack();

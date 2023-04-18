@@ -10,7 +10,7 @@ public class GamePostDTO {
     private Long roundDuration;
     private Long numberOfRounds;
     private List<CategoryEnum> categoriesSelected;
-    private List<RegionEnum> regionsSelected;
+    private List<RegionEnum> selectedRegions;
     private boolean randomizedCategories;
     private boolean openLobby;
 
@@ -47,18 +47,17 @@ public class GamePostDTO {
         this.categoriesSelected = categoriesSelected;
     }
 
-    public List<RegionEnum> getRegionsSelected() {
-        return regionsSelected;
+    public List<RegionEnum> getSelectedRegions() {
+        return selectedRegions;
     }
 
-    public void setRegionsSelected(List<RegionEnum> regionsSelected) {
-        this.regionsSelected = regionsSelected;
+    public void setSelectedRegions(List<RegionEnum> selectedRegions) {
+        this.selectedRegions = selectedRegions;
     }
 
     public boolean isRandomizedCategories() {
         return randomizedCategories;
     }
-
     public void setRandomizedCategories(boolean randomizedCategories) {
         this.randomizedCategories = randomizedCategories;
     }

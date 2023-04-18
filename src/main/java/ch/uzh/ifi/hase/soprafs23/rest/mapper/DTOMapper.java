@@ -58,7 +58,7 @@ public interface DTOMapper {
     @Mapping(source = "numberOfRounds", target = "numberOfRounds")
     @Mapping(source = "remainingRounds", target = "remainingRounds")
     @Mapping(source = "remainingRoundPoints", target = "remainingRoundPoints")
-    @Mapping(source = "regionSet", target = "regionSet")
+    @Mapping(source = "selectedRegions", target = "selectedRegions")
     @Mapping(source = "categoryStack", target = "categoryStack")
     @Mapping(source="randomizedHints", target="randomizedHints")
     @Mapping(source="openLobby", target="openLobby")

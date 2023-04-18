@@ -14,7 +14,17 @@ public class CountryGetDTO {
 
     private Location location;
 
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
     private String capital;
+
+    private String region;
 
     public Outline getOutline() {
         return outline;
