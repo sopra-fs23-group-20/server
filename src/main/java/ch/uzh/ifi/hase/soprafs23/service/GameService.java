@@ -174,7 +174,6 @@ public class GameService {
         if (gameUpdateRunning.compareAndSet(false, true)) {
             new Thread(() -> {
                 try {
-                    Thread.sleep(500L );
                     System.out.println("GameUpdater started");
                     checkForNecessaryGameUpdates();
                 } catch (Exception e) {
@@ -235,8 +234,7 @@ public class GameService {
         }
     }
 
-    private void updateGameEverySecond(Long gameId) {
-        Game game = gameRepository.findByGameId(gameId);
+    private void updateGameEverySecond(Game game) {
         GameState currentGameState = game.getCurrentState();
         GameStateClass currentGameStateClass = Game.getGameStateClass(currentGameState);
         currentGameStateClass.updateGameEverySecond(game, this);
@@ -245,25 +243,29 @@ public class GameService {
     }
 
     public void checkForNecessaryGameUpdates() throws InterruptedException {
-        List<Game> gamesToUpdate = gameRepository.findGamesToUpdateSimple(GameState.GUESSING.ordinal(), GameState.SCOREBOARD.ordinal());
-        while (gamesToUpdate.size() > 0) {
-            for (Game game : gamesToUpdate) {
-                if(checkIfLatestUpdateWasRecent(game)){
-                    continue;
-                }
-                System.out.println("Updating game with ID: " + game.getGameId());
-                Date lastUpdate = game.getLastUpdate();
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(lastUpdate);
-                calendar.add(Calendar.SECOND, 1);
-                Date newLastUpdate = calendar.getTime();
-                game.setLastUpdate(newLastUpdate);
-                gameRepository.saveAndFlush(game);
 
-                updateGameEverySecond(game.getGameId());
+        while (gameRepository.areGamesStillOngoing()) {
+            Date now = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(now);
+            calendar.add(Calendar.SECOND, -1);
+            Date oneSecondAgo = calendar.getTime();
+            for (Game game : gameRepository.findGamesToUpdate(oneSecondAgo)) {
+                try {
+                    System.out.println("Updating game with ID: " + game.getGameId());
+                    Date lastUpdate = game.getLastUpdate();
+                    Calendar calendar2 = Calendar.getInstance();
+                    calendar2.setTime(lastUpdate);
+                    calendar2.add(Calendar.SECOND, 1);
+                    Date newLastUpdate = calendar2.getTime();
+                    game.setLastUpdate(newLastUpdate);
+                    gameRepository.saveAndFlush(game);
+
+                    updateGameEverySecond(game);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
-            Thread.sleep(100L );
-            gamesToUpdate = gameRepository.findGamesToUpdateSimple(GameState.GUESSING.ordinal(), GameState.SCOREBOARD.ordinal());
         }
         System.out.println("No more games to update");
     }
