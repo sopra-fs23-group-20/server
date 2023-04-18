@@ -60,9 +60,11 @@ public class Game {
     @ElementCollection(targetClass = CategoryEnum.class)
     private List<CategoryEnum> availableHints;
 
-    @ElementCollection(targetClass = RegionEnum.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "selected_regions", joinColumns = @JoinColumn(name = "game_id"))
-    @Column(name = "region")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "SELECTEDREGIONS", joinColumns = @JoinColumn(name = "gameId"))
+    @Column(name = "regionEnum")
+    @Enumerated(EnumType.STRING)
+    @OrderColumn(name = "position")
     private List<RegionEnum> selectedRegions;
 
     public Boolean getRandomizedHints() {

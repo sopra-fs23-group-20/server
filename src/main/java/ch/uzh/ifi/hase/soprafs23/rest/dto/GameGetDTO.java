@@ -23,7 +23,7 @@ public class GameGetDTO {
     private Long numberOfRounds;
     private Long remainingRounds;
     private Long remainingRoundPoints;
-    private List<String> selectedRegions;
+    private List<RegionEnum> selectedRegions;
     private CategoryStack categoryStack;
     private Boolean randomizedHints;
     private Boolean openLobby;
@@ -110,11 +110,11 @@ public class GameGetDTO {
     }
 
 
-    public List<String> getSelectedRegions() {
+    public List<RegionEnum> getSelectedRegions() {
         return selectedRegions;
     }
 
-    public void setSelectedRegions(List<String> selectedRegions) {
+    public void setSelectedRegions(List<RegionEnum> selectedRegions) {
         this.selectedRegions = selectedRegions;
     }
 
