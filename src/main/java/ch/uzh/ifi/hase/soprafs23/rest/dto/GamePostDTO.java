@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
+import ch.uzh.ifi.hase.soprafs23.entityDB.CategoryStack;
 
 import java.util.List;
 
@@ -9,9 +10,8 @@ public class GamePostDTO {
     private String lobbyCreatorUserId;
     private Long roundDuration;
     private Long numberOfRounds;
-    private List<CategoryEnum> categoriesSelected;
+    private CategoryStack categoryStack;
     private List<RegionEnum> selectedRegions;
-    private boolean randomizedCategories;
     private boolean openLobby;
 
 
@@ -39,12 +39,12 @@ public class GamePostDTO {
         this.numberOfRounds = numberOfRounds;
     }
 
-    public List<CategoryEnum> getCategoriesSelected() {
-        return categoriesSelected;
+    public CategoryStack getCategoryStack() {
+        return categoryStack;
     }
 
-    public void setCategoriesSelected(List<CategoryEnum> categoriesSelected) {
-        this.categoriesSelected = categoriesSelected;
+    public void setCategoryStack(CategoryStack categoryStack) {
+        this.categoryStack = categoryStack;
     }
 
     public List<RegionEnum> getSelectedRegions() {
@@ -53,13 +53,6 @@ public class GamePostDTO {
 
     public void setSelectedRegions(List<RegionEnum> selectedRegions) {
         this.selectedRegions = selectedRegions;
-    }
-
-    public boolean isRandomizedCategories() {
-        return randomizedCategories;
-    }
-    public void setRandomizedCategories(boolean randomizedCategories) {
-        this.randomizedCategories = randomizedCategories;
     }
 
     public boolean isOpenLobby() {

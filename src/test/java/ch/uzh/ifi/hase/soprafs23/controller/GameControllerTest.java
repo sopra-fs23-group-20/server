@@ -299,7 +299,6 @@ public class GameControllerTest {
         game.setRemainingRoundPoints(10L);
         game.setRemainingRounds(5L);
         game.setRoundDuration(30);
-        game.setRandomizedHints(false);
         game.setNumberOfRounds(5L);
         game.setOpenLobby(false);
 
@@ -420,7 +419,6 @@ public class GameControllerTest {
         game.setRemainingRoundPoints(10L);
         game.setRemainingRounds(5L);
         game.setNumberOfRounds(30L);
-        game.setRandomizedHints(false);
         game.setNumberOfRounds(5L);
         game.setOpenLobby(false);
 
@@ -462,7 +460,6 @@ public class GameControllerTest {
         game.setRemainingRoundPoints(10L);
         game.setRemainingRounds(5L);
         game.setNumberOfRounds(30L);
-        game.setRandomizedHints(false);
         game.setNumberOfRounds(5L);
         game.setOpenLobby(false);
 

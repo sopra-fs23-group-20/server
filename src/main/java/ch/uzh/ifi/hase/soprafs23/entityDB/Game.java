@@ -46,8 +46,6 @@ public class Game {
     @JoinColumn(name = "categoryStackId")
     private CategoryStack categoryStack;
     @Column()
-    private Boolean randomizedHints;
-    @Column()
     private Boolean openLobby;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -66,15 +64,6 @@ public class Game {
     @Enumerated(EnumType.STRING)
     @OrderColumn(name = "position")
     private List<RegionEnum> selectedRegions;
-
-    public Boolean getRandomizedHints() {
-        return randomizedHints;
-    }
-
-    public void setRandomizedHints(Boolean randomizedHints) {
-        this.randomizedHints = randomizedHints;
-    }
-
 
     public Long getNumberOfRounds() {
         return numberOfRounds;

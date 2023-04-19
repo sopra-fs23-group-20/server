@@ -104,7 +104,6 @@ public class CountryService {
                         Country newCountry = new Country();
                         newCountry.setName(name);
                         newCountry.setRegion(stringToRegionEnum(region));
-                        System.out.println("Region: " + region);
                         newCountry.setCountryCode(countryCode);
                         newCountry.setCapital(capital);
                         newCountry.setPopulation(population);

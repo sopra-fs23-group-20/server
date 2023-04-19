@@ -5,7 +5,6 @@ import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.WebsocketType;
-import ch.uzh.ifi.hase.soprafs23.controller.GameController;
 import ch.uzh.ifi.hase.soprafs23.entityDB.*;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Category;
 import ch.uzh.ifi.hase.soprafs23.entityOther.Guess;
@@ -24,17 +23,9 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
-import javax.swing.plaf.synth.Region;
-import java.io.IOException;
 import java.util.Random;
-
-
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
-
-import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 @Service
@@ -98,15 +89,12 @@ public class GameService {
         game.setCurrentState(GameState.SETUP);
 
         //Set Category Stack
-        CategoryStack categoryStack = new CategoryStack();
-        categoryStack.addAll(Arrays.asList(CategoryEnum.values()));
-        game.setCategoryStack(categoryStack);
+        game.setCategoryStack(gamePostDTO.getCategoryStack());
 
         //Set game round duration and number of rounds
         game.setRoundDuration(gamePostDTO.getRoundDuration());
         game.setNumberOfRounds(gamePostDTO.getNumberOfRounds());
 
-        game.setRandomizedHints(gamePostDTO.isRandomizedCategories());
         game.setOpenLobby(gamePostDTO.isOpenLobby());
 
         gameRepository.saveAndFlush(game);

@@ -63,7 +63,6 @@ class GameServiceTest {
         gamePostDTO.setLobbyCreatorUserId("1");
         gamePostDTO.setRoundDuration(120L);
         gamePostDTO.setNumberOfRounds(5L);
-        gamePostDTO.setRandomizedCategories(true);
         gamePostDTO.setOpenLobby(true);
 
         User testUser = new User();
@@ -80,7 +79,6 @@ class GameServiceTest {
         assertEquals(1, createdGame.getParticipants().size());
         assertEquals(120, createdGame.getRoundDuration());
         assertEquals(5, createdGame.getNumberOfRounds());
-        assertEquals(true, createdGame.getRandomizedHints());
         assertEquals(true, createdGame.getOpenLobby());
 
         verify(gameRepository, times(1)).saveAndFlush(any(Game.class));
@@ -92,7 +90,6 @@ class GameServiceTest {
         gamePostDTO.setLobbyCreatorUserId("1");
         gamePostDTO.setRoundDuration(120L);
         gamePostDTO.setNumberOfRounds(5L);
-        gamePostDTO.setRandomizedCategories(true);
         gamePostDTO.setOpenLobby(true);
 
         when(userRepository.findByUserId(1L)).thenReturn(null);

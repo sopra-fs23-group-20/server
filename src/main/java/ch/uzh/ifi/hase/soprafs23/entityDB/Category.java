@@ -66,5 +66,4 @@ public class Category {
         this.outline = outline;
     }
 
-
 }

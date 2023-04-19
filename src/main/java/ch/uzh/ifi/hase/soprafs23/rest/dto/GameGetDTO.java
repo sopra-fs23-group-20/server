@@ -25,7 +25,6 @@ public class GameGetDTO {
     private Long remainingRoundPoints;
     private List<RegionEnum> selectedRegions;
     private CategoryStack categoryStack;
-    private Boolean randomizedHints;
     private Boolean openLobby;
 
 
@@ -124,14 +123,6 @@ public class GameGetDTO {
 
     public void setCategoryStack(CategoryStack categoryStack) {
         this.categoryStack = categoryStack;
-    }
-
-    public Boolean getRandomizedHints() {
-        return randomizedHints;
-    }
-
-    public void setRandomizedHints(Boolean randomizedHints) {
-        this.randomizedHints = randomizedHints;
     }
 
     public Boolean getOpenLobby() {

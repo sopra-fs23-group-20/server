@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -31,12 +32,29 @@ public class CategoryStack {
     private List<CategoryEnum> remainingCategories;
     private int stackIdx;
 
+    private boolean randomizedHints;
+
+    public boolean isRandomizedHints() {
+        return randomizedHints;
+    }
+
+    public void setRandomizedHints(boolean randomizedHints) {
+        this.randomizedHints = randomizedHints;
+    }
+
     public CategoryStack() {
-        remainingCategories = new ArrayList<>();
         selectedCategories = new ArrayList<>();
+        remainingCategories = new ArrayList<>();
         currentCategory = new Category();
         stackIdx = -1;
+        randomizedHints = false;
+
+        if (!selectedCategories.isEmpty()) {
+            currentCategory.setType(selectedCategories.get(0));
+        }
     }
+
+
 
     public void add(CategoryEnum categoryEnum) {
         selectedCategories.add(categoryEnum);
@@ -71,6 +89,9 @@ public class CategoryStack {
         remainingCategories.clear();
         remainingCategories.addAll(selectedCategories);
         stackIdx = remainingCategories.size()-1;
+        if (randomizedHints) {
+            Collections.shuffle(remainingCategories);
+        }
     }
 
 
