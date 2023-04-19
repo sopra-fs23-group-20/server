@@ -5,11 +5,6 @@ runtime_config:
   operating_system: "ubuntu22"
   runtime_version: "17"
 
-network:
-  session_affinity: false
-  name: default
-  allow-all
-
 
 env_variables:
   SPRING_PROFILES_ACTIVE: 'dev1'
