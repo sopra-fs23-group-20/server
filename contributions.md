@@ -176,6 +176,14 @@ https://github.com/sopra-fs23-group-20/server/issues/110 <br />
 #### Description:
 I created a Rules page that displays the rules of the game, then I added the possibility to select regions and hints as a lobby creator, and also the feature that only the lobby creator sees the button to start the game. I also added that the game can only be started if at least one region and one hint are selected, and added the possibility to randomize the order acccording to which the hints are displayed (button is disabled when only one hint is selected because randomizing one hint has no effect).
 
+### Louis
+https://github.com/sopra-fs23-group-20/client/issues/62 <br />
+https://github.com/sopra-fs23-group-20/client/issues/68 <br />
+https://github.com/sopra-fs23-group-20/client/issues/58 <br />
+https://github.com/sopra-fs23-group-20/server/issues/114
+#### Description:
+added a guide as a tutorial for the users, added avatars to the profile page, added QR code to share a game session, added accordion to the gameSetup page
+
 ---
 ## Week 24.4 - 30.4
 ## Week 1.5 - 7.5
