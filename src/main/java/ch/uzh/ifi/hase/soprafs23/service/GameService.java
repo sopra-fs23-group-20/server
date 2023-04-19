@@ -146,6 +146,7 @@ public class GameService {
         }
 
         game.setCurrentState(GameState.SETUP);
+        game.setLastUpdate(new Date());
         GameState currentGameState = game.getCurrentState();
         GameStateClass currentGameStateClass = Game.getGameStateClass(currentGameState);
         currentGameStateClass.updateGameEverySecond(game, this);
@@ -153,7 +154,7 @@ public class GameService {
         //Initialize the gameUpdating thread
         String topic = "/topic/game/" + gameId;
         GameUpdater gameUpdater = new GameUpdater(gameId, topic);
-        ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(gameUpdater, 0, 1, TimeUnit.SECONDS);
+        ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(gameUpdater, 0, 500, TimeUnit.MILLISECONDS);
         scheduledFutures.put(gameId, scheduledFuture);
         return game;
     }
@@ -204,9 +205,31 @@ public class GameService {
         }
     }
 
+    private Date oneSecondAgo(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, -1);
+        return calendar.getTime();
+    }
+
+    private Long differenceInMiliSeconds(Date date1, Date date2){
+        return date1.getTime() - date2.getTime();
+    }
+
     private void updateGameEverySecond(Long gameId) {
         System.out.println("Updating game every second");
         Game game = gameRepository.findByGameId(gameId);
+        Long updatedifference = differenceInMiliSeconds(new Date(), game.getLastUpdate());
+        System.out.println("The difference for game: " + gameId + " is: " + updatedifference);
+        while(updatedifference < 1000){
+            try {
+                Thread.sleep(1000 - updatedifference);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            game = gameRepository.findByGameId(gameId);
+            updatedifference = differenceInMiliSeconds(new Date(), game.getLastUpdate());
+        }
+        game.setLastUpdate(new Date());
         GameState currentGameState = game.getCurrentState();
         GameStateClass currentGameStateClass = Game.getGameStateClass(currentGameState);
         currentGameStateClass.updateGameEverySecond(game, this);

@@ -67,6 +67,17 @@ public class Game {
     @OrderColumn(name = "position")
     private List<RegionEnum> selectedRegions;
 
+    @Column
+    private Date lastUpdate;
+
+    public Date getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(Date lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
     public Boolean getRandomizedHints() {
         return randomizedHints;
     }
