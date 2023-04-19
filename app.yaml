@@ -9,19 +9,10 @@ runtime_config:
   operating_system: "ubuntu22"
   runtime_version: "17"
 
-
 network:
   session_affinity: false
-  instance_tag: allow-all
-    ingress:
-        - action: allow
-          source_range: 0.0.0.0/0
-    egress:
-      - action: allow
-        destination_range: 0.0.0.0/0
-        ports:
-          - 0-65535
+  ingress:
+    - allow: '*'
 
 env_variables:
   SPRING_PROFILES_ACTIVE: 'dev1'
-
