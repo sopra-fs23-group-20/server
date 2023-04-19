@@ -1,6 +1,10 @@
 runtime: java17
 instance_class: F2
 
+automatic_scaling:
+  max_instances: 5
+  min_instances: 1
+
 runtime_config:
   operating_system: "ubuntu22"
   runtime_version: "17"
@@ -8,6 +12,15 @@ runtime_config:
 
 network:
   session_affinity: false
+  instance_tag: allow-all
+    ingress:
+        - action: allow
+          source_range: 0.0.0.0/0
+    egress:
+      - action: allow
+        destination_range: 0.0.0.0/0
+        ports:
+          - 0-65535
 
 env_variables:
   SPRING_PROFILES_ACTIVE: 'dev1'
