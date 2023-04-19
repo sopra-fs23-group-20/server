@@ -8,3 +8,4 @@ runtime_config:
 
 env_variables:
   SPRING_PROFILES_ACTIVE: 'dev1'
+
