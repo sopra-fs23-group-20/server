@@ -11,8 +11,16 @@ runtime_config:
 
 network:
   session_affinity: false
-  ingress:
-    - allow: '*'
+  name: default
+    instance_tag: allow-all
+    ingress:
+      - action: allow
+        source_range: 0.0.0.0/0
+    egress:
+      - action: allow
+        destination_range: 0.0.0.0/0
+        ports:
+          - 0-65535
 
 env_variables:
   SPRING_PROFILES_ACTIVE: 'dev1'
