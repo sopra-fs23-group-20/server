@@ -215,6 +215,13 @@ public class GameService {
         return date1.getTime() - date2.getTime();
     }
 
+    private Date addOneSecond(Date date){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.SECOND, 1);
+        return calendar.getTime();
+    }
+
     private void updateGameEverySecond(Long gameId) {
         System.out.println("Updating game every second");
         Game game = gameRepository.findByGameId(gameId);
@@ -229,7 +236,7 @@ public class GameService {
             game = gameRepository.findByGameId(gameId);
             updatedifference = differenceInMiliSeconds(new Date(), game.getLastUpdate());
         }
-        game.setLastUpdate(new Date());
+        game.setLastUpdate(addOneSecond(game.getLastUpdate()));
         GameState currentGameState = game.getCurrentState();
         GameStateClass currentGameStateClass = Game.getGameStateClass(currentGameState);
         currentGameStateClass.updateGameEverySecond(game, this);
