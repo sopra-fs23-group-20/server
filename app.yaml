@@ -10,5 +10,5 @@ network:
   session_affinity: false
 
 env_variables:
-  SPRING_PROFILES_ACTIVE: 'dev'
+  SPRING_PROFILES_ACTIVE: 'dev1'
 
