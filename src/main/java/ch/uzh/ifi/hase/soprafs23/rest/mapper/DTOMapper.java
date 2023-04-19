@@ -60,7 +60,6 @@ public interface DTOMapper {
     @Mapping(source = "remainingRoundPoints", target = "remainingRoundPoints")
     @Mapping(source = "selectedRegions", target = "selectedRegions")
     @Mapping(source = "categoryStack", target = "categoryStack")
-    @Mapping(source="randomizedHints", target="randomizedHints")
     @Mapping(source="openLobby", target="openLobby")
     GameGetDTO convertEntityToGameGetDTO(Game game);
 

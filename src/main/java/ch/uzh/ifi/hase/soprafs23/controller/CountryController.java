@@ -7,7 +7,6 @@ import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.CountryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -95,7 +94,6 @@ public class CountryController {
                 throw new IllegalArgumentException("Invalid region enum: " + regionEnum);
         }
     }
-
 
 
     private List<CountryGetDTO> getCountryGetDTOSByRegion(String region) {
