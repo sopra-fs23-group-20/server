@@ -57,7 +57,6 @@ jobs:
           credentials: ${{ secrets.GCP_SERVICE_CREDENTIALS }}
         env:
           SPRING_PROFILES_ACTIVE: dev1
-          GRADLE_OPTS: '-DdbPassword=${{ secrets.DB_OLYMPIUS }}'
 
       - name: Test
         run: curl "${{ steps.deploy.outputs.url }}"
