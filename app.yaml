@@ -12,7 +12,7 @@ runtime_config:
 network:
   session_affinity: false
   name: my-network
-    instance_tag: allow-all
+    instance_tag: instance-tag-value
       ingress:
           - action: allow
             source_range: 0.0.0.0/0
