@@ -8,5 +8,5 @@ runtime_config:
 
 env_variables:
   SPRING_PROFILES_ACTIVE: 'dev1'
-  dbPassword: "${DB_OLYMPIUS}"
+
 

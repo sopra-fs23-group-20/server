@@ -45,7 +45,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set database password
-        run: echo "dbPassword=${{ secrets.DB_OLYMPIUS }}" > dbpassword.properties
+        run: echo "dbPassword=${{ secrets.DB_OLYMPIUS }}" >> src/main/resources/application.properties
 
 
       - name: Deploy to App Engine
