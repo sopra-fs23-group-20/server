@@ -181,9 +181,10 @@ I created a Rules page that displays the rules of the game, then I added the pos
 https://github.com/sopra-fs23-group-20/client/issues/62 <br />
 https://github.com/sopra-fs23-group-20/client/issues/68 <br />
 https://github.com/sopra-fs23-group-20/client/issues/58 <br />
+https://github.com/sopra-fs23-group-20/client/issues/65 <br />
 https://github.com/sopra-fs23-group-20/server/issues/114
 #### Description:
-added a guide as a tutorial for the users, added avatars to the profile page, added QR code to share a game session, added accordion to the gameSetup page
+added a guide as a tutorial for the users, added avatars to the profile page, added QR code to share a game session, added accordion to the gameSetup page, tried to fix the layout for mobile
 
 ---
 ## Week 24.4 - 30.4
