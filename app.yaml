@@ -6,6 +6,6 @@ basic_scaling:
   idle_timeout: 10m
 
 env_variables:
-  SPRING_PROFILES_ACTIVE: 'dev1'
+  SPRING_PROFILES_ACTIVE: 'dev'
 
 
