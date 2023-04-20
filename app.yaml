@@ -4,12 +4,7 @@ instance_class: B1
 manual_scaling:
   instances: 1
 
-runtime_config:
-  operating_system: "ubuntu22"
-  runtime_version: "17"
-
-
 env_variables:
-  SPRING_PROFILES_ACTIVE: 'dev1'
+  SPRING_PROFILES_ACTIVE: 'dev'
 
 
