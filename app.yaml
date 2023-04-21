@@ -10,6 +10,6 @@ runtime_config:
   runtime_version: "17"
 
 env_variables:
-  SPRING_PROFILES_ACTIVE: 'dev1'
+  SPRING_PROFILES_ACTIVE: 'dev'
 
 

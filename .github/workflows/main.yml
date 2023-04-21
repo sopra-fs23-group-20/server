@@ -56,7 +56,7 @@ jobs:
           version: v2
           credentials: ${{ secrets.GCP_SERVICE_CREDENTIALS }}
         env:
-          SPRING_PROFILES_ACTIVE: dev1
+          SPRING_PROFILES_ACTIVE: dev
 
       - name: Test
         run: curl "${{ steps.deploy.outputs.url }}"
