@@ -1,11 +1,11 @@
-runtime: java17
-instance_class: B8
+runtime: java
+env: flex
 
-basic_scaling:
-  max_instances: 1
-  idle_timeout: 10m
+runtime_config:
+  operating_system: "ubuntu22"
+  runtime_version: "17"
 
 env_variables:
-  SPRING_PROFILES_ACTIVE: 'dev'
+  SPRING_PROFILES_ACTIVE: 'dev1'
 
 
