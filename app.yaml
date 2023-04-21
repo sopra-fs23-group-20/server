@@ -2,7 +2,6 @@ runtime: java
 env: flex
 
 automatic_scaling:
-  cool_down_period: 300s
   min_num_instances: 0
   max_num_instances: 1
 
