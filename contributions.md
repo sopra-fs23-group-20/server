@@ -209,6 +209,18 @@ https://github.com/sopra-fs23-group-20/server/issues/70 (No new players can join
 
 ---
 
+### Jamo
+https://github.com/sopra-fs23-group-20/client/issues/89 <br />
+https://github.com/sopra-fs23-group-20/client/issues/90 <br />
+https://github.com/sopra-fs23-group-20/client/issues/91 <br />
+https://github.com/sopra-fs23-group-20/client/issues/92 <br />
+https://github.com/sopra-fs23-group-20/client/issues/93 <br />
+
+#### Description:
+I created the Leaderboard from scratch. In the leaderboard you can see, how many games the players have won! For the implementation I chose the approach with generic functional components which made it a bit more difficult. Furthermore, I designed the leaderboard and fixed the ranking order in the Score- and Leaderboard.
+
+---
+
 ## Week 24.4 - 30.4
 ## Week 1.5 - 7.5
 ## Week 8.5 - 14.5
