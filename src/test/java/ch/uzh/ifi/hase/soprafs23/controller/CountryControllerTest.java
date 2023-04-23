@@ -1,5 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
+import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
+import ch.uzh.ifi.hase.soprafs23.entityDB.Country;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.CountryGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.CountryService;
@@ -44,5 +46,87 @@ public class CountryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
     }
+
+    @Test
+    public void getCountries_allCountries_returnList() throws Exception {
+        List<Country> countries = createSampleCountries();
+        List<CountryGetDTO> countryGetDTOs = countries.stream()
+                .map(DTOMapper.INSTANCE::convertEntityToCountryGetDTO)
+                .collect(Collectors.toList());
+
+        given(countryService.getAllCountries()).willReturn(countries);
+
+        mockMvc.perform(get("/countries")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(countries.size())));
+    }
+
+    @Test
+    public void getCountriesEurope_returnsList() throws Exception {
+        testGetCountriesByRegion("/countries/europe", RegionEnum.EUROPE);
+    }
+
+    @Test
+    public void getCountriesAsia_returnsList() throws Exception {
+        testGetCountriesByRegion("/countries/asia", RegionEnum.ASIA);
+    }
+
+    @Test
+    public void getCountriesAmerica_returnsList() throws Exception {
+        testGetCountriesByRegion("/countries/america", RegionEnum.AMERICA);
+    }
+
+    @Test
+    public void getCountriesOceania_returnsList() throws Exception {
+        testGetCountriesByRegion("/countries/oceania", RegionEnum.OCEANIA);
+    }
+
+    @Test
+    public void getCountriesAfrica_returnsList() throws Exception {
+        testGetCountriesByRegion("/countries/africa", RegionEnum.AFRICA);
+    }
+
+    @Test
+    public void getCountriesAntarctica_returnsList() throws Exception {
+        testGetCountriesByRegion("/countries/antarctica", RegionEnum.ANTARCTICA);
+    }
+
+
+    @Test
+    private void testGetCountriesByRegion(String url, RegionEnum region) throws Exception {
+        List<Country> countries = createSampleCountries();
+        List<CountryGetDTO> countryGetDTOs = countries.stream()
+                .map(DTOMapper.INSTANCE::convertEntityToCountryGetDTO)
+                .collect(Collectors.toList());
+
+        given(countryService.getCountriesByContinent(anyString())).willReturn(countries);
+
+        mockMvc.perform(get(url)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(countries.size())));
+    }
+
+
+    private List<Country> createSampleCountries() {
+        List<Country> countries = new ArrayList<>();
+
+        Country country1 = new Country();
+        country1.setCountryId(1L);
+        country1.setName("Country 1");
+        country1.setRegion(RegionEnum.EUROPE);
+
+        Country country2 = new Country();
+        country2.setCountryId(2L);
+        country2.setName("Country 2");
+        country2.setRegion(RegionEnum.AFRICA);
+
+        countries.add(country1);
+        countries.add(country2);
+
+        return countries;
+    }
+
 
 }

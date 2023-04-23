@@ -158,7 +158,7 @@ public class CountryService {
         return countries.get(index).getPopulation();
     }
 
-    private RegionEnum stringToRegionEnum(String region) {
+    protected RegionEnum stringToRegionEnum(String region) {
         switch (region) {
             case "Africa":
                 return RegionEnum.AFRICA;
@@ -178,6 +178,9 @@ public class CountryService {
     }
 
     public List<Country> getCountriesByContinent(String continent) {
+        if (continent == null) {
+            throw new IllegalArgumentException("Continent cannot be null");
+        }
         List<Country> allCountries = getAllCountries();
         return allCountries.stream()
                 .filter(country -> continent.equals(country.getRegion()))
