@@ -1,10 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
 import ch.uzh.ifi.hase.soprafs23.StatePattern.GameStateClass;
-import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
-import ch.uzh.ifi.hase.soprafs23.constant.GameState;
-import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
-import ch.uzh.ifi.hase.soprafs23.constant.WebsocketType;
+import ch.uzh.ifi.hase.soprafs23.constant.*;
 import ch.uzh.ifi.hase.soprafs23.entityDB.*;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Category;
 import ch.uzh.ifi.hase.soprafs23.entityOther.Guess;
@@ -18,6 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -26,6 +26,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Random;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
+
 import static java.lang.Boolean.TRUE;
 
 @Service
@@ -57,6 +59,8 @@ public class GameService {
     }
      */
 
+
+
     public Game createGame(GamePostDTO gamePostDTO) {
 
         Game game = new Game();
@@ -74,16 +78,14 @@ public class GameService {
         game.setParticipants(gameUsers);
 
         List<RegionEnum> selectedRegions = gamePostDTO.getSelectedRegions();
-
         game.setSelectedRegions(selectedRegions);
         System.out.println("Selected Regions: " + selectedRegions);
 
-
-        Set<Long> countryIds = countryRepository.getCountryIdsByRegions(selectedRegions);
-
+        Set<Long> countryIds = getCountryIdsByRegionsAndDifficulty(gamePostDTO.getSelectedRegions(), gamePostDTO.getDifficulty());
         game.setCountriesToPlayIds(countryIds);
         System.out.println("Country to play ids: " + game.getCountriesToPlayIds());
-        game.setLobbyCreator(lobbyCreator);
+       game.setLobbyCreator(lobbyCreator);
+       game.setDifficulty(gamePostDTO.getDifficulty());
 
         //Set SETUP State
         game.setCurrentState(GameState.SETUP);
@@ -171,16 +173,20 @@ public class GameService {
             boolean haveAllGuessed = true;
             Set<GameUser> participants = game.getParticipants();
             for(GameUser participant: participants){
-                if (participant.getCurrentState() != GameState.SCOREBOARD) {
+                if (!participant.isHasAlreadyGuessed()) {
                     haveAllGuessed = false;
                     break;
                 }
             }
             if(haveAllGuessed){
                 System.out.println("Everyone has guessed");
-                game.setCurrentState(GameState.SCOREBOARD);
-                game.setRemainingTime(7L);
-                updateGameState(game.getGameId(),  WebsocketType.GAMESTATEUPDATE, GameState.SCOREBOARD);
+                if(game.getRemainingRounds()==0){
+                    game.setCurrentState(GameState.ENDED);
+                }else{
+                    game.setCurrentState(GameState.SCOREBOARD);
+                    game.setRemainingTime(7L);
+                }
+                updateGameState(game.getGameId(),  WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
             }
             game.setParticipants(gameUsers);
             updateGameState(gameId, WebsocketType.PLAYERUPDATE, game.getParticipants());
@@ -234,6 +240,12 @@ public class GameService {
                 scheduledFutures.remove(gameId);
             }
         }
+
+    public Set<Long> getCountryIdsByRegionsAndDifficulty(List<RegionEnum> regions, Difficulty difficulty) {
+        Long minPopulation = countryService.getMinPopulationByDifficulty(difficulty);
+        Page<Country> countriesPage = countryRepository.getCountriesByRegionsAndDifficulty(regions, minPopulation, PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Sort.Direction.DESC, "population")));
+        return countriesPage.getContent().stream().map(Country::getCountryId).collect(Collectors.toSet());
+    }
 
     public List<Game> getGames() {
         return this.gameRepository.findAll();

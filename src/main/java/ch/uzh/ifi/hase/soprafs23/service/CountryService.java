@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
 
+import ch.uzh.ifi.hase.soprafs23.constant.Difficulty;
 import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Country;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Outline;
@@ -13,6 +14,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -127,6 +131,31 @@ public class CountryService {
                 e.printStackTrace();
             }
         }
+    }
+
+
+
+    public Long getMinPopulationByDifficulty(Difficulty difficulty) {
+        Long minPopulation;
+        switch (difficulty) {
+            case EASY:
+                minPopulation = calculateTopPopulation(1.0 / 3);
+                break;
+            case MEDIUM:
+                minPopulation = calculateTopPopulation(2.0 / 3);
+                break;
+            case HARD:
+            default:
+                minPopulation = 0L;
+                break;
+        }
+        return minPopulation;
+    }
+
+    public Long calculateTopPopulation(double ratio) {
+        List<Country> countries = countryRepository.findAll(Sort.by(Sort.Direction.DESC, "population"));
+        int index = (int) (countries.size() * ratio) - 1;
+        return countries.get(index).getPopulation();
     }
 
     private RegionEnum stringToRegionEnum(String region) {

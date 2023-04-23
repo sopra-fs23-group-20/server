@@ -19,7 +19,7 @@ public class SetupStateClass implements GameStateClass {
         game.setCurrentState(GameState.GUESSING);
         game.setRemainingRounds(game.getNumberOfRounds()-1);
         game.setRemainingRoundPoints(100L);
-        selectNewRandomCountry(game);
+        selectNewRandomCountry(game, gameService);
         game.getCategoryStack().refillStack();
         CategoryStack categoryStack = game.getCategoryStack();
         CategoryEnum categoryEnum = categoryStack.pop();
@@ -31,8 +31,12 @@ public class SetupStateClass implements GameStateClass {
         return game;
     }
 
-    private void selectNewRandomCountry(Game game) {
+    private void selectNewRandomCountry(Game game,GameService gameService) {
         List<Long> myList = new ArrayList<>(game.getCountriesToPlayIds());
+        if(myList.isEmpty()){
+            game.setCountriesToPlayIds(gameService.getCountryIdsByRegionsAndDifficulty(game.getSelectedRegions(),game.getDifficulty()));
+            myList = new ArrayList<>(game.getCountriesToPlayIds());
+        }
         System.out.println("Countries to play: " + myList);
         Random random = new Random();
         int randomIndex = random.nextInt(myList.size());

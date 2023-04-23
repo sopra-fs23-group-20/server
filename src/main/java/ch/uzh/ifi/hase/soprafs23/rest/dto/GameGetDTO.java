@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
+import ch.uzh.ifi.hase.soprafs23.constant.Difficulty;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.entityDB.CategoryStack;
 import ch.uzh.ifi.hase.soprafs23.entityDB.GameUser;
@@ -26,7 +27,15 @@ public class GameGetDTO {
     private List<RegionEnum> selectedRegions;
     private CategoryStack categoryStack;
     private Boolean openLobby;
+    private Difficulty difficulty;
 
+    public Difficulty getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
+    }
 
     public Long getGameId() {
         return gameId;

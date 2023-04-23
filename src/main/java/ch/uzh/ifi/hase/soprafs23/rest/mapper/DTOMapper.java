@@ -61,6 +61,7 @@ public interface DTOMapper {
     @Mapping(source = "selectedRegions", target = "selectedRegions")
     @Mapping(source = "categoryStack", target = "categoryStack")
     @Mapping(source="openLobby", target="openLobby")
+    @Mapping(source="difficulty", target="difficulty")
     GameGetDTO convertEntityToGameGetDTO(Game game);
 
     @Mapping(source = "userId", target = "userId")

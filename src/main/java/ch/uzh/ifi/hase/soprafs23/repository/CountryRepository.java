@@ -4,6 +4,8 @@ import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Country;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Outline;
 import ch.uzh.ifi.hase.soprafs23.entityOther.Location;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -42,5 +44,7 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
     @Query("SELECT c.countryId FROM Country c WHERE c.region IN :regions")
     Set<Long> getCountryIdsByRegions(@Param("regions") List<RegionEnum> regions);
 
+    @Query("SELECT c FROM Country c WHERE c.region IN :regions AND c.population >= :minPopulation")
+    Page<Country> getCountriesByRegionsAndDifficulty(@Param("regions") List<RegionEnum> regions, @Param("minPopulation") Long minPopulation, Pageable pageable);
 
 }

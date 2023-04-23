@@ -25,7 +25,7 @@ public class ScoreboardStateClass implements GameStateClass{
                 game.setRemainingRounds(game.getRemainingRounds() - 1);
                 game.setCurrentState(GameState.GUESSING);
                 game.setRemainingRoundPoints(100L);
-                selectNewRandomCountry(game);
+                selectNewRandomCountry(game, gameService);
                 game.setRemainingTime(game.getRoundDuration());
                 resetAlreadyGuess(game);
                 game.getCategoryStack().refillStack();
@@ -42,8 +42,13 @@ public class ScoreboardStateClass implements GameStateClass{
         return game;
     }
 
-    private void selectNewRandomCountry(Game game) {
+    private void selectNewRandomCountry(Game game,GameService gameService) {
         List<Long> myList = new ArrayList<>(game.getCountriesToPlayIds());
+        if(myList.isEmpty()){
+            game.setCountriesToPlayIds(gameService.getCountryIdsByRegionsAndDifficulty(game.getSelectedRegions(),game.getDifficulty()));
+            myList = new ArrayList<>(game.getCountriesToPlayIds());
+        }
+        System.out.println("Countries to play: " + myList);
         Random random = new Random();
         int randomIndex = random.nextInt(myList.size());
         game.setCurrentCountryId(myList.get(randomIndex));
