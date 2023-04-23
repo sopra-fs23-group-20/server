@@ -187,6 +187,27 @@ https://github.com/sopra-fs23-group-20/server/issues/114
 added a guide as a tutorial for the users, added avatars to the profile page, added QR code to share a game session, added accordion to the gameSetup page, tried to fix the layout for mobile
 
 ---
+
+### Jonas
+https://github.com/sopra-fs23-group-20/client/issues/84 <br />
+https://github.com/sopra-fs23-group-20/client/issues/66 <br />
+https://github.com/sopra-fs23-group-20/client/issues/64 <br />
+https://github.com/sopra-fs23-group-20/client/issues/63 <br />
+https://github.com/sopra-fs23-group-20/client/issues/65 <br />
+
+#### Description:
+I added a selection for the difficulty level between Easy, Medium and Hard based on the country's total population. <br />
+I also added the option to register as a "Guest" user and let the user automatically after being redirected to the register screen be redirected back to the game he/she tried to join.
+
+#### Tasks for next week:
+Prepare the presentation for M3 <br />
+https://github.com/sopra-fs23-group-20/client/issues/51  (There should be a websocket connection on /topic/gameLobbies where newly created lobbies should be sent to the client so the gameLobbyOverview page is always up-to-date without needing to manually refresh the page) </br>
+https://github.com/sopra-fs23-group-20/client/issues/85 (The time Left in a round should be displayed as a horizontal bar which decreases every second.) </br>
+https://github.com/sopra-fs23-group-20/server/issues/70 (No new players can join the game once it has started)  </br>
+
+
+---
+
 ## Week 24.4 - 30.4
 ## Week 1.5 - 7.5
 ## Week 8.5 - 14.5
