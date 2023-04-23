@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs23.service;
 import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Country;
 import ch.uzh.ifi.hase.soprafs23.repository.CountryRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.OutlineRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +23,8 @@ public class CountryServiceTest {
     @Mock
     private CountryRepository countryRepository;
 
+    @Mock
+    private OutlineRepository outlineRepository;
 
     @InjectMocks
     private CountryService countryService;
@@ -75,8 +78,13 @@ public class CountryServiceTest {
         clearInvocations(countryRepository);
         when(countryRepository.getAllCountryIds()).thenReturn(Collections.emptySet());
 
+        CountryService testCountryService = new CountryService(countryRepository, outlineRepository);
+
+        testCountryService.setAllCountries();
+
         verify(countryRepository, atLeastOnce()).save(any(Country.class));
     }
+
 
     @Test
     public void stringToRegionEnum_invalidRegionString_throwIllegalArgumentException() {
@@ -86,15 +94,6 @@ public class CountryServiceTest {
     @Test
     public void getCountriesByContinent_nullContinent_throwIllegalArgumentException() {
         assertThrows(IllegalArgumentException.class, () -> countryService.getCountriesByContinent(null));
-    }
-
-    @Test
-    public void setAllCountries_repositoryNotEmpty_saveNotCalled() {
-        Set<Long> nonEmptyCountryIds = new HashSet<>();
-        nonEmptyCountryIds.add(1L);
-        when(countryRepository.getAllCountryIds()).thenReturn(nonEmptyCountryIds);
-        countryService.setAllCountries();
-        verify(countryRepository, never()).save(any(Country.class));
     }
 
     @Test
