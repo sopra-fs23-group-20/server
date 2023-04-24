@@ -226,7 +226,7 @@ I created the Leaderboard from scratch. In the leaderboard you can see, how many
 https://github.com/sopra-fs23-group-20/client/issues/76 <br />
 https://github.com/sopra-fs23-group-20/client/issues/72 <br />
 https://github.com/sopra-fs23-group-20/client/issues/73 <br />
-https://github.com/sopra-fs23-group-20/client/server/117 <br />
+https://github.com/sopra-fs23-group-20/server/117 <br />
 https://github.com/sopra-fs23-group-20/client/issues/75 <br />
 https://github.com/sopra-fs23-group-20/client/issues/77 <br />
 https://github.com/sopra-fs23-group-20/client/issues/78 <br />
