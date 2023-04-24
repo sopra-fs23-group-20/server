@@ -28,6 +28,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
+import static ch.uzh.ifi.hase.soprafs23.constant.GameState.SETUP;
 import static java.lang.Boolean.TRUE;
 
 @Service
@@ -88,7 +89,7 @@ public class GameService {
        game.setDifficulty(gamePostDTO.getDifficulty());
 
         //Set SETUP State
-        game.setCurrentState(GameState.SETUP);
+        game.setCurrentState(SETUP);
 
         //Set Category Stack
         game.setCategoryStack(gamePostDTO.getCategoryStack());
@@ -135,7 +136,7 @@ public class GameService {
             throw new RuntimeException("Game not found");
         }
 
-        game.setCurrentState(GameState.SETUP);
+        game.setCurrentState(SETUP);
         GameState currentGameState = game.getCurrentState();
         GameStateClass currentGameStateClass = Game.getGameStateClass(currentGameState);
         currentGameStateClass.updateGameEverySecond(game, this);
@@ -252,6 +253,27 @@ public class GameService {
     }
     public List<Game> getOpenLobbyGames() {
         return this.gameRepository.findByOpenLobby(TRUE);
+    }
+    public List<Game> getOpenPlayableLobbyGames() {
+        List<Game> OpenGames = this.gameRepository.findByOpenLobby(TRUE);
+        List<Game> JoinableGames = new ArrayList<>();
+        for (Game game : OpenGames)
+        {
+            if (game.getCurrentState().equals(SETUP))
+            {
+                JoinableGames.add(game);
+                log.debug("Game equal setup", game);
+            }
+            else
+            {
+                log.debug("Game not equal setup", game);
+
+               // OpenGames.remove(game);
+            }
+        }
+        //return this.gameRepository.findByCurrentStateIs(SETUP);
+
+        return JoinableGames;
     }
 
     public Game getGame(Long gameId) {

@@ -46,6 +46,21 @@ public class GameController {
         }
         return gameGetDTOs;
     }
+    @GetMapping("/gamesplayable")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<GameGetDTO> getAllJoinableGames() {
+        // fetch all games in the internal representation which are public thus open lobby is TRUE
+        //Joinable means that the game has not already started
+        List<Game> games = gameService.getOpenPlayableLobbyGames();
+        List<GameGetDTO> gameGetDTOs = new ArrayList<>();
+
+        // convert each game to the API representation
+        for (Game game : games) {
+            gameGetDTOs.add(DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
+        }
+        return gameGetDTOs;
+    }
 
     @GetMapping("/allGames")
     @ResponseStatus(HttpStatus.OK)
