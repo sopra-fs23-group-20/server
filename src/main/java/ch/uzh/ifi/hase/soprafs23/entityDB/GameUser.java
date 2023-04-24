@@ -2,9 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.entityDB;
 
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -31,7 +29,7 @@ public class GameUser implements Serializable {
     private GameState userPlayingState;
 
 
-    public boolean isHasAlreadyGuessed() {
+    public boolean getHasAlreadyGuessed() {
         return hasAlreadyGuessed;
     }
 

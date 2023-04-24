@@ -173,7 +173,7 @@ public class GameService {
             boolean haveAllGuessed = true;
             Set<GameUser> participants = game.getParticipants();
             for(GameUser participant: participants){
-                if (!participant.isHasAlreadyGuessed()) {
+                if (!participant.getHasAlreadyGuessed()) {
                     haveAllGuessed = false;
                     break;
                 }
