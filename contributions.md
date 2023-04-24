@@ -173,9 +173,10 @@ https://github.com/sopra-fs23-group-20/server/issues/116 <br />
 https://github.com/sopra-fs23-group-20/client/issues/61 (work ahead for next week) <br />
 https://github.com/sopra-fs23-group-20/server/issues/110 <br />
 https://github.com/sopra-fs23-group-20/client/issues/80  <br />
+https://github.com/sopra-fs23-group-20/server/issues/121 (work ahead for next week) <br />
 
 #### Description:
-I created a Rules page that displays the rules of the game, then I added the possibility to select regions and hints as a lobby creator, and also the feature that only the lobby creator sees the button to start the game. I also added that the game can only be started if at least one region and one hint are selected, and added the possibility to randomize the order acccording to which the hints are displayed (button is disabled when only one hint is selected because randomizing one hint has no effect).
+I created a Rules page that displays the rules of the game, then I added the possibility to select regions and hints as a lobby creator, and also the feature that only the lobby creator sees the button to start the game. I also added that the game can only be started if at least one region and one hint are selected, and added the possibility to randomize the order acccording to which the hints are displayed (button is disabled when only one hint is selected because randomizing one hint has no effect). I also wrote tests for the CountryCountroller and CountryService classes.
 
 ### Louis
 https://github.com/sopra-fs23-group-20/client/issues/62 <br />
@@ -207,6 +208,30 @@ https://github.com/sopra-fs23-group-20/server/issues/70 (No new players can join
 
 
 ---
+
+### Jamo
+https://github.com/sopra-fs23-group-20/client/issues/89 <br />
+https://github.com/sopra-fs23-group-20/client/issues/90 <br />
+https://github.com/sopra-fs23-group-20/client/issues/91 <br />
+https://github.com/sopra-fs23-group-20/client/issues/92 <br />
+https://github.com/sopra-fs23-group-20/client/issues/93 <br />
+
+#### Description:
+I created the Leaderboard from scratch. In the leaderboard you can see, how many games the players have won! For the implementation I chose the approach with generic functional components which made it a bit more difficult. Furthermore, I designed the leaderboard and fixed the ranking order in the Score- and Leaderboard.
+
+---
+
+
+### Jonathan
+https://github.com/sopra-fs23-group-20/client/issues/76 <br />
+https://github.com/sopra-fs23-group-20/client/issues/72 <br />
+https://github.com/sopra-fs23-group-20/client/issues/73 <br />
+https://github.com/sopra-fs23-group-20/client/issues/75 <br />
+https://github.com/sopra-fs23-group-20/client/issues/77 <br />
+https://github.com/sopra-fs23-group-20/client/issues/78 <br />
+https://github.com/sopra-fs23-group-20/client/issues/81 <br />
+
+https://github.com/sopra-fs23-group-20/server/issues/117
 
 ## Week 24.4 - 30.4
 ## Week 1.5 - 7.5
