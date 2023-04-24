@@ -5,6 +5,8 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import ch.uzh.ifi.hase.soprafs23.constant.Difficulty;
+import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
+import ch.uzh.ifi.hase.soprafs23.entityDB.Country;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Game;
 import ch.uzh.ifi.hase.soprafs23.entityDB.GameUser;
 import ch.uzh.ifi.hase.soprafs23.entityDB.User;
@@ -24,6 +26,8 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -54,41 +58,6 @@ class GameServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
-
-
-    /*
-    @Test
-    void testCreateGameSuccess() {
-        GamePostDTO gamePostDTO = new GamePostDTO();
-        gamePostDTO.setLobbyCreatorUserId("1");
-        gamePostDTO.setRoundDuration(120L);
-        gamePostDTO.setNumberOfRounds(5L);
-        gamePostDTO.setOpenLobby(true);
-        gamePostDTO.setDifficulty(Difficulty.EASY);
-        Set<Long> countryIds = new HashSet<Long>();
-        countryIds.add(1L);
-
-        User testUser = new User();
-        testUser.setUserId(1L);
-        testUser.setUsername("TestUser");
-
-        when(gameService.getCountryIdsByRegionsAndDifficulty(any(List.class), any(Difficulty.class))).thenReturn(countryIds);
-        when(userRepository.findByUserId(1L)).thenReturn(testUser);
-        when(gameRepository.saveAndFlush(any(Game.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-
-
-        Game createdGame = gameService.createGame(gamePostDTO);
-
-        assertNotNull(createdGame);
-        assertNotNull(createdGame.getGameId());
-        assertEquals(1, createdGame.getParticipants().size());
-        assertEquals(120, createdGame.getRoundDuration());
-        assertEquals(5, createdGame.getNumberOfRounds());
-        assertEquals(true, createdGame.getOpenLobby());
-
-        verify(gameRepository, times(1)).saveAndFlush(any(Game.class));
-    }*/
 
     @Test
     void testCreateGameFailure() {
@@ -153,27 +122,6 @@ class GameServiceTest {
         verify(gameRepository, times(0)).saveAndFlush(any(Game.class));
     }
 
-    /*
-    @Test
-    void testStartGameSuccess() {
-        Long gameId = 10001L;
-
-        Game game = new Game();
-        game.setGameId(gameId);
-        game.setParticipants(new HashSet<>());
-        game.setNumberOfRounds(5L);
-
-        when(gameRepository.findByGameId(gameId)).thenReturn(game);
-        when(gameRepository.saveAndFlush(any(Game.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        Game startedGame = gameService.startGame(gameId);
-
-        assertNotNull(startedGame);
-        assertEquals(GameState.SETUP, startedGame.getCurrentState());
-        assertEquals(5, startedGame.getNumberOfRounds());
-
-        verify(gameRepository, times(1)).saveAndFlush(any(Game.class));
-    }*/
 
     @Test
     void testStartGameFailure() {
@@ -186,62 +134,51 @@ class GameServiceTest {
         verify(gameRepository, times(0)).saveAndFlush(any(Game.class));
     }
 
-    /*@Test
-    void testSubmitGuessSuccess() {
-        Long gameId = 10001L;
-        Long userId = 1L;
-        Guess guess = new Guess();
+    @Test
+    void testGetCountryIdsByRegionsAndDifficultyFailure() {
+        List<RegionEnum> regions = new ArrayList<>();
+        regions.add(RegionEnum.EUROPE);
+        regions.add(RegionEnum.ASIA);
+        Difficulty difficulty = Difficulty.HARD;
 
-        User user = new User();
-        user.setUserId(userId);
-        user.setUsername("TestUser");
-
-        Game game = new Game();
-        game.setGameId(gameId);
-        game.setCurrentState(GameState.SETUP);
-        game.setParticipants(new HashSet<>());
-
-        GameUser gameUser = GameUser.transformUserToGameUser(user, game);
-        game.getParticipants().add(gameUser);
-
-        when(gameRepository.findByGameId(gameId)).thenReturn(game);
-        when(userRepository.findByUserId(userId)).thenReturn(user);
-        when(gameRepository.saveAndFlush(any(Game.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        assertDoesNotThrow(() -> gameService.submitGuess(gameId, guess));
-        assertEquals(GameState.GUESSING, game.getCurrentState());
+        assertThrows(RuntimeException.class, () -> gameService.getCountryIdsByRegionsAndDifficulty(regions, difficulty));
     }
 
     @Test
-    void testSubmitGuessFailure() {
-        Long gameId = 10001L;
-        Long userId = 1L;
-        Guess guess = new Guess();
+    void testGetAllGamesSuccess() {
+        List<Game> games = Arrays.asList(new Game(), new Game(), new Game());
+
+        when(gameRepository.findAll()).thenReturn(games);
+
+        List<Game> allGames = gameService.getGames();
+
+        assertNotNull(allGames);
+        assertEquals(3, allGames.size());
+    }
+
+    @Test
+    void testGetGameByIdSuccess() {
+        Long gameId = 10003L;
 
         Game game = new Game();
         game.setGameId(gameId);
-        game.setCurrentState(GameState.SETUP);
-        game.setParticipants(new HashSet<>());
-
-        User user = new User();
-        user.setUserId(userId);
-        user.setUsername("TestUser");
-
-        game.getParticipants().add(GameUser.transformUserToGameUser(user, game));
 
         when(gameRepository.findByGameId(gameId)).thenReturn(game);
-        when(userRepository.findByUserId(userId)).thenReturn(user);
 
-        assertThrows(RuntimeException.class, () -> gameService.submitGuess(gameId, guess));
+        Game foundGame = gameService.getGame(gameId);
 
+        assertNotNull(foundGame);
+        assertEquals(gameId, foundGame.getGameId());
     }
-    */
 
+    @Test
+    void testGetGameByIdFailure() {
+        Long gameId = 10003L;
 
+        when(gameRepository.findByGameId(gameId)).thenReturn(null);
 
-
-
-
+        assertThrows(RuntimeException.class, () -> gameService.getGame(gameId));
+    }
 
 
 }

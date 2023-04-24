@@ -255,7 +255,12 @@ public class GameService {
     }
 
     public Game getGame(Long gameId) {
-        return this.gameRepository.findByGameId(gameId);
+
+        Game game = gameRepository.findByGameId(gameId);
+        if (game == null) {
+            throw new RuntimeException("Game not found with gameId: " + gameId);
+        }
+        return game;
     }
 
     private GameUser findGameUser(Set<GameUser> gameUsers, Long userId){

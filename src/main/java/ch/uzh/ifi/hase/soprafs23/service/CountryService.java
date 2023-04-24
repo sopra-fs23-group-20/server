@@ -61,13 +61,6 @@ public class CountryService {
         if (countryRepository.getAllCountryIds().size() == 0) {
             JSONArray countries;
 
-            /*
-            try{
-                countries = fetchCountriesAPI(countries);
-            }
-            catch (IOException | ParseException e) {
-            }*/
-
             {
                 JSONParser parser = new JSONParser();
                 try {
