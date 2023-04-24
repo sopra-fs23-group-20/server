@@ -135,6 +135,48 @@ class GameServiceTest {
     }
 
     @Test
+    void testStartGameAlreadyRunningFailure() {
+        Long gameId = 10001L;
+
+        Set<GameUser> participants = new HashSet<>();
+        participants.add(new GameUser());
+        participants.add(new GameUser());
+
+        Game game = new Game();
+        game.setGameId(gameId);
+        game.setParticipants(participants);
+        game.setCurrentState(GameState.GUESSING);
+
+        when(gameRepository.findByGameId(gameId)).thenReturn(game);
+
+        assertThrows(RuntimeException.class, () -> gameService.startGame(gameId));
+
+        verify(gameRepository, times(0)).saveAndFlush(any(Game.class));
+    }
+
+
+    @Test
+    void testGetCountryIdsByRegionsAndDifficultySuccess() {
+        List<RegionEnum> regions = new ArrayList<>();
+        regions.add(RegionEnum.EUROPE);
+        regions.add(RegionEnum.ASIA);
+        Difficulty difficulty = Difficulty.HARD;
+
+        List<Country> countries = new ArrayList<>();
+        countries.add(new Country());
+
+        Page<Country> countryPage = new PageImpl<>(countries);
+
+        when(countryRepository.getCountriesByRegionsAndDifficulty(anyList(), any(), any())).thenReturn(countryPage);
+
+        Set<Long> countryIds = gameService.getCountryIdsByRegionsAndDifficulty(regions, difficulty);
+
+        assertNotNull(countryIds);
+        assertEquals(1, countryIds.size());
+    }
+
+
+    @Test
     void testGetCountryIdsByRegionsAndDifficultyFailure() {
         List<RegionEnum> regions = new ArrayList<>();
         regions.add(RegionEnum.EUROPE);
