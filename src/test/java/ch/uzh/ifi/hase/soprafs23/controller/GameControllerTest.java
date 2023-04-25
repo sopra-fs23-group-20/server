@@ -494,7 +494,8 @@ public class GameControllerTest {
         guessPostDTO.setUserId(2L);
         guessPostDTO.setGuess("USA");
 
-        given(gameService.submitGuess(Mockito.anyLong(), Mockito.any(Guess.class))).willReturn("Your guess was wrong you get 0 points");
+        given(gameService.submitGuess(Mockito.anyLong(), Mockito.any(Guess.class)))
+                .willReturn("Your guess was wrong you get 0 points");
 
         // when/then -> do the request + validate the result
         MockHttpServletRequestBuilder postRequest = post("/games/{gameId}/guesses", game.getGameId())
