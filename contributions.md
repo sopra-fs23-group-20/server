@@ -237,6 +237,15 @@ https://github.com/sopra-fs23-group-20/server/issues/117
 
 ---
 
+### Dario
+https://github.com/sopra-fs23-group-20/client/issues/70 <br />
+https://github.com/sopra-fs23-group-20/client/issues/71 <br />
+https://github.com/sopra-fs23-group-20/client/issues/61 <br />
+https://github.com/sopra-fs23-group-20/server/issues/121 <br />
+https://github.com/sopra-fs23-group-20/client/issues/99 <br />
+
+#### Description: As I was away from wednesday until the end of the week, most of the tasks are the ones I did last week as work ahead for this week, but I was still able to manage to find time to fix a bug that occured when registering and did also write unit tests for the entities and also tests for the state pattern classes.
+
 ### Jamo
 https://github.com/sopra-fs23-group-20/client/issues/100 <br />
 https://github.com/sopra-fs23-group-20/client/issues/98  <br />
