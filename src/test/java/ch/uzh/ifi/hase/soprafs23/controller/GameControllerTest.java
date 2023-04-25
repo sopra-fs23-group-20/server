@@ -121,6 +121,33 @@ public class GameControllerTest {
                 .andExpect(jsonPath("$[0].gameId", is(game1.getGameId().intValue())))
                 .andExpect(jsonPath("$[1].gameId", is(game2.getGameId().intValue())));
     }
+    @Test
+    public void getAllJoinableGames_gamesFound_gamesReturned() throws Exception {
+        // given
+        List<Game> games = new ArrayList<>();
+        Game game1 = new Game();
+        game1.setGameId(1L);
+        game1.setRoundDuration(2L);
+        games.add(game1);
+        Game game2 = new Game();
+        game2.setGameId(2L);
+        game2.setRoundDuration(2L);
+        games.add(game2);
+
+        given(gameService.getOpenPlayableLobbyGames()).willReturn(games);
+        given(gameService.getOpenPlayableLobbyGames()).willReturn(games);
+
+        // when/then -> do the request + validate the result
+        MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/gamesplayable")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        // then
+        mockMvc.perform(getRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].gameId", is(game1.getGameId().intValue())))
+                .andExpect(jsonPath("$[1].gameId", is(game2.getGameId().intValue())));
+    }
 
 
 
@@ -467,7 +494,8 @@ public class GameControllerTest {
         guessPostDTO.setUserId(2L);
         guessPostDTO.setGuess("USA");
 
-        given(gameService.submitGuess(Mockito.anyLong(), Mockito.any(Guess.class))).willReturn("Your guess was wrong you get 0 points");
+        given(gameService.submitGuess(Mockito.anyLong(), Mockito.any(Guess.class)))
+                .willReturn("Your guess was wrong you get 0 points");
 
         // when/then -> do the request + validate the result
         MockHttpServletRequestBuilder postRequest = post("/games/{gameId}/guesses", game.getGameId())

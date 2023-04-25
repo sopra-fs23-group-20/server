@@ -234,6 +234,17 @@ https://github.com/sopra-fs23-group-20/client/issues/81 <br />
 https://github.com/sopra-fs23-group-20/server/issues/117
 
 ## Week 24.4 - 30.4
+
+---
+
+### Jamo
+https://github.com/sopra-fs23-group-20/client/issues/100 <br />
+https://github.com/sopra-fs23-group-20/client/issues/98  <br />
+
+#### Description:
+
+
+---
 ## Week 1.5 - 7.5
 ## Week 8.5 - 14.5
 ## Week 15.5 - 21.5
