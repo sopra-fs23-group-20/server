@@ -44,17 +44,6 @@ public class SetupStateClass implements GameStateClass {
         myList.remove(randomIndex);
         game.setCountriesToPlayIds(new HashSet<>(myList));
     }
-
-    private void setAllGameUsers(Game game){
-        Set<GameUser> gameUsers = game.getParticipants();
-        for(GameUser gameUser : gameUsers){
-            gameUser.setUserPlayingState(GameState.SETUP);
-            gameUser.setGamePoints(100L);
-        }
-        game.setCurrentState(GameState.SETUP);
-        game.setRemainingRoundPoints(100L);
-        game.setRemainingTime(game.getRoundDuration());
-    }
     private void resetAlreadyGuess(Game game){
         for (GameUser gameUser : game.getParticipants()) {
             gameUser.setHasAlreadyGuessed(false);

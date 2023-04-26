@@ -25,7 +25,7 @@ public class GuessingStateClass implements GameStateClass{
         }
 
         //Make a Category Update
-        Long timeBetweenCategoryUpdates = game.getRoundDuration() / game.getCategoryStack().getSelectedCategories().size();
+        Long timeBetweenCategoryUpdates = game.getRoundDuration() / (game.getCategoryStack().getSelectedCategories().size() + 1);
         System.out.println("Time between Category Updates: " + timeBetweenCategoryUpdates);
         System.out.println("Time between times size " + timeBetweenCategoryUpdates * game.getCategoryStack().getSelectedCategories().size());
         if (game.getRemainingTime() < timeBetweenCategoryUpdates * game.getCategoryStack().getRemainingCategories().size()) {

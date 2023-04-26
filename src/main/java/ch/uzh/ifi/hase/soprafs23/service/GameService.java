@@ -168,7 +168,6 @@ public class GameService {
                 System.out.println("The user " + gameUser.getUsername() + " got " + gameUser.getGamePoints() + " points");
             }
             else {
-                gameUser.setGamePoints(gameUser.getGamePoints());
                 returnString = "Your guess was wrong you get 0 points";
             }
             boolean haveAllGuessed = true;
