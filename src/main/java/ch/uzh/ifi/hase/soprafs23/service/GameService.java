@@ -152,7 +152,7 @@ public class GameService {
     //Logic fixed; not tested
     public String submitGuess(Long gameId, Guess guess) {
         try {
-            System.out.println("THe guess username: "+ guess.getUserId());
+            System.out.println("The guess username: "+ guess.getUserId());
             System.out.println("The guess submitted is:" + guess.getGuess());
             Game game = gameRepository.findByGameId(gameId);
             Set<GameUser> gameUsers = new HashSet<>(game.getParticipants());

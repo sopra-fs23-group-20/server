@@ -316,5 +316,41 @@ class GameServiceTest {
         assertThrows(RuntimeException.class, () -> gameService.getGame(gameId));
     }
 
+    @Test
+    void lastPlayerSubmitGuessGoToScoreboard(){
+        Game game = new Game();
+
+        GameUser participant1 = new GameUser();
+        GameUser participant2 = new GameUser();
+        GameUser participant3 = new GameUser();
+
+        participant1.setGamePoints(10L);
+        participant2.setGamePoints(30L);
+        participant3.setGamePoints(50L);
+
+        participant1.setHasAlreadyGuessed(true);
+        participant2.setHasAlreadyGuessed(true);
+        participant3.setHasAlreadyGuessed(false);
+
+        participant1.setUserId(2L);
+        participant2.setUserId(3L);
+        participant3.setUserId(4L);
+
+        game.setParticipants(new HashSet<>(Arrays.asList(participant1, participant2, participant3)));
+        game.setCurrentState(GameState.GUESSING);
+        game.setRemainingRoundPoints(30L);
+        game.setRemainingRounds(1L);
+
+        when(gameRepository.findByGameId(any())).thenReturn(game);
+        when(gameRepository.saveAndFlush(any())).thenReturn(null);
+        when(countryRepository.findNameByCountryId(any())).thenReturn("Switzerland");
+
+        Guess guess = new Guess();
+        guess.setGuess("Switzerland");
+        guess.setUserId(4L);
+        assertNotEquals(game.getCurrentState(), GameState.SCOREBOARD);
+        gameService.submitGuess(1L, guess);
+        assertEquals(game.getCurrentState(), GameState.SCOREBOARD);
+    }
 
 }
