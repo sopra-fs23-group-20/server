@@ -26,7 +26,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
-
 class GameServiceTest {
 
     @Mock
@@ -67,88 +66,91 @@ class GameServiceTest {
         verify(gameRepository, times(0)).saveAndFlush(any(Game.class));
     }
 
-
     /**
      * @Test void testCreateGameSuccess() {
-     * GamePostDTO gamePostDTO = new GamePostDTO();
-     * gamePostDTO.setLobbyCreatorUserId("1");
-     * gamePostDTO.setRoundDuration(120L);
-     * gamePostDTO.setNumberOfRounds(5L);
-     * gamePostDTO.setOpenLobby(true);
-     * gamePostDTO.setSelectedRegions(Arrays.asList(RegionEnum.AFRICA, RegionEnum.EUROPE));
-     * gamePostDTO.setDifficulty(Difficulty.EASY);
-     * gamePostDTO.setCategoryStack(new CategoryStack());
-     * <p>
-     * User user = new User();
-     * user.setUserId(1L);
-     * user.setCreation_date(new Date());
-     * user.setToken("1234");
-     * user.setStatus(UserStatus.ONLINE);
-     * <p>
-     * <p>
-     * when(userRepository.findByUserId(1L)).thenReturn(user);
-     * when(gameRepository.saveAndFlush(any(Game.class))).thenReturn(new Game());
-     * <p>
-     * Game result = gameService.createGame(gamePostDTO);
-     * <p>
-     * assertNotNull(result);
-     * assertEquals(1L, result.getLobbyCreator().getUserId());
-     * assertEquals(2, result.getSelectedRegions().size());
-     * assertEquals(Difficulty.EASY, result.getDifficulty());
-     * assertTrue(result.getOpenLobby());
-     * assertNotNull(result.getCategoryStack());
-     * assertEquals(GameState.SETUP, result.getCurrentState());
-     * assertEquals(120L, result.getRoundDuration());
-     * assertEquals(5L, result.getNumberOfRounds());
-     * verify(gameRepository, times(1)).saveAndFlush(any(Game.class));
-     * }
+     *       GamePostDTO gamePostDTO = new GamePostDTO();
+     *       gamePostDTO.setLobbyCreatorUserId("1");
+     *       gamePostDTO.setRoundDuration(120L);
+     *       gamePostDTO.setNumberOfRounds(5L);
+     *       gamePostDTO.setOpenLobby(true);
+     *       gamePostDTO.setSelectedRegions(Arrays.asList(RegionEnum.AFRICA,
+     *       RegionEnum.EUROPE));
+     *       gamePostDTO.setDifficulty(Difficulty.EASY);
+     *       gamePostDTO.setCategoryStack(new CategoryStack());
+     *       <p>
+     *       User user = new User();
+     *       user.setUserId(1L);
+     *       user.setCreation_date(new Date());
+     *       user.setToken("1234");
+     *       user.setStatus(UserStatus.ONLINE);
+     *       <p>
+     *       <p>
+     *       when(userRepository.findByUserId(1L)).thenReturn(user);
+     *       when(gameRepository.saveAndFlush(any(Game.class))).thenReturn(new
+     *       Game());
+     *       <p>
+     *       Game result = gameService.createGame(gamePostDTO);
+     *       <p>
+     *       assertNotNull(result);
+     *       assertEquals(1L, result.getLobbyCreator().getUserId());
+     *       assertEquals(2, result.getSelectedRegions().size());
+     *       assertEquals(Difficulty.EASY, result.getDifficulty());
+     *       assertTrue(result.getOpenLobby());
+     *       assertNotNull(result.getCategoryStack());
+     *       assertEquals(GameState.SETUP, result.getCurrentState());
+     *       assertEquals(120L, result.getRoundDuration());
+     *       assertEquals(5L, result.getNumberOfRounds());
+     *       verify(gameRepository, times(1)).saveAndFlush(any(Game.class));
+     *       }
      * @Test void testSubmitGuessSuccess() {
-     * Game game = new Game();
-     * game.setGameId(1L);
-     * game.setRemainingRoundPoints(5L);
-     * game.setRemainingRounds(2L);
-     * game.setCurrentState(GameState.SETUP);
-     * game.setCurrentCountryId(1L);
-     * game.setSelectedRegions(Arrays.asList(RegionEnum.AFRICA, RegionEnum.EUROPE));
-     * game.setDifficulty(Difficulty.EASY);
-     * game.setCategoryStack(new CategoryStack());
-     * game.setCountriesToPlayIds(new HashSet<>(Arrays.asList(1L, 2L, 3L)));
-     * <p>
-     * User user = new User();
-     * user.setUserId(1L);
-     * user.setUsername("user1");
-     * user.setCreation_date(new Date());
-     * user.setToken("1234");
-     * <p>
-     * Set<GameUser> participants = new HashSet<>();
-     * GameUser gameUser = new GameUser();
-     * gameUser.setGame(game);
-     * gameUser.setUserId(user.getUserId());
-     * gameUser.setUsername(user.getUsername());
-     * gameUser.setToken(user.getToken());
-     * gameUser.setGamePoints(0L);
-     * gameUser.setUserPlayingState(GameState.SETUP);
-     * participants.add(gameUser);
-     * <p>
-     * game.setParticipants(participants);
-     * game.setLobbyCreator(gameUser);
-     * <p>
-     * when(gameRepository.findByGameId(1L)).thenReturn(game);
-     * when(countryRepository.findNameByCountryId(1L)).thenReturn("Switzerland");
-     * when(gameRepository.saveAndFlush(any(Game.class))).thenReturn(new Game());
-     * <p>
-     * Guess guess = new Guess();
-     * guess.setUserId(1L);
-     * guess.setGuess("Switzerland");
-     * <p>
-     * String result = gameService.submitGuess(1L, guess);
-     * <p>
-     * assertEquals("Your guess was right you get 5 points", result);
-     * assertTrue(gameUser.getHasAlreadyGuessed());
-     * assertEquals(15L, gameUser.getGamePoints());
-     * assertEquals(GameState.SCOREBOARD, gameUser.getUserPlayingState());
-     * verify(gameRepository, times(1)).saveAndFlush(any(Game.class));
-     * }
+     *       Game game = new Game();
+     *       game.setGameId(1L);
+     *       game.setRemainingRoundPoints(5L);
+     *       game.setRemainingRounds(2L);
+     *       game.setCurrentState(GameState.SETUP);
+     *       game.setCurrentCountryId(1L);
+     *       game.setSelectedRegions(Arrays.asList(RegionEnum.AFRICA,
+     *       RegionEnum.EUROPE));
+     *       game.setDifficulty(Difficulty.EASY);
+     *       game.setCategoryStack(new CategoryStack());
+     *       game.setCountriesToPlayIds(new HashSet<>(Arrays.asList(1L, 2L, 3L)));
+     *       <p>
+     *       User user = new User();
+     *       user.setUserId(1L);
+     *       user.setUsername("user1");
+     *       user.setCreation_date(new Date());
+     *       user.setToken("1234");
+     *       <p>
+     *       Set<GameUser> participants = new HashSet<>();
+     *       GameUser gameUser = new GameUser();
+     *       gameUser.setGame(game);
+     *       gameUser.setUserId(user.getUserId());
+     *       gameUser.setUsername(user.getUsername());
+     *       gameUser.setToken(user.getToken());
+     *       gameUser.setGamePoints(0L);
+     *       gameUser.setUserPlayingState(GameState.SETUP);
+     *       participants.add(gameUser);
+     *       <p>
+     *       game.setParticipants(participants);
+     *       game.setLobbyCreator(gameUser);
+     *       <p>
+     *       when(gameRepository.findByGameId(1L)).thenReturn(game);
+     *       when(countryRepository.findNameByCountryId(1L)).thenReturn("Switzerland");
+     *       when(gameRepository.saveAndFlush(any(Game.class))).thenReturn(new
+     *       Game());
+     *       <p>
+     *       Guess guess = new Guess();
+     *       guess.setUserId(1L);
+     *       guess.setGuess("Switzerland");
+     *       <p>
+     *       String result = gameService.submitGuess(1L, guess);
+     *       <p>
+     *       assertEquals("Your guess was right you get 5 points", result);
+     *       assertTrue(gameUser.getHasAlreadyGuessed());
+     *       assertEquals(15L, gameUser.getGamePoints());
+     *       assertEquals(GameState.SCOREBOARD, gameUser.getUserPlayingState());
+     *       verify(gameRepository, times(1)).saveAndFlush(any(Game.class));
+     *       }
      */
     @Test
     void testCreateGameWithNullLobbyCreatorUser() {
@@ -216,7 +218,6 @@ class GameServiceTest {
         verify(gameRepository, times(0)).saveAndFlush(any(Game.class));
     }
 
-
     @Test
     void testStartGameFailure() {
         Long gameId = 10001L;
@@ -248,7 +249,6 @@ class GameServiceTest {
         verify(gameRepository, times(0)).saveAndFlush(any(Game.class));
     }
 
-
     @Test
     void testGetCountryIdsByRegionsAndDifficultySuccess() {
         List<RegionEnum> regions = new ArrayList<>();
@@ -269,7 +269,6 @@ class GameServiceTest {
         assertEquals(1, countryIds.size());
     }
 
-
     @Test
     void testGetCountryIdsByRegionsAndDifficultyFailure() {
         List<RegionEnum> regions = new ArrayList<>();
@@ -277,7 +276,8 @@ class GameServiceTest {
         regions.add(RegionEnum.ASIA);
         Difficulty difficulty = Difficulty.HARD;
 
-        assertThrows(RuntimeException.class, () -> gameService.getCountryIdsByRegionsAndDifficulty(regions, difficulty));
+        assertThrows(RuntimeException.class,
+                () -> gameService.getCountryIdsByRegionsAndDifficulty(regions, difficulty));
     }
 
     @Test
@@ -317,7 +317,7 @@ class GameServiceTest {
     }
 
     @Test
-    void lastPlayerSubmitGuessGoToScoreboard(){
+    void lastPlayerSubmitGuessGoToScoreboard() {
         Game game = new Game();
 
         GameUser participant1 = new GameUser();
@@ -329,7 +329,7 @@ class GameServiceTest {
         participant3.setGamePoints(50L);
 
         participant1.setHasAlreadyGuessed(true);
-        participant2.setHasAlreadyGuessed(true);
+        participant2.setHasAlreadyGuessed(false);
         participant3.setHasAlreadyGuessed(false);
 
         participant1.setUserId(2L);
@@ -345,11 +345,19 @@ class GameServiceTest {
         when(gameRepository.saveAndFlush(any())).thenReturn(null);
         when(countryRepository.findNameByCountryId(any())).thenReturn("Switzerland");
 
-        Guess guess = new Guess();
-        guess.setGuess("Switzerland");
-        guess.setUserId(4L);
+        Guess guess1 = new Guess();
+        guess1.setGuess("Switzerland");
+        guess1.setUserId(3L);
+
         assertNotEquals(game.getCurrentState(), GameState.SCOREBOARD);
-        gameService.submitGuess(1L, guess);
+        gameService.submitGuess(1L, guess1);
+        assertNotEquals(game.getCurrentState(), GameState.SCOREBOARD);
+
+        Guess guess2 = new Guess();
+        guess2.setGuess("France");
+        guess2.setUserId(4L);
+
+        gameService.submitGuess(1L, guess2);
         assertEquals(game.getCurrentState(), GameState.SCOREBOARD);
     }
 
