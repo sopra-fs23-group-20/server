@@ -253,9 +253,19 @@ https://github.com/sopra-fs23-group-20/client/issues/98  <br />
 
 #### Description:
 
+### Louis
+https://github.com/sopra-fs23-group-20/server/issues/122 <br />
+https://github.com/sopra-fs23-group-20/client/issues/88 <br />
+https://github.com/sopra-fs23-group-20/client/issues/86 <br />
+
+
+#### Description: 
+The game lobby server only returns now joinable game lobbies, so I had to create a new end point. I also added a tutorial button on the main page, which shows a small guide via a popover.
 
 ---
 ## Week 1.5 - 7.5
+### Louis
+I already submitted my taks in the week Week 3.4 - 9.4/easter break
 ## Week 8.5 - 14.5
 ## Week 15.5 - 21.5
 
