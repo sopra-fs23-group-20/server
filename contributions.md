@@ -250,6 +250,8 @@ As I was away from wednesday until the end of the week, most of the tasks are th
 ### Jamo
 https://github.com/sopra-fs23-group-20/client/issues/100 <br />
 https://github.com/sopra-fs23-group-20/client/issues/98  <br />
+https://github.com/sopra-fs23-group-20/client/issues/95  <br />
+https://github.com/sopra-fs23-group-20/client/issues/94  <br />
 
 #### Description:
 
