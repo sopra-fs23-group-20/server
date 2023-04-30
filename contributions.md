@@ -265,9 +265,38 @@ https://github.com/sopra-fs23-group-20/client/issues/86 <br />
 The game lobby server only returns now joinable game lobbies, so I had to create a new end point. I also added a tutorial button on the main page, which shows a small guide via a popover.
 
 ---
+
+### Jonas
+https://github.com/sopra-fs23-group-20/server/issues/124 <br />
+https://github.com/sopra-fs23-group-20/client/issues/97 <br />
+https://github.com/sopra-fs23-group-20/server/issues/112 <br />
+
+#### Description:
+I created a context provider component "AlertProvider" which displays an error message using Material UI's Snackbar component. I then replaced all our current error messages with this component. <br />
+I fixed a bug which displayed the scores wrong in the Scoreboard. <br />
+I created a "Complex Unit Test" and described it for the M3 report. <br />
+
+#### Tasks for next week:
+https://github.com/sopra-fs23-group-20/client/issues/96 Let the game Creator choose the duration of how long the scoreboard should be shown (by default 7 seconds). <br />
+https://github.com/sopra-fs23-group-20/server/issues/70 No new players can join the game once it has started. <br />
+https://github.com/sopra-fs23-group-20/client/issues/85 The time Left in a round should be displayed as a horizontal bar which decreases every second. <br />
+https://github.com/sopra-fs23-group-20/client/issues/51 There should be a websocket connection on /topic/gameLobbies where newly created lobbies should be sent to the client so the gameLobbyOverview page is always up-to-date without needing to manually refresh the page. <br />
+
+
+---
+
 ## Week 1.5 - 7.5
+
+---
+
 ### Louis
-I already submitted my taks in the week Week 3.4 - 9.4/easter break
+I already submitted my tasks for this week in week 3.4 - 9.4/easter break
+
+---
+
 ## Week 8.5 - 14.5
+
+---
+
 ## Week 15.5 - 21.5
 
