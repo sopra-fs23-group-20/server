@@ -11,6 +11,7 @@ import ch.uzh.ifi.hase.soprafs23.repository.CountryRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GamePostDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +88,7 @@ public class GameService {
         System.out.println("Country to play ids: " + game.getCountriesToPlayIds());
        game.setLobbyCreator(lobbyCreator);
        game.setDifficulty(gamePostDTO.getDifficulty());
+       game.setTimeBetweenRounds(gamePostDTO.getTimeBetweenRounds());
 
         //Set SETUP State
         game.setCurrentState(SETUP);
@@ -184,9 +186,10 @@ public class GameService {
                     game.setCurrentState(GameState.ENDED);
                 }else{
                     game.setCurrentState(GameState.SCOREBOARD);
-                    game.setRemainingTime(7L);
+                    game.setRemainingTime(game.getTimeBetweenRounds());
                 }
-                updateGameState(game.getGameId(),  WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
+
+                updateGameState(game.getGameId(), WebsocketType.GAMEUPDATE, DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
             }
             game.setParticipants(gameUsers);
             updateGameState(gameId, WebsocketType.PLAYERUPDATE, game.getParticipants());

@@ -28,6 +28,15 @@ public class GameGetDTO {
     private CategoryStack categoryStack;
     private Boolean openLobby;
     private Difficulty difficulty;
+    private Long timeBetweenRounds;
+
+    public Long getTimeBetweenRounds() {
+        return timeBetweenRounds;
+    }
+
+    public void setTimeBetweenRounds(Long timeBetweenRounds) {
+        this.timeBetweenRounds = timeBetweenRounds;
+    }
 
     public Difficulty getDifficulty() {
         return difficulty;

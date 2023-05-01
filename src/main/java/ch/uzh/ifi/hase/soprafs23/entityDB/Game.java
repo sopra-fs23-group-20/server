@@ -42,7 +42,8 @@ public class Game {
     private Long remainingRounds;
     @Column()
     private Long remainingRoundPoints;
-
+    @Column()
+    private Long timeBetweenRounds;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "categoryStackId")
     private CategoryStack categoryStack;
@@ -51,14 +52,6 @@ public class Game {
 
     @Column()
     private Difficulty difficulty;
-
-    public Difficulty getDifficulty() {
-        return difficulty;
-    }
-
-    public void setDifficulty(Difficulty difficulty) {
-        this.difficulty = difficulty;
-    }
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "countriesToPlay", joinColumns = @JoinColumn(name = "gameId"))
@@ -76,6 +69,22 @@ public class Game {
     @Enumerated(EnumType.STRING)
     @OrderColumn(name = "position")
     private List<RegionEnum> selectedRegions;
+
+    public Long getTimeBetweenRounds() {
+        return timeBetweenRounds;
+    }
+
+    public void setTimeBetweenRounds(Long timeBetweenRounds) {
+        this.timeBetweenRounds = timeBetweenRounds;
+    }
+
+    public Difficulty getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
+    }
 
     public Long getNumberOfRounds() {
         return numberOfRounds;

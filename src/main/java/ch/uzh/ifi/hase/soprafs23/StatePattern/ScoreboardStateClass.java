@@ -16,17 +16,18 @@ public class ScoreboardStateClass implements GameStateClass{
     @Override
     public Game updateGameEverySecond(Game game, GameService gameService) {
         System.out.println("In Scoreboard State Class, updating every Second");
-        if (game.getRemainingTime() == 1) {
+        if (game.getRemainingTime() == 0) {
             if (game.getRemainingRounds() == 0) {
                 game.setCurrentState(GameState.ENDED);
                 gameService.updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
+                return game;
             }
             else {
                 game.setRemainingRounds(game.getRemainingRounds() - 1);
                 game.setCurrentState(GameState.GUESSING);
                 game.setRemainingRoundPoints(100L);
                 selectNewRandomCountry(game, gameService);
-                game.setRemainingTime(game.getRoundDuration());
+                game.setRemainingTime(game.getRoundDuration() - 1);
                 resetAlreadyGuess(game);
                 game.getCategoryStack().refillStack();
                 CategoryStack categoryStack = game.getCategoryStack();
@@ -34,8 +35,9 @@ public class ScoreboardStateClass implements GameStateClass{
                 Category currentCategory = gameService.transformToCategory(categoryEnum, game.getCurrentCountryId());
                 categoryStack.setCurrentCategory(currentCategory);
                 gameService.updateGameState(game.getGameId(), WebsocketType.GAMEUPDATE, DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
+                return game;
             }
-            return game;
+
         }
         game.setRemainingTime(game.getRemainingTime() - 1);
         gameService.updateGameState(game.getGameId(), WebsocketType.TIMEUPDATE, game.getRemainingTime());

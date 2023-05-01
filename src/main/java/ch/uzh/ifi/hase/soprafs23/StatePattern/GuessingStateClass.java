@@ -6,21 +6,23 @@ import ch.uzh.ifi.hase.soprafs23.constant.WebsocketType;
 import ch.uzh.ifi.hase.soprafs23.entityDB.CategoryStack;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Game;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Category;
+import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 
 public class GuessingStateClass implements GameStateClass{
     @Override
     public Game updateGameEverySecond(Game game, GameService gameService) {
         System.out.println("In GuessingState Class, updating every Second");
-        if (game.getRemainingTime() == 1) {
+        if (game.getRemainingTime() == 0) {
             if(game.getRemainingRounds() == 0){
                 game.setCurrentState(GameState.ENDED);
                 gameService.updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
+                return game;
             }else {
                 game.setCurrentState(GameState.SCOREBOARD);
-                gameService.updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
-                game.setRemainingTime(7L);
-                gameService.updateGameState(game.getGameId(), WebsocketType.TIMEUPDATE, game.getRemainingTime());
+                game.setRemainingTime(game.getTimeBetweenRounds() - 1);
+                gameService.updateGameState(game.getGameId(), WebsocketType.GAMEUPDATE, DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
+                return game;
             }
         }
 
@@ -37,13 +39,11 @@ public class GuessingStateClass implements GameStateClass{
                 gameService.updateGameState(game.getGameId(), WebsocketType.CATEGORYUPDATE, categoryStack);
             }
         }
-
         //Reduce Time and Points
         game.setRemainingTime(game.getRemainingTime() - 1);
         gameService.updateGameState(game.getGameId(), WebsocketType.TIMEUPDATE, game.getRemainingTime());
         reduceCurrentPoints(game);
         gameService.updateGameState(game.getGameId(), WebsocketType.POINTSUPDATE, game.getRemainingRoundPoints());
-
         return game;
     }
     private void reduceCurrentPoints(Game game) {

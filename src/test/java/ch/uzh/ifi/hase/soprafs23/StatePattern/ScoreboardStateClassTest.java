@@ -20,7 +20,7 @@ public class ScoreboardStateClassTest {
         Game mockGame = Mockito.mock(Game.class);
         GameService mockGameService = Mockito.mock(GameService.class);
 
-        when(mockGame.getRemainingTime()).thenReturn(1L);
+        when(mockGame.getRemainingTime()).thenReturn(0L);
         when(mockGame.getRemainingRounds()).thenReturn(0L);
         when(mockGame.getGameId()).thenReturn(1L);
         when(mockGame.getCurrentState()).thenReturn(GameState.ENDED);
@@ -41,7 +41,7 @@ public class ScoreboardStateClassTest {
         Set<Long> countriesToPlayIds = new HashSet<>();
         countriesToPlayIds.add(1L);
 
-        when(mockGame.getRemainingTime()).thenReturn(1L);
+        when(mockGame.getRemainingTime()).thenReturn(0L);
         when(mockGame.getRemainingRounds()).thenReturn(1L);
         when(mockGame.getGameId()).thenReturn(1L);
         when(mockGame.getCountriesToPlayIds()).thenReturn(countriesToPlayIds);
