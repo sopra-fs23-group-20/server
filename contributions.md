@@ -255,6 +255,13 @@ https://github.com/sopra-fs23-group-20/client/issues/94  <br />
 
 #### Description:
 
+### Jonathan
+https://github.com/sopra-fs23-group-20/client/issues/101 <br />
+https://github.com/sopra-fs23-group-20/client/issues/60 <br />
+https://github.com/sopra-fs23-group-20/client/issues/103 <br />
+
+
+
 ### Louis
 https://github.com/sopra-fs23-group-20/server/issues/122 <br />
 https://github.com/sopra-fs23-group-20/client/issues/88 <br />
