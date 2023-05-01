@@ -100,5 +100,15 @@ public class UserController {
         userService.updateUser(userId, authHeader, userInput);
     }
 
+    @GetMapping("/users/search/{username}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public UserGetDTO getUserByUsername(@PathVariable String username) {
+        User user = userService.getUserByUsername(username);
+        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+    }
+
+
+
 
 }
