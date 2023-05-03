@@ -305,7 +305,7 @@ https://github.com/sopra-fs23-group-20/server/issues/4 <br />
 https://github.com/sopra-fs23-group-20/client/issues/20 <br />
 
 #### Description:
-I added the feature that a game cannot be joined when it has a lready started, completing user story 4. Then I also added that number of players can be seen when joining a lobby.
+I added the feature that a game cannot be joined when it has already started, completing user story 4. Then I also added that the number of players can be seen when joining a lobby.
 
 ---
 
