@@ -28,6 +28,19 @@ public class GameUser implements Serializable {
 
     private GameState userPlayingState;
 
+    private boolean isHasLeft;
+
+    public boolean isHasAlreadyGuessed() {
+        return hasAlreadyGuessed;
+    }
+
+    public boolean isHasLeft() {
+        return isHasLeft;
+    }
+
+    public void setHasLeft(boolean hasLeft) {
+        isHasLeft = hasLeft;
+    }
 
     public boolean getHasAlreadyGuessed() {
         return hasAlreadyGuessed;
@@ -107,5 +120,9 @@ public class GameUser implements Serializable {
         gameUser.setGamePoints(0L);
         gameUser.setUserPlayingState(GameState.SETUP);
         return gameUser;
+    }
+
+    public void resetScore() {
+        gamePoints = 0L;
     }
 }

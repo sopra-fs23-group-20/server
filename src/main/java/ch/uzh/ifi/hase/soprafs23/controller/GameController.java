@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs23.entityDB.Game;
 import ch.uzh.ifi.hase.soprafs23.entityOther.Guess;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GameGetDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.GamePutDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GuessPostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
@@ -95,6 +96,18 @@ public class GameController {
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 
+    @PutMapping("/games/{gameId}/action")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameGetDTO processGameAction(@PathVariable Long gameId, @RequestBody GamePutDTO gamePutDTO, @RequestParam String action) {
+        Long userId = gamePutDTO.getUserId();
+        Game updatedGame = gameService.processGameAction(gameId, userId, action);
+        return DTOMapper.INSTANCE.convertEntityToGameGetDTO(updatedGame);
+    }
+
+
+
+
     @GetMapping("/games/{gameId}/country")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -132,12 +145,6 @@ public class GameController {
         return gameService.submitGuess(gameId, guess);
     }
 
-    /**
-     @GetMapping("/games/{gameId}/scoreboard")
-     @ResponseStatus(HttpStatus.OK) public x getScoreboard(@PathVariable Long gameId) {
-     //TODO work out how the scoreboard is stored and returned
-     return GameService.getScoreboard(gameId);
-     }
-     */
+
 }
 

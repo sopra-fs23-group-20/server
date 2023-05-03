@@ -64,6 +64,15 @@ public interface DTOMapper {
     @Mapping(source="difficulty", target="difficulty")
     GameGetDTO convertEntityToGameGetDTO(Game game);
 
+    @Mapping(source = "lobbyCreatorUserId", target = "lobbyCreator.userId")
+    @Mapping(source = "roundDuration", target = "roundDuration")
+    @Mapping(source = "numberOfRounds", target = "numberOfRounds")
+    @Mapping(source = "categoryStack", target = "categoryStack")
+    @Mapping(source = "selectedRegions", target = "selectedRegions")
+    @Mapping(source = "openLobby", target = "openLobby")
+    @Mapping(source = "difficulty", target = "difficulty")
+    Game convertGamePutDTOtoEntity(GamePutDTO gamePutDTO);
+
     @Mapping(source = "userId", target = "userId")
     @Mapping(source = "guess", target = "guess")
     Guess convertGuessPostDTOtoEntity(GuessPostDTO guessPostDTO);

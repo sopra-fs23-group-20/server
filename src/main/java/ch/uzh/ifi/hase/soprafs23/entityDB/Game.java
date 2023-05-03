@@ -241,5 +241,55 @@ public class Game {
         }
         return gameStateClass;
     }
+
+    public void removePlayer(GameUser userToRemove) {
+        if (participants == null || userToRemove == null) {
+            throw new IllegalArgumentException("Participants and userToRemove cannot be null.");
+        }
+
+        if (!participants.contains(userToRemove)) {
+            throw new IllegalArgumentException("The userToRemove is not a participant in this game.");
+        }
+
+        participants.remove(userToRemove);
+    }
+
+    public void resetGameState() {
+        if (currentState != GameState.ENDED) {
+            throw new IllegalStateException("Game cannot be reset while in ENDED state.");
+        }
+
+        setCurrentState(GameState.SETUP);
+        setRemainingRounds(numberOfRounds);
+        setRemainingTime(roundDuration);
+
+        for (GameUser participant : participants) {
+            participant.resetScore();
+        }
+
+        if (categoryStack != null) {
+            categoryStack.refillStack();
+        }
+        setCurrentState(GameState.GUESSING);
+    }
+
+
+    public void markUserAsLeft(Long userId) {
+        GameUser userToMark = participants.stream()
+                .filter(user -> userId.equals(user.getUserId()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("User not found in the game."));
+
+        userToMark.setHasLeft(true);
+    }
+
+
+    public void resetGameStateAndRemoveLeftUsers() {
+        resetGameState();
+
+        participants.removeIf(GameUser::isHasLeft);
+    }
+
+
 }
 
