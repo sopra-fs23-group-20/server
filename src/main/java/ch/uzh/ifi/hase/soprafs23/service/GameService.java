@@ -184,6 +184,7 @@ public class GameService {
                 System.out.println("Everyone has guessed");
                 if(game.getRemainingRounds()==0){
                     game.setCurrentState(GameState.ENDED);
+                    game.setRemainingTime(10L);
                 }else{
                     game.setCurrentState(GameState.SCOREBOARD);
                     game.setRemainingTime(game.getTimeBetweenRounds());
@@ -414,14 +415,84 @@ public class GameService {
     }
 
 
-    public Game processGameAction(Long gameId, Long userId, String action) {
-        if ("leave".equalsIgnoreCase(action)) {
-            return leaveGame(gameId, userId);
-        } else if ("restart".equalsIgnoreCase(action)) {
-            return restartGame(gameId, userId);
-        } else {
-            throw new IllegalArgumentException("Invalid action: " + action);
+    public Game addUserToPlayAgain(Long gameId, Long userId){
+        Game game = gameRepository.findByGameId(gameId);
+        if (game == null) {
+            throw new RuntimeException("Game not found with gameId: " + gameId);
         }
+        Set<GameUser> participants = game.getParticipants();
+        boolean hasBeenAdded = false;
+        for(GameUser participant : participants){
+            if(participant.getUserId().equals(userId)){
+                participant.setUserPlayingAgain(true);
+                hasBeenAdded = true;
+            }
+        }
+        if(!hasBeenAdded){
+            throw new RuntimeException("User not found in game with gameId: " + gameId);
+        }
+        game.setParticipants(participants);
+        gameRepository.saveAndFlush(game);
+        updateGameState(gameId, WebsocketType.PLAYERUPDATE, participants);
+        return game;
+    }
+
+    public void createRestartedGame(Game game){
+        Set<GameUser> playersPlayingAgain = new HashSet<>();
+        for(GameUser participant: game.getParticipants()){
+            if(participant.isUserPlayingAgain()){
+                playersPlayingAgain.add(participant);
+            }
+        }
+        if(!playersPlayingAgain.isEmpty()){
+            GamePostDTO gamePostDTO = new GamePostDTO();
+            gamePostDTO.setCategoryStack(game.getCategoryStack());
+            gamePostDTO.setSelectedRegions(game.getSelectedRegions());
+            gamePostDTO.setNumberOfRounds(game.getNumberOfRounds());
+            gamePostDTO.setDifficulty(game.getDifficulty());
+            gamePostDTO.setOpenLobby(game.getOpenLobby());
+            gamePostDTO.setRoundDuration(game.getRoundDuration());
+            gamePostDTO.setTimeBetweenRounds(game.getTimeBetweenRounds());
+            gamePostDTO.setSelectedRegions(game.getSelectedRegions());
+            gamePostDTO.setLobbyCreatorUserId(determineNewHost(game));
+            Game newGame = createGame(gamePostDTO);
+            newGame.setParticipants(new HashSet<GameUser>());
+            addParticipantsToNewGame(game, newGame);
+            game.setNextGameId(newGame.getGameId());
+            updateGameState(game.getGameId(), WebsocketType.GAMEUPDATE, DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
+        }
+
+    }
+
+    private void addParticipantsToNewGame(Game oldGame, Game newGame){
+        for(GameUser participant: oldGame.getParticipants()){
+            if(participant.isUserPlayingAgain()){
+                GameUser gameUser = new GameUser();
+                gameUser.setUserPlayingAgain(false);
+                gameUser.setUserId(participant.getUserId());
+                gameUser.setGamePoints(0L);
+                gameUser.setGame(newGame);
+                gameUser.setHasAlreadyGuessed(false);
+                gameUser.setUsername(participant.getUsername());
+                gameUser.setUserPlayingState(GameState.SETUP);
+                Set<GameUser> newParticipants = newGame.getParticipants();
+                newParticipants.add(gameUser);
+                newGame.setParticipants(newParticipants);
+            }
+        }
+    }
+
+    private String determineNewHost(Game game){
+        Long newHostId = null;
+        for(GameUser participant: game.getParticipants()){
+            if(participant.isUserPlayingAgain()){
+                newHostId = participant.getUserId();
+                if(participant.getUserId().equals(game.getLobbyCreator().getUserId())){
+                    return newHostId.toString();
+                }
+            }
+        }
+        return newHostId.toString();
     }
 
 }

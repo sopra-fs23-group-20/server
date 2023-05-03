@@ -10,4 +10,6 @@ public enum WebsocketType {
     ROUNDUPDATE,
     GAMEUPDATE,
 
+    LOBBYIDUPDATE,
+
 }

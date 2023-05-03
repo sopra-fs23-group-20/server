@@ -96,17 +96,6 @@ public class GameController {
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 
-    @PutMapping("/games/{gameId}/action")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public GameGetDTO processGameAction(@PathVariable Long gameId, @RequestBody GamePutDTO gamePutDTO, @RequestParam String action) {
-        Long userId = gamePutDTO.getUserId();
-        Game updatedGame = gameService.processGameAction(gameId, userId, action);
-        return DTOMapper.INSTANCE.convertEntityToGameGetDTO(updatedGame);
-    }
-
-
-
 
     @GetMapping("/games/{gameId}/country")
     @ResponseStatus(HttpStatus.OK)
@@ -143,6 +132,14 @@ public class GameController {
     public String submitGuess(@PathVariable Long gameId, @RequestBody GuessPostDTO guessPostDTO) {
         Guess guess = DTOMapper.INSTANCE.convertGuessPostDTOtoEntity(guessPostDTO);
         return gameService.submitGuess(gameId, guess);
+    }
+
+    @PostMapping("/games/{gameId}/restart")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameGetDTO restartGame(@PathVariable Long gameId, @RequestBody String userId) {
+        Game game = gameService.addUserToPlayAgain(gameId, Long.parseLong(userId));
+        return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 
 

@@ -70,6 +70,16 @@ public class Game {
     @OrderColumn(name = "position")
     private List<RegionEnum> selectedRegions;
 
+    private Long nextGameId;
+
+    public Long getNextGameId() {
+        return nextGameId;
+    }
+
+    public void setNextGameId(Long nextGameId) {
+        this.nextGameId = nextGameId;
+    }
+
     public Long getTimeBetweenRounds() {
         return timeBetweenRounds;
     }

@@ -30,6 +30,16 @@ public class GameUser implements Serializable {
 
     private boolean isHasLeft;
 
+    private boolean userPlayingAgain;
+
+    public boolean isUserPlayingAgain() {
+        return userPlayingAgain;
+    }
+
+    public void setUserPlayingAgain(boolean userPlayingAgain) {
+        this.userPlayingAgain = userPlayingAgain;
+    }
+
     public boolean isHasAlreadyGuessed() {
         return hasAlreadyGuessed;
     }

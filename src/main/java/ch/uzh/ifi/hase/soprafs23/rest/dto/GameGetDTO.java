@@ -30,6 +30,16 @@ public class GameGetDTO {
     private Difficulty difficulty;
     private Long timeBetweenRounds;
 
+    private Long nextGameId;
+
+    public Long getNextGameId() {
+        return nextGameId;
+    }
+
+    public void setNextGameId(Long nextGameId) {
+        this.nextGameId = nextGameId;
+    }
+
     public Long getTimeBetweenRounds() {
         return timeBetweenRounds;
     }
