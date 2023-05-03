@@ -253,13 +253,11 @@ https://github.com/sopra-fs23-group-20/client/issues/98  <br />
 https://github.com/sopra-fs23-group-20/client/issues/95  <br />
 https://github.com/sopra-fs23-group-20/client/issues/94  <br />
 
-#### Description:
 
 ### Jonathan
 https://github.com/sopra-fs23-group-20/client/issues/101 <br />
 https://github.com/sopra-fs23-group-20/client/issues/60 <br />
 https://github.com/sopra-fs23-group-20/client/issues/103 <br />
-
 
 
 ### Louis
@@ -298,6 +296,16 @@ https://github.com/sopra-fs23-group-20/client/issues/51 There should be a websoc
 
 ### Louis
 I already submitted my tasks for this week in week 3.4 - 9.4/easter break
+
+---
+
+### Dario
+https://github.com/sopra-fs23-group-20/client/issues/107 <br />
+https://github.com/sopra-fs23-group-20/server/issues/4 <br />
+https://github.com/sopra-fs23-group-20/client/issues/20 <br />
+
+#### Description:
+I added the feature that a game cannot be joined when it has a lready started, completing user story 4. Then I also added that number of players can be seen when joining a lobby.
 
 ---
 
