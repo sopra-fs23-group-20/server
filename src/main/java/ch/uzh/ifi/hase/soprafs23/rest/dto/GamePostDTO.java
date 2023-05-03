@@ -15,6 +15,15 @@ public class GamePostDTO {
     private List<RegionEnum> selectedRegions;
     private boolean openLobby;
     private Difficulty difficulty;
+    private Long timeBetweenRounds;
+
+    public Long getTimeBetweenRounds() {
+        return timeBetweenRounds;
+    }
+
+    public void setTimeBetweenRounds(Long timeBetweenRounds) {
+        this.timeBetweenRounds = timeBetweenRounds;
+    }
 
     public Difficulty getDifficulty() {
         return difficulty;

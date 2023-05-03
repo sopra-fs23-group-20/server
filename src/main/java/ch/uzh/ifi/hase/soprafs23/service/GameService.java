@@ -11,6 +11,7 @@ import ch.uzh.ifi.hase.soprafs23.repository.CountryRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GamePostDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,11 +55,12 @@ public class GameService {
     }
 
     /**
-     * public static x getScoreboard(Long gameId) {
-     * //TODO figure out logic behind scoreboard
-     * return
-     * }
+    public static x getScoreboard(Long gameId) {
+        //TODO figure out logic behind scoreboard
+        return
+    }
      */
+
 
 
     public Game createGame(GamePostDTO gamePostDTO) {
@@ -84,8 +86,9 @@ public class GameService {
         Set<Long> countryIds = getCountryIdsByRegionsAndDifficulty(gamePostDTO.getSelectedRegions(), gamePostDTO.getDifficulty());
         game.setCountriesToPlayIds(countryIds);
         System.out.println("Country to play ids: " + game.getCountriesToPlayIds());
-        game.setLobbyCreator(lobbyCreator);
-        game.setDifficulty(gamePostDTO.getDifficulty());
+       game.setLobbyCreator(lobbyCreator);
+       game.setDifficulty(gamePostDTO.getDifficulty());
+       game.setTimeBetweenRounds(gamePostDTO.getTimeBetweenRounds());
 
         //Set SETUP State
         game.setCurrentState(SETUP);
@@ -114,8 +117,8 @@ public class GameService {
 
         Set<GameUser> participants = new HashSet<>(game.getParticipants());
 
-        for (GameUser gameUser1 : participants) {
-            if (gameUser1.getUserId().equals(userId)) {
+        for(GameUser gameUser1 : participants){
+            if(gameUser1.getUserId().equals(userId)){
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already in game");
             }
         }
@@ -151,7 +154,7 @@ public class GameService {
     //Logic fixed; not tested
     public String submitGuess(Long gameId, Guess guess) {
         try {
-            System.out.println("The guess username: " + guess.getUserId());
+            System.out.println("The guess username: "+ guess.getUserId());
             System.out.println("The guess submitted is:" + guess.getGuess());
             Game game = gameRepository.findByGameId(gameId);
             Set<GameUser> gameUsers = new HashSet<>(game.getParticipants());
@@ -171,22 +174,22 @@ public class GameService {
             }
             boolean haveAllGuessed = true;
             Set<GameUser> participants = game.getParticipants();
-            for (GameUser participant : participants) {
+            for(GameUser participant: participants){
                 if (!participant.getHasAlreadyGuessed()) {
                     haveAllGuessed = false;
                     break;
                 }
             }
-            if (haveAllGuessed) {
+            if(haveAllGuessed){
                 System.out.println("Everyone has guessed");
-                if (game.getRemainingRounds() == 0) {
+                if(game.getRemainingRounds()==0){
                     game.setCurrentState(GameState.ENDED);
-                }
-                else {
+                }else{
                     game.setCurrentState(GameState.SCOREBOARD);
-                    game.setRemainingTime(7L);
+                    game.setRemainingTime(game.getTimeBetweenRounds());
                 }
-                updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
+
+                updateGameState(game.getGameId(), WebsocketType.GAMEUPDATE, DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
             }
             game.setParticipants(gameUsers);
             updateGameState(gameId, WebsocketType.PLAYERUPDATE, game.getParticipants());
@@ -232,14 +235,14 @@ public class GameService {
         }
     }
 
-    public void stopGame(Long gameId) {
-        System.out.println("Stopping game");
-        ScheduledFuture<?> scheduledFuture = scheduledFutures.get(gameId);
-        if (scheduledFuture != null) {
-            scheduledFuture.cancel(false);
-            scheduledFutures.remove(gameId);
+        public void stopGame(Long gameId) {
+            System.out.println("Stopping game");
+            ScheduledFuture<?> scheduledFuture = scheduledFutures.get(gameId);
+            if (scheduledFuture != null) {
+                scheduledFuture.cancel(false);
+                scheduledFutures.remove(gameId);
+            }
         }
-    }
 
     public Set<Long> getCountryIdsByRegionsAndDifficulty(List<RegionEnum> regions, Difficulty difficulty) {
         Long minPopulation = countryService.getMinPopulationByDifficulty(difficulty);
@@ -250,23 +253,24 @@ public class GameService {
     public List<Game> getGames() {
         return this.gameRepository.findAll();
     }
-
     public List<Game> getOpenLobbyGames() {
         return this.gameRepository.findByOpenLobby(TRUE);
     }
-
     public List<Game> getOpenPlayableLobbyGames() {
         List<Game> OpenGames = this.gameRepository.findByOpenLobby(TRUE);
         List<Game> JoinableGames = new ArrayList<>();
-        for (Game game : OpenGames) {
-            if (game.getCurrentState().equals(SETUP)) {
+        for (Game game : OpenGames)
+        {
+            if (game.getCurrentState().equals(SETUP))
+            {
                 JoinableGames.add(game);
                 log.debug("Game equal setup", game);
             }
-            else {
+            else
+            {
                 log.debug("Game not equal setup", game);
 
-                // OpenGames.remove(game);
+               // OpenGames.remove(game);
             }
         }
         //return this.gameRepository.findByCurrentStateIs(SETUP);
@@ -283,7 +287,7 @@ public class GameService {
         return game;
     }
 
-    private GameUser findGameUser(Set<GameUser> gameUsers, Long userId) {
+    private GameUser findGameUser(Set<GameUser> gameUsers, Long userId){
         for (GameUser gameUser : gameUsers) {
             if (gameUser.getUserId().equals(userId)) {
                 return gameUser;
@@ -335,37 +339,35 @@ public class GameService {
     }
 
     public void updateGameState(Long gameId, WebsocketType websocketType, Object websocketParam) {
-        try {
+        try{
             WebsocketPackage websocketPackage = new WebsocketPackage(websocketType, websocketParam);
             System.out.println("Sending game state update to all players on game " + gameId);
             messagingTemplate.convertAndSend("/topic/games/" + gameId, websocketPackage);
-        }
-        catch (Exception e) {
+        }catch (Exception e){
             System.out.println("Error sending game state update to all players on game " + gameId);
         }
 
     }
 
-    private void updatePlayerState(Long gameUserId, Long gameId, WebsocketType websocketType, Object websocketParam) {
+    private void updatePlayerState(Long gameUserId, Long gameId, WebsocketType websocketType, Object websocketParam){
         try {
             WebsocketPackage websocketPackage = new WebsocketPackage(websocketType, websocketParam);
             System.out.println("Sending player state update to player " + gameUserId + " on game " + gameId);
             messagingTemplate.convertAndSend("/topic/games/" + gameId + "/" + gameUserId, websocketPackage);
-        }
-        catch (Exception e) {
+        }catch (Exception e){
             System.out.println("Error sending player state update to player " + gameUserId + " on game " + gameId);
         }
     }
 
-    public long generateGameID() {
+    public long generateGameID(){
         //this function creates an ID between 10000 and 99999 to define the game id
         Random rand = new Random();
         long rndNumber = rand.nextInt(89999);
-        long GameID = rndNumber + 10000;
-        System.out.println("The random GameID is" + (GameID));
+        long GameID= rndNumber+10000;
+        System.out.println("The random GameID is" + (GameID) );
 
         //Now we check if it is already used by another name:
-        if (checkGeneratedGameID(GameID)) {
+        if(checkGeneratedGameID(GameID)){
             return GameID;
         }
         else {
@@ -374,53 +376,16 @@ public class GameService {
         }
         return GameID;
     }
-
     public boolean checkGeneratedGameID(long gameID) {
         try {
             Game foundGame = gameRepository.findByGameId(gameID);
             if (foundGame != null && foundGame.getGameId() == gameID) {
                 return false;
             }
-        }
-        catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
         }
         return true;
     }
-
-    public Game leaveGame(Long gameId, Long userId) {
-        Game game = gameRepository.findById(gameId).orElseThrow(() -> new IllegalArgumentException("Game not found"));
-
-        game.markUserAsLeft(userId);
-
-        gameRepository.save(game);
-
-        return game;
-    }
-
-    public Game restartGame(Long gameId, Long userId) {
-        Game game = gameRepository.findById(gameId).orElseThrow(() -> new IllegalArgumentException("Game not found"));
-
-        Long lobbyCreatorUserId = game.getLobbyCreator().getUserId();
-        if (!userId.equals(lobbyCreatorUserId)) {
-            throw new IllegalStateException("Only the lobby creator can restart the game");
-        }
-        game.resetGameStateAndRemoveLeftUsers();
-
-        gameRepository.save(game);
-
-        return game;
-    }
-
-    public Game processGameAction(Long gameId, Long userId, String action) {
-        if ("leave".equalsIgnoreCase(action)) {
-            return leaveGame(gameId, userId);
-        } else if ("restart".equalsIgnoreCase(action)) {
-            return restartGame(gameId, userId);
-        } else {
-            throw new IllegalArgumentException("Invalid action: " + action);
-        }
-    }
-
 
 }

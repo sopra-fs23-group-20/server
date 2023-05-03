@@ -340,6 +340,7 @@ class GameServiceTest {
         game.setCurrentState(GameState.GUESSING);
         game.setRemainingRoundPoints(30L);
         game.setRemainingRounds(1L);
+        game.setRoundDuration(30L);
 
         when(gameRepository.findByGameId(any())).thenReturn(game);
         when(gameRepository.saveAndFlush(any())).thenReturn(null);
