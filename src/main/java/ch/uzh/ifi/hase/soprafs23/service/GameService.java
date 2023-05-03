@@ -388,4 +388,40 @@ public class GameService {
         return true;
     }
 
+    public Game leaveGame(Long gameId, Long userId) {
+        Game game = gameRepository.findById(gameId).orElseThrow(() -> new IllegalArgumentException("Game not found"));
+
+        game.markUserAsLeft(userId);
+
+        gameRepository.save(game);
+
+        return game;
+    }
+
+    public Game restartGame(Long gameId, Long userId) {
+        Game game = gameRepository.findById(gameId).orElseThrow(() -> new IllegalArgumentException("Game not found"));
+
+        Long lobbyCreatorUserId = game.getLobbyCreator().getUserId();
+        if (!userId.equals(lobbyCreatorUserId)) {
+            throw new IllegalStateException("Only the lobby creator can restart the game");
+        }
+
+        game.resetGameStateAndRemoveLeftUsers();
+
+        gameRepository.save(game);
+
+        return game;
+    }
+
+
+    public Game processGameAction(Long gameId, Long userId, String action) {
+        if ("leave".equalsIgnoreCase(action)) {
+            return leaveGame(gameId, userId);
+        } else if ("restart".equalsIgnoreCase(action)) {
+            return restartGame(gameId, userId);
+        } else {
+            throw new IllegalArgumentException("Invalid action: " + action);
+        }
+    }
+
 }
