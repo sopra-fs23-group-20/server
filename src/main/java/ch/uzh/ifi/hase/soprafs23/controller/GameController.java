@@ -62,6 +62,14 @@ public class GameController {
         }
         return gameGetDTOs;
     }
+    @GetMapping("/bestgameavailable")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameGetDTO getQuickjoin() {
+        // return excatly one game whith the highest amount of players
+        Game game = gameService.getQuickGame();
+        return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
+    }
 
     @GetMapping("/allGames")
     @ResponseStatus(HttpStatus.OK)

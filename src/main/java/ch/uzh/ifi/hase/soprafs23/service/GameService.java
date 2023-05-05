@@ -278,6 +278,20 @@ public class GameService {
 
         return JoinableGames;
     }
+    public Game getQuickGame(){
+        List<Game> OpenGames = this.gameRepository.findByOpenLobby(TRUE);
+        Game QuickGame = OpenGames.get(0);
+        for (Game game : OpenGames)
+        {
+
+            if (game.getParticipants().size()>QuickGame.getParticipants().size())
+            {
+                QuickGame = game;
+            }
+        }
+
+        return QuickGame;
+    }
 
     public Game getGame(Long gameId) {
 
