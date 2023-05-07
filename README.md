@@ -22,14 +22,14 @@ The project’s goal and motivation.
 * [React](https://reactjs.org/docs/getting-started.html) - Javascript library for the whole frontend
 * [MUI](https://mui.com/) - CSS Component library
 * [Github Projects](https://github.com/explore) - Project Management
-* [Balsamiq](https://balsamiq.com/) - Mockups
+* [Figma](https://figma.com/) - Mockups
 * [Google Cloud](https://cloud.google.com/) - Deployment
 * [SonarCloud](https://sonarcloud.io/ ) - Testing & Feedback of code quality
 
 ## High-level components
 
 ### User
-src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/User.java
+The [User](https://github.com/sopra-fs23-group-20/server/blob/827958492eda6547c71077f69acf2fd5a0bd2537/src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/User.java) entity is a important...
 
 ### Game
 
