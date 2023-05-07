@@ -116,14 +116,21 @@ If you want to avoid running all tests with every change, use the following comm
 
 
 ## Authors and acknowledgment
-* **Jamo Sharif** - *Main Tasks Here* - [Github](https://github.com/JSha91)
-* **Jonathan Contreras Urzua** - *Main Tasks Here* - [Github](https://github.com/JonathanContrerasM)
-* **Louis Huber** - *Main Tasks Here* - [Github](https://github.com/L-Huber)
-* **Dario Monopoli** - *Main Tasks Here* - [Github](https://github.com/dariomonopoli-dev)
-* **Jonas Blum** - *Main Tasks Here* - [Github](https://github.com/robonder)
+
+### Contributors
+
+* **Jamo Sharif** - [Github](https://github.com/JSha91)
+* **Jonathan Contreras Urzua** - [Github](https://github.com/JonathanContrerasM)
+* **Louis Huber** - [Github](https://github.com/L-Huber)
+* **Dario Monopoli** - [Github](https://github.com/dariomonopoli-dev)
+* **Jonas Blum** - [Github](https://github.com/robonder)
+
+### Supervision
+
+* **Mete Polat** - [Github](https://github.com/polatmete)
 
 
 
 ## License
-
+[Apache license 2.0](https://github.com/sopra-fs23-group-20/server/blob/6dc8281b0a876fa1d310626a704e0e4bfa08b86d/LICENSE)
 
