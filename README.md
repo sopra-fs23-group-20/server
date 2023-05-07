@@ -29,21 +29,17 @@ Our project aims to create an interactive platform that makes learning geography
 ## High-level components
 
 ### User
-The [User](https://github.com/sopra-fs23-group-20/server/blob/827958492eda6547c71077f69acf2fd5a0bd2537/src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/User.java) entity is a important...
+The [User](https://github.com/sopra-fs23-group-20/server/blob/827958492eda6547c71077f69acf2fd5a0bd2537/src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/User.java) entity is essential for the geography game application, as it stores important user information, such as username, creation date, and games won, and enables a personalized experience. Additionally, it ensures the security of the application by storing sensitive data, such as passwords and tokens, which are used for authentication and authorization purposes.
 
 ### Game
-The [Game](https://github.com/sopra-fs23-group-20/server/blob/628d671fff0967c6fd185b5291b4fb43f3db6068/src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/Game.java) entity...
+The [Game](https://github.com/sopra-fs23-group-20/server/blob/628d671fff0967c6fd185b5291b4fb43f3db6068/src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/Game.java) as it represents the structure and state of the game being played. It stores key information such as the game's current state, duration, and number of rounds. Additionally, the entity stores data related to the game's participants, including the game creator, lobby status, and current participants. It also stores information about the game's difficulty, selected categories, and available hints, and enables the selection of countries and regions to be played.
+
 
 ### GameUser
-[GameUser](https://github.com/sopra-fs23-group-20/server/blob/628d671fff0967c6fd185b5291b4fb43f3db6068/src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/GameUser.java) is...
+The [GameUser](https://github.com/sopra-fs23-group-20/server/blob/628d671fff0967c6fd185b5291b4fb43f3db6068/src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/GameUser.java) has dependencies with the User and Game entities. It contains a reference to the User entity via the userId attribute and a reference to the Game entity via the game attribute, which stores information about the specific game instance in which the user is participating. The Game entity also has a reference to GameUser entity via the participants attribute, which stores a collection of GameUser objects representing the users participating in the game.
 
 ### Country
-[Country](https://github.com/sopra-fs23-group-20/server/blob/628d671fff0967c6fd185b5291b4fb43f3db6068/src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/Country.java) entity contains...
-
-### Category
-The [Category](https://github.com/sopra-fs23-group-20/server/blob/718d5acd1c51855319aa0172937644438750d051/src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/Category.java) instance...
-
-
+[Country](https://github.com/sopra-fs23-group-20/server/blob/628d671fff0967c6fd185b5291b4fb43f3db6068/src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/Country.java) represents the various countries available for users to learn and guess throughout the game. It stores important data, including the country's unique identifier, name, population, flag, location, capital, and region. Additionally, it relates to the Outline entity, which provides the game map's outline for each country. 
 
 
 
@@ -112,7 +108,7 @@ If you want to avoid running all tests with every change, use the following comm
 
 
 ## Roadmap
-* Our web application is mostly mobile-friendly, but some pages may still require improvements in scaling for optimal viewing on different devices.
+* Our web application is mostly mobile-friendly, but some pages may still require improvements in scaling for optimal viewing on different devices. Or another idea in this area would be to implement everything in an app.
 * An extension of the amount and type of hints available to guess the country. 
 
 ## Authors and acknowledgment
