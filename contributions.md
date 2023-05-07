@@ -309,6 +309,24 @@ I added the feature that a game cannot be joined when it has already started, co
 
 ---
 
+### Jonas
+https://github.com/sopra-fs23-group-20/client/issues/96 <br />
+https://github.com/sopra-fs23-group-20/client/issues/85 <br />
+https://github.com/sopra-fs23-group-20/client/issues/113 <br />
+
+#### Description:
+I implemented the option to choose the duration of how long the scoreboard should be shown (by default 7 seconds). <br />
+I implemented the time Left in a round as a horizontal bar which decreases every second. <br />
+I implemented the round counter as a circle progress bar so the user knows what round he/she is currently at. <br />
+
+
+#### Tasks for next week:
+https://github.com/sopra-fs23-group-20/server/issues/127 Add possibility to restart game or leave it after it is ended (already started this week) <br />
+https://github.com/sopra-fs23-group-20/server/issues/128 US17: As a user I want to be able to play a second game mode called "Blitz" <br />
+https://github.com/sopra-fs23-group-20/client/issues/112 Show 6 buttons with the 5 other selected countries as "guessing options" -> instead of the Input Field <br />
+https://github.com/sopra-fs23-group-20/server/issues/131 Select the 5 closest (distance wise) countries to the country to guess as guessing options <br />
+
+
 ## Week 8.5 - 14.5
 ### Louis
 https://github.com/sopra-fs23-group-20/client/issues/105
