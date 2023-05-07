@@ -1,15 +1,57 @@
 <div style="display: flex; justify-content: center;">
   <div style="width: 50%;">
     <p align="center">
-      <img src="https://readme-typing-svg.demolab.com/?lines=Sopra+Group+20+!;&font=Fira%20Code&center=true&width=300&height=40&duration=4000&pause=1000" alt="Example Usage - README Typing SVG">
+      <img src="https://readme-typing-svg.demolab.com/?lines=Sopra+Group+20+!;&font=Fira%20Code&center=true&width=300&height=40&duration=4000&pause=1000" alt="Sopra Group 20!">
     </p>
   </div>
   <div style="width: 50%;">
     <p align="center">
-      <img src="https://readme-typing-svg.demolab.com/?lines=Guess+The+Country!;&font=Fira%20Code&center=true&width=300&height=40&duration=4000&pause=1000" alt="Example Usage - README Typing SVG">
+      <span id="typing"></span>
     </p>
   </div>
 </div>
+
+<script>
+  const typingElement = document.getElementById('typing');
+  const firstLine = 'Guess The Country!';
+  const secondLine = 'Try Another Game!';
+  let index = 0;
+  let delay = 100;
+
+  function typeEffect() {
+    if (index < firstLine.length) {
+      typingElement.innerHTML += firstLine.charAt(index);
+      index++;
+      setTimeout(typeEffect, delay);
+    } else {
+      delay = 1000;
+      setTimeout(deleteEffect, delay);
+    }
+  }
+
+  function deleteEffect() {
+    if (index >= 0) {
+      typingElement.innerHTML = typingElement.innerHTML.slice(0, index);
+      index--;
+      setTimeout(deleteEffect, delay);
+    } else {
+      delay = 100;
+      index = 0;
+      setTimeout(typeEffect2, delay);
+    }
+  }
+
+  function typeEffect2() {
+    if (index < secondLine.length) {
+      typingElement.innerHTML += secondLine.charAt(index);
+      index++;
+      setTimeout(typeEffect2, delay);
+    }
+  }
+
+  setTimeout(typeEffect, 4000);
+</script>
+
 
 
 
