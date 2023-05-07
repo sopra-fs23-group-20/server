@@ -66,9 +66,11 @@ public class GameController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GameGetDTO getQuickjoin() {
-        // return excatly one game whith the highest amount of players
+        // return excatly one gameid whith the highest amount of players
         Game game = gameService.getQuickGame();
+        Long gameId= game.getGameId();
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
+        //return  gameId;
     }
 
     @GetMapping("/allGames")
