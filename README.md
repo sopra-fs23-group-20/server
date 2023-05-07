@@ -1,4 +1,6 @@
-[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=comfortaa&color=016EEA&size=24&width=500&lines=Guess The Country!;SoPra+Group+20)](https://git.io/typing-svg)
+<p align="center">
+  <img src="https://readme-typing-svg.demolab.com/?lines=Type+messages+everywhere!;Sopra+Group+20+!;Guess+The+Country!&font=Fira%20Code&center=true&width=380&height=50&duration=4000&pause=1000" alt="Example Usage - README Typing SVG">
+</p>
 
 
 ## Introduction
@@ -17,7 +19,7 @@ with a link
 
 ## Launch & Deployment
 
-###Spring Boot
+### Spring Boot
 -   Documentation: https://docs.spring.io/spring-boot/docs/current/reference/html/index.html
 -   Guides: http://spring.io/guides
     -   Building a RESTful Web Service: http://spring.io/guides/gs/rest-service/
