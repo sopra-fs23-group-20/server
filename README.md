@@ -1,6 +1,16 @@
-<p align="center">
-  <img src="https://readme-typing-svg.demolab.com/?lines=Sopra+Group+20+!;Guess+The+Country!&font=Fira%20Code&center=true&width=600&height=80&duration=4000&pause=1000" alt="Example Usage - README Typing SVG">
-</p>
+<div style="display: flex; justify-content: center;">
+  <div style="width: 50%;">
+    <p align="center">
+      <img src="https://readme-typing-svg.demolab.com/?lines=Sopra+Group+20+!;&font=Fira%20Code&center=true&width=300&height=40&duration=4000&pause=1000" alt="Example Usage - README Typing SVG">
+    </p>
+  </div>
+  <div style="width: 50%;">
+    <p align="center">
+      <img src="https://readme-typing-svg.demolab.com/?lines=Guess+The+Country!;&font=Fira%20Code&center=true&width=300&height=40&duration=4000&pause=1000" alt="Example Usage - README Typing SVG">
+    </p>
+  </div>
+</div>
+
 
 
 ## Introduction
