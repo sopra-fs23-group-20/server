@@ -310,7 +310,10 @@ I added the feature that a game cannot be joined when it has already started, co
 ---
 
 ## Week 8.5 - 14.5
-
+### Louis
+https://github.com/sopra-fs23-group-20/client/issues/105
+#### Description:
+implemented quickjoin, might have to work on the alert (already started at the 6 May)
 ---
 
 ## Week 15.5 - 21.5
