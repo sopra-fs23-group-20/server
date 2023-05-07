@@ -11,7 +11,7 @@
 
 
 ## Introduction
-The project’s goal and motivation.
+Our project aims to create an interactive platform that makes learning geography fun, engaging, and accessible. By challenging users to identify countries based on various clues, we hope to enhance their geographic knowledge across multiple domains. With this goal in mind, we designed the project to be user-friendly, visually appealing, and easy to navigate. Hope you enjoy...
 
 
 ## Technologies
@@ -113,17 +113,18 @@ If you want to avoid running all tests with every change, use the following comm
 
 ## Roadmap
 * Our web application is mostly mobile-friendly, but some pages may still require improvements in scaling for optimal viewing on different devices.
-
+* An extension of the amount and type of hints available to guess the country. 
 
 ## Authors and acknowledgment
 
 ### Contributors
 
-* **Jamo Sharif** - [Github](https://github.com/JSha91)
+* **Jonas Blum** - [Github](https://github.com/robonder)
 * **Jonathan Contreras Urzua** - [Github](https://github.com/JonathanContrerasM)
 * **Louis Huber** - [Github](https://github.com/L-Huber)
 * **Dario Monopoli** - [Github](https://github.com/dariomonopoli-dev)
-* **Jonas Blum** - [Github](https://github.com/robonder)
+* **Jamo Sharif** - [Github](https://github.com/JSha91)
+
 
 ### Supervision
 
