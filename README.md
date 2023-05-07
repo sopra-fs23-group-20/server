@@ -110,31 +110,18 @@ If you want to avoid running all tests with every change, use the following comm
 
 `./gradlew build --continuous -xtest`
 
-## API Endpoint Testing with Postman
-We recommend using [Postman](https://www.getpostman.com) to test your API Endpoints.
-
-## Debugging
-If something is not working and/or you don't know what is going on. We recommend using a debugger and step-through the process step-by-step.
-
-To configure a debugger for SpringBoot's Tomcat servlet (i.e. the process you start with `./gradlew bootRun` command), do the following:
-
-1. Open Tab: **Run**/Edit Configurations
-2. Add a new Remote Configuration and name it properly
-3. Start the Server in Debug mode: `./gradlew bootRun --debug-jvm`
-4. Press `Shift + F9` or the use **Run**/Debug "Name of your task"
-5. Set breakpoints in the application where you need it
-6. Step through the process one step at a time
-
-## Testing
-Have a look here: https://www.baeldung.com/spring-boot-testing
-
 
 ## Roadmap
-The top 2-3 features that new developers who want to contribute to your project
-could add.
-
+-Our web application is mostly mobile-friendly, but some pages may still require improvements in scaling for optimal viewing on different devices.
+-
 
 ## Authors and acknowledgment
+* **Jamo Sharif** - *Main Tasks Here* - [Github](https://github.com/JSha91)
+* **Jonathan Contreras Urzua** - *Main Tasks Here* - [Github](https://github.com/JonathanContrerasM)
+* **Louis Huber** - *Main Tasks Here* - [Github](https://github.com/L-Huber)
+* **Dario Monopoli** - *Main Tasks Here* - [Github](https://github.com/dariomonopoli-dev)
+* **Jonas Blum** - *Main Tasks Here* - [Github](https://github.com/robonder)
+
 
 
 ## License
