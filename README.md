@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com/?lines=Sopra+Group+20+!;Guess+The+Country!&font=Fira%20Code&center=true&width=600&height=120&duration=4000&pause=1000" alt="Example Usage - README Typing SVG">
+  <img src="https://readme-typing-svg.demolab.com/?lines=Sopra+Group+20+!;Guess+The+Country!&font=Fira%20Code&center=true&width=600&height=80&duration=4000&pause=1000" alt="Example Usage - README Typing SVG">
 </p>
 
 
@@ -8,7 +8,9 @@ The project’s goal and motivation.
 
 
 ## Technologies
-
+- Gradle
+- Spring Boot
+- Java
 
 ## High-level components
 dentify your project’s 3-5 main components. What is their role?
