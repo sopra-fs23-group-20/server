@@ -1,6 +1,23 @@
-# SoPra RESTful Service Template FS23
+[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=comfortaa&color=016EEA&size=24&width=500&lines=Guess The Country!;SoPra+Group+20)](https://git.io/typing-svg)
 
-## Getting started with Spring Boot
+
+## Introduction
+The project’s goal and motivation.
+
+
+## Technologies
+
+
+## High-level components
+dentify your project’s 3-5 main components. What is their role?
+How are they correlated? Reference the main class, file, or function in the README text
+with a link
+
+
+
+## Launch & Deployment
+
+###Spring Boot
 -   Documentation: https://docs.spring.io/spring-boot/docs/current/reference/html/index.html
 -   Guides: http://spring.io/guides
     -   Building a RESTful Web Service: http://spring.io/guides/gs/rest-service/
@@ -84,3 +101,14 @@ To configure a debugger for SpringBoot's Tomcat servlet (i.e. the process you st
 
 ## Testing
 Have a look here: https://www.baeldung.com/spring-boot-testing
+
+
+## Roadmap
+
+
+## Authors and acknowledgment
+
+
+## License
+
+
