@@ -326,12 +326,18 @@ https://github.com/sopra-fs23-group-20/server/issues/128 US17: As a user I want 
 https://github.com/sopra-fs23-group-20/client/issues/112 Show 6 buttons with the 5 other selected countries as "guessing options" -> instead of the Input Field <br />
 https://github.com/sopra-fs23-group-20/server/issues/131 Select the 5 closest (distance wise) countries to the country to guess as guessing options <br />
 
+---
 
 ## Week 8.5 - 14.5
+
+---
+
 ### Louis
 https://github.com/sopra-fs23-group-20/client/issues/105
+
 #### Description:
 implemented quickjoin, might have to work on the alert (already started at the 6 May)
+
 ---
 
 ## Week 15.5 - 21.5
