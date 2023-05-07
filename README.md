@@ -32,10 +32,13 @@ The project’s goal and motivation.
 The [User](https://github.com/sopra-fs23-group-20/server/blob/827958492eda6547c71077f69acf2fd5a0bd2537/src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/User.java) entity is a important...
 
 ### Game
+The [Game](https://github.com/sopra-fs23-group-20/server/blob/628d671fff0967c6fd185b5291b4fb43f3db6068/src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/Game.java) entity
 
 ### GameUser
+[GameUser](https://github.com/sopra-fs23-group-20/server/blob/628d671fff0967c6fd185b5291b4fb43f3db6068/src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/GameUser.java) is
 
 ### Country
+[Country](https://github.com/sopra-fs23-group-20/server/blob/628d671fff0967c6fd185b5291b4fb43f3db6068/src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/Country.java) entity contains
 
 
 
