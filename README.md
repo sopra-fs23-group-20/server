@@ -57,7 +57,7 @@ Download your IDE of choice (e.g., [IntelliJ](https://www.jetbrains.com/idea/dow
 2. Accept to import the project as a `gradle project`
 3. To build right click the `build.gradle` file and choose `Run Build`
 
-### VS Code
+#### VS Code
 The following extensions can help you get started more easily:
 -   `vmware.vscode-spring-boot`
 -   `vscjava.vscode-spring-initializr`
@@ -112,8 +112,8 @@ If you want to avoid running all tests with every change, use the following comm
 
 
 ## Roadmap
--Our web application is mostly mobile-friendly, but some pages may still require improvements in scaling for optimal viewing on different devices.
--
+* Our web application is mostly mobile-friendly, but some pages may still require improvements in scaling for optimal viewing on different devices.
+
 
 ## Authors and acknowledgment
 * **Jamo Sharif** - *Main Tasks Here* - [Github](https://github.com/JSha91)
