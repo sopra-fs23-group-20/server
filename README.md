@@ -3,7 +3,6 @@
 </p>
 
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=sopra-fs23-group-20_server&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=sopra-fs23-group-20_server)
-
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=sopra-fs23-group-20_server&metric=coverage)](https://sonarcloud.io/summary/new_code?id=sopra-fs23-group-20_server)
 
 
