@@ -15,14 +15,29 @@ The project’s goal and motivation.
 
 
 ## Technologies
-- Gradle
-- Spring Boot
-- Java
+
+* [Springboot](https://spring.io/) - Java framework to create a micro service
+* [Gradle](https://gradle.org/) - Automated building and management tool
+* [H2](https://www.h2database.com/html/main.html) - Database
+* [React](https://reactjs.org/docs/getting-started.html) - Javascript library for the whole frontend
+* [MUI](https://mui.com/) - CSS Component library
+* [Github Projects](https://github.com/explore) - Project Management
+* [Balsamiq](https://balsamiq.com/) - Mockups
+* [Google Cloud](https://cloud.google.com/) - Deployment
+* [SonarCloud](https://sonarcloud.io/ ) - Testing & Feedback of code quality
 
 ## High-level components
-dentify your project’s 3-5 main components. What is their role?
-How are they correlated? Reference the main class, file, or function in the README text
-with a link
+
+### User
+src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/User.java
+
+### Game
+
+### GameUser
+
+### Country
+
+
 
 
 
