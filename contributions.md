@@ -305,6 +305,16 @@ I have already submitted my tasks for this week in week 3.4 - 9.4/easter break.
 
 ---
 
+### Jonathan
+https://github.com/sopra-fs23-group-20/client/issues/59 <br />
+https://github.com/sopra-fs23-group-20/client/issues/118 <br />
+https://github.com/sopra-fs23-group-20/server/issues/134 <br />
+
+#### Description:
+I updated the rules and guideline page formating and styling textual and picture vise. I also did the Readme file and changed overall styling of the application.
+
+---
+
 ### Dario
 https://github.com/sopra-fs23-group-20/client/issues/107 <br />
 https://github.com/sopra-fs23-group-20/server/issues/4 <br />
