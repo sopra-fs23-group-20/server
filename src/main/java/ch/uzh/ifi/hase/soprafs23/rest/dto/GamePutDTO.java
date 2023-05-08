@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs23.constant.Difficulty;
+import ch.uzh.ifi.hase.soprafs23.constant.GameMode;
 import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import ch.uzh.ifi.hase.soprafs23.entityDB.CategoryStack;
 
@@ -17,6 +18,15 @@ import java.util.List;
         private List<RegionEnum> selectedRegions;
         private boolean openLobby;
         private Difficulty difficulty;
+        private GameMode gameMode;
+
+        public GameMode getGameMode() {
+            return gameMode;
+        }
+
+        public void setGameMode(GameMode gameMode) {
+            this.gameMode = gameMode;
+        }
 
         public Difficulty getDifficulty() {
             return difficulty;

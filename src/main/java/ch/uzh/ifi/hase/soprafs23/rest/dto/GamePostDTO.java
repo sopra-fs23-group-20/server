@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.constant.Difficulty;
+import ch.uzh.ifi.hase.soprafs23.constant.GameMode;
 import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import ch.uzh.ifi.hase.soprafs23.entityDB.CategoryStack;
 
@@ -15,7 +16,17 @@ public class GamePostDTO {
     private List<RegionEnum> selectedRegions;
     private boolean openLobby;
     private Difficulty difficulty;
+
+    private GameMode gameMode;
     private Long timeBetweenRounds;
+
+    public GameMode getGameMode() {
+        return gameMode;
+    }
+
+    public void setGameMode(GameMode gameMode) {
+        this.gameMode = gameMode;
+    }
 
     public Long getTimeBetweenRounds() {
         return timeBetweenRounds;

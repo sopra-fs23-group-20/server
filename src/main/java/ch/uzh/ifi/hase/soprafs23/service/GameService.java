@@ -88,6 +88,7 @@ public class GameService {
         System.out.println("Country to play ids: " + game.getCountriesToPlayIds());
        game.setLobbyCreator(lobbyCreator);
        game.setDifficulty(gamePostDTO.getDifficulty());
+       game.setGameMode(gamePostDTO.getGameMode());
        game.setTimeBetweenRounds(gamePostDTO.getTimeBetweenRounds());
 
         //Set SETUP State

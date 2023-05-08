@@ -1,10 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.entityDB;
 
 import ch.uzh.ifi.hase.soprafs23.StatePattern.*;
-import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
-import ch.uzh.ifi.hase.soprafs23.constant.Difficulty;
-import ch.uzh.ifi.hase.soprafs23.constant.GameState;
-import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
+import ch.uzh.ifi.hase.soprafs23.constant.*;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
@@ -52,6 +49,9 @@ public class Game {
 
     @Column()
     private Difficulty difficulty;
+
+    @Column()
+    private GameMode gameMode;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "countriesToPlay", joinColumns = @JoinColumn(name = "gameId"))
@@ -242,6 +242,14 @@ public class Game {
         this.selectedRegions = selectedRegions;
     }
 
+    public GameMode getGameMode() {
+        return gameMode;
+    }
+
+    public void setGameMode(GameMode gameMode) {
+        this.gameMode = gameMode;
+    }
+
     public static GameStateClass getGameStateClass(GameState gameState) {
         GameStateClass gameStateClass = null;
         switch (gameState){
@@ -261,17 +269,6 @@ public class Game {
         return gameStateClass;
     }
 
-    public void removePlayer(GameUser userToRemove) {
-        if (participants == null || userToRemove == null) {
-            throw new IllegalArgumentException("Participants and userToRemove cannot be null.");
-        }
-
-        if (!participants.contains(userToRemove)) {
-            throw new IllegalArgumentException("The userToRemove is not a participant in this game.");
-        }
-
-        participants.remove(userToRemove);
-    }
 
     public void resetGameState() {
         if (currentState != GameState.ENDED) {

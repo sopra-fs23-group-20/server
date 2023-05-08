@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs23.constant.Difficulty;
+import ch.uzh.ifi.hase.soprafs23.constant.GameMode;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.entityDB.CategoryStack;
 import ch.uzh.ifi.hase.soprafs23.entityDB.GameUser;
@@ -28,6 +29,8 @@ public class GameGetDTO {
     private CategoryStack categoryStack;
     private Boolean openLobby;
     private Difficulty difficulty;
+
+    private GameMode gameMode;
     private Long timeBetweenRounds;
 
     private Long nextGameId;
@@ -147,6 +150,14 @@ public class GameGetDTO {
 
     public CategoryStack getCategoryStack() {
         return categoryStack;
+    }
+
+    public GameMode getGameMode() {
+        return gameMode;
+    }
+
+    public void setGameMode(GameMode gameMode) {
+        this.gameMode = gameMode;
     }
 
     public void setCategoryStack(CategoryStack categoryStack) {
