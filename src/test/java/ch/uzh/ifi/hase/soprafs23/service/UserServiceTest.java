@@ -116,6 +116,48 @@ public class UserServiceTest {
     }
 
     @Test
+    public void getUserById_userIdNotMatchingToken_throwsUnauthorizedException() {
+        // given -> an existing user
+        User existingUser = new User();
+        existingUser.setUserId(1L);
+        existingUser.setUsername("testUsername");
+        existingUser.setToken(UUID.randomUUID().toString());
+
+        // given -> another existing user with a different user ID
+        User anotherUser = new User();
+        anotherUser.setUserId(2L);
+        anotherUser.setUsername("anotherUsername");
+        anotherUser.setToken(UUID.randomUUID().toString());
+
+        // when -> userRepository is queried for a user with certain userId or token -> return the dummy users
+        when(userRepository.findByUserId(Mockito.any())).thenReturn(existingUser);
+        when(userRepository.findByToken(Mockito.any())).thenReturn(anotherUser);
+
+        // when -> attempt to get user by ID with a non-matching token
+        assertThrows(ResponseStatusException.class, () -> userService.getUserById(existingUser.getUserId(), anotherUser.getToken()));
+    }
+
+    @Test
+    public void getUserByIdGeneralAuth_invalidToken_throwsUnauthorizedException() {
+        // given -> an existing user
+        User existingUser = new User();
+        existingUser.setUserId(1L);
+        existingUser.setUsername("testUsername");
+        existingUser.setToken(UUID.randomUUID().toString());
+
+        // given -> an invalid token
+        String invalidToken = UUID.randomUUID().toString();
+
+        // when -> userRepository is queried for a user with a certain userId or token -> return the dummy user or null
+        when(userRepository.findByUserId(Mockito.any())).thenReturn(existingUser);
+        when(userRepository.findByToken(Mockito.any())).thenReturn(null);
+
+        // when -> attempt to get user by ID with an invalid token
+        assertThrows(ResponseStatusException.class, () -> userService.getUserByIdGeneralAuth(existingUser.getUserId(), invalidToken));
+    }
+
+
+    @Test
     public void getUsers_returnsListOfUsers() {
         // mock the UserRepository to return a list of users
         List<User> userList = new ArrayList<>();
@@ -138,7 +180,6 @@ public class UserServiceTest {
         List<User> result = userService.getUsers();
         assertTrue(result.isEmpty());
     }
-
 
     @Test
     public void createUser_validInputs_success() {
@@ -284,6 +325,65 @@ public class UserServiceTest {
         assertThrows(ResponseStatusException.class, () -> userService.loginUser(user));
     }
 
+    @Test
+    public void loginUser_nonExistentUsername_throwsNotFoundException() {
+        // given -> a user with a non-existent username
+        User user = new User();
+        user.setPassword("testPassword");
+        user.setUsername("nonExistentUsername");
+
+        // when -> userRepository is queried for a user with a certain username -> return null
+        when(userRepository.findByUsername(Mockito.any())).thenReturn(null);
+
+        // when -> attempt to log in with non-existent username
+        assertThrows(ResponseStatusException.class, () -> userService.loginUser(user));
+    }
+
+    @Test
+    public void loginUser_incorrectPassword_throwsUnauthorizedException() {
+        // given -> an existing user
+        User existingUser = new User();
+        existingUser.setUserId(1L);
+        existingUser.setPassword("correctPassword");
+        existingUser.setUsername("testUsername");
+        existingUser.setCreation_date(new Date());
+        existingUser.setStatus(UserStatus.OFFLINE);
+
+        // given -> a user with an incorrect password
+        User user = new User();
+        user.setPassword("incorrectPassword");
+        user.setUsername("testUsername");
+
+        // when -> userRepository is queried for a user with a certain username -> return the existingUser
+        when(userRepository.findByUsername(Mockito.any())).thenReturn(existingUser);
+
+        // when -> attempt to log in with incorrect password
+        assertThrows(ResponseStatusException.class, () -> userService.loginUser(user));
+    }
+
+    @Test
+    public void loginUser_nullUsername_throwsBadRequestException() {
+        // given -> a user with a null username
+        User user = new User();
+        user.setPassword("testPassword");
+        user.setUsername(null);
+
+        // when -> attempt to log in with null username
+        assertThrows(ResponseStatusException.class, () -> userService.loginUser(user));
+    }
+
+    @Test
+    public void loginUser_nullPassword_throwsBadRequestException() {
+        // given -> a user with a null password
+        User user = new User();
+        user.setPassword(null);
+        user.setUsername("testUsername");
+
+        // when -> attempt to log in with null password
+        assertThrows(ResponseStatusException.class, () -> userService.loginUser(user));
+    }
+
+
     // Test case for updating a user's username
     @Test
     public void updateUser_validUsername_success() {
@@ -421,5 +521,81 @@ public class UserServiceTest {
         Mockito.verify(userRepository, Mockito.times(1)).flush();
     }
 
+    @Test
+    public void updateUser_usernameAlreadyTaken_throwsConflict() {
+        User existingUser = new User();
+        existingUser.setUserId(1L);
+        existingUser.setUsername("oldUsername");
+        existingUser.setPassword("password");
+        existingUser.setToken(UUID.randomUUID().toString());
 
+        User updatedUser = new User();
+        updatedUser.setUsername("takenUsername");
+
+        when(userRepository.findByUserId(Mockito.any())).thenReturn(existingUser);
+        when(userRepository.findByUsername(Mockito.any())).thenReturn(new User());
+        when(userRepository.findByToken(Mockito.any())).thenReturn(existingUser);
+
+        assertThrows(ResponseStatusException.class, () ->
+                userService.updateUser(existingUser.getUserId(), existingUser.getToken(), updatedUser)
+        );
+    }
+
+    @Test
+    public void updateUser_usernameWithSpaces_throwsBadRequest() {
+        User existingUser = new User();
+        existingUser.setUserId(1L);
+        existingUser.setUsername("oldUsername");
+        existingUser.setPassword("password");
+        existingUser.setToken(UUID.randomUUID().toString());
+
+        User updatedUser = new User();
+        updatedUser.setUsername("invalid username");
+
+        when(userRepository.findByUserId(Mockito.any())).thenReturn(existingUser);
+        when(userRepository.findByUsername(Mockito.any())).thenReturn(null);
+        when(userRepository.findByToken(Mockito.any())).thenReturn(existingUser);
+
+        assertThrows(ResponseStatusException.class, () ->
+                userService.updateUser(existingUser.getUserId(), existingUser.getToken(), updatedUser)
+        );
+    }
+
+    @Test
+    public void updateUser_unauthorizedToken_throwsUnauthorized() {
+        User existingUser = new User();
+        existingUser.setUserId(1L);
+        existingUser.setUsername("oldUsername");
+        existingUser.setPassword("password");
+        existingUser.setToken(UUID.randomUUID().toString());
+
+        User updatedUser = new User();
+        updatedUser.setUsername("newUsername");
+
+        when(userRepository.findByUserId(Mockito.any())).thenReturn(existingUser);
+        when(userRepository.findByUsername(Mockito.any())).thenReturn(null);
+        when(userRepository.findByToken(Mockito.any())).thenReturn(null);
+
+        assertThrows(ResponseStatusException.class, () ->
+                userService.updateUser(existingUser.getUserId(), "invalid_token", updatedUser)
+        );
+    }
+
+    @Test
+    public void updateUser_invalidUserId_throwsNotFound() {
+        User existingUser = new User();
+        existingUser.setUserId(1L);
+        existingUser.setUsername("oldUsername");
+        existingUser.setPassword("password");
+        existingUser.setToken(UUID.randomUUID().toString());
+
+        User updatedUser = new User();
+        updatedUser.setUsername("newUsername");
+
+        when(userRepository.findByUserId(Mockito.any())).thenReturn(null);
+
+        assertThrows(ResponseStatusException.class, () ->
+                userService.updateUser(99L, existingUser.getToken(), updatedUser)
+        );
+    }
 }
