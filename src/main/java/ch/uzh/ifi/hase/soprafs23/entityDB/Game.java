@@ -46,13 +46,10 @@ public class Game {
     private CategoryStack categoryStack;
     @Column()
     private Boolean openLobby;
-
     @Column()
     private Difficulty difficulty;
-
     @Column()
     private GameMode gameMode;
-
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "countriesToPlay", joinColumns = @JoinColumn(name = "gameId"))
     @Column(name = "countryId")

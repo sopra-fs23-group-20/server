@@ -16,7 +16,7 @@ public class GuessingStateClass implements GameStateClass{
         if (game.getRemainingTime() == 0) {
             if(game.getRemainingRounds() == 0){
                 game.setCurrentState(GameState.ENDED);
-                game.setRemainingTime(20L);
+                game.setRemainingTime(30L);
                 gameService.updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
                 gameService.updateGameState(game.getGameId(), WebsocketType.TIMEUPDATE, game.getRemainingTime());
                 return game;
@@ -48,6 +48,8 @@ public class GuessingStateClass implements GameStateClass{
         gameService.updateGameState(game.getGameId(), WebsocketType.POINTSUPDATE, game.getRemainingRoundPoints());
         return game;
     }
+
+
     private void reduceCurrentPoints(Game game) {
 
         long roundTime = game.getRoundDuration();
