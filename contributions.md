@@ -117,8 +117,9 @@ https://github.com/sopra-fs23-group-20/server/issues/105 </br>
 https://github.com/sopra-fs23-group-20/server/issues/106 </br>
 https://github.com/sopra-fs23-group-20/server/issues/108 </br>
 
-#### Description:
+#### Description:.
 I mainly worked on the scoreboard and its corresponding features. The scoreboard will now appear after each round showing the points and ranks of each player. At the end the final Scoreboard with the corresponding points will be displayed. 
+(I have done a lot in this week or worked ahead, because I will have less time in May due to my job --> will be compensated in May!)
 
 ---
 
@@ -291,6 +292,11 @@ https://github.com/sopra-fs23-group-20/client/issues/51 There should be a websoc
 ---
 
 ## Week 1.5 - 7.5
+
+---
+
+### Jamo
+I already submitted my tasks for this week in week 3.4 - 9.4/easter break.
 
 ---
 
