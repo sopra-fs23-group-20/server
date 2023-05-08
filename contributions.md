@@ -309,9 +309,11 @@ I have already submitted my tasks for this week in week 3.4 - 9.4/easter break.
 https://github.com/sopra-fs23-group-20/client/issues/59 <br />
 https://github.com/sopra-fs23-group-20/client/issues/118 <br />
 https://github.com/sopra-fs23-group-20/server/issues/134 <br />
+https://github.com/sopra-fs23-group-20/server/issues/138 <br />
+
 
 #### Description:
-I updated the rules and guideline page formating and styling textual and picture vise. I also did the Readme file and changed overall styling of the application.
+I updated the rules and guideline page formating and styling textual and picture vise. I also did the Readme file and changed overall styling of the application. Also added more tests
 
 ---
 
