@@ -296,12 +296,12 @@ https://github.com/sopra-fs23-group-20/client/issues/51 There should be a websoc
 ---
 
 ### Jamo
-I already submitted my tasks for this week in week 3.4 - 9.4/easter break.
+I have already submitted my tasks for this week in week 3.4 - 9.4/easter break.
 
 ---
 
 ### Louis
-I already submitted my tasks for this week in week 3.4 - 9.4/easter break
+I have already submitted my tasks for this week in week 3.4 - 9.4/easter break.
 
 ---
 
