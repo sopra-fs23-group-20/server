@@ -19,7 +19,7 @@ public class ScoreboardStateClass implements GameStateClass{
         if (game.getRemainingTime() == 0) {
             if (game.getRemainingRounds() == 0) {
                 game.setCurrentState(GameState.ENDED);
-                game.setRemainingTime(10L);
+                game.setRemainingTime(20L);
                 gameService.updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
                 gameService.updateGameState(game.getGameId(), WebsocketType.TIMEUPDATE, game.getRemainingTime());
                 return game;

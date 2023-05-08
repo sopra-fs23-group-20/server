@@ -185,7 +185,7 @@ public class GameService {
                 System.out.println("Everyone has guessed");
                 if(game.getRemainingRounds()==0){
                     game.setCurrentState(GameState.ENDED);
-                    game.setRemainingTime(10L);
+                    game.setRemainingTime(20L);
                 }else{
                     game.setCurrentState(GameState.SCOREBOARD);
                     game.setRemainingTime(game.getTimeBetweenRounds());
