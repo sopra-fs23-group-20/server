@@ -254,6 +254,8 @@ https://github.com/sopra-fs23-group-20/client/issues/98  <br />
 https://github.com/sopra-fs23-group-20/client/issues/95  <br />
 https://github.com/sopra-fs23-group-20/client/issues/94  <br />
 
+#### Description: 
+I modified the Leaderboard, such that it shows three trophies as it is the case in the Scoreboard (uniformity). Furthermore, I worked on the Scoreboard (e.g. added that User can see which country they guessed).
 
 ### Jonathan
 https://github.com/sopra-fs23-group-20/client/issues/101 <br />
@@ -355,6 +357,14 @@ https://github.com/sopra-fs23-group-20/client/issues/105
 
 #### Description:
 implemented quickjoin, might have to work on the alert (already started at the 6 May)
+
+### Jamo
+https://github.com/sopra-fs23-group-20/server/issues/125
+https://github.com/sopra-fs23-group-20/server/issues/126
+https://github.com/sopra-fs23-group-20/client/issues/109
+
+#### Description:
+
 
 ### Dario
 https://github.com/sopra-fs23-group-20/client/issues/111 <br />
