@@ -9,6 +9,7 @@ import ch.uzh.ifi.hase.soprafs23.entityOther.Location;
 import ch.uzh.ifi.hase.soprafs23.entityOther.WebsocketPackage;
 import ch.uzh.ifi.hase.soprafs23.repository.CountryRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.GameUserRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
@@ -43,26 +44,18 @@ public class GameService {
     private final CountryService countryService;
     private final CountryRepository countryRepository;
     private final UserRepository userRepository;
+    private final GameUserRepository gameUserRepository;
     private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
-    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, @Qualifier("countryRepository") CountryRepository countryRepository, @Qualifier("userRepository") UserRepository userRepository, CountryService countryService, SimpMessagingTemplate messagingTemplate) {
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, @Qualifier("countryRepository") CountryRepository countryRepository, @Qualifier("userRepository") UserRepository userRepository, CountryService countryService, SimpMessagingTemplate messagingTemplate, @Qualifier("gameUserRepository") GameUserRepository gameUserRepository) {
         this.gameRepository = gameRepository;
         this.countryService = countryService;
         this.countryRepository = countryRepository;
         this.userRepository = userRepository;
         this.messagingTemplate = messagingTemplate;
+        this.gameUserRepository = gameUserRepository;
     }
-
-    /**
-    public static x getScoreboard(Long gameId) {
-        //TODO figure out logic behind scoreboard
-        return
-    }
-     */
-
-
-
     public Game createGame(GamePostDTO gamePostDTO) {
 
         Game game = new Game();
@@ -388,28 +381,29 @@ public class GameService {
 
     public Game leaveGame(Long gameId, Long userId) {
         Game game = gameRepository.findById(gameId).orElseThrow(() -> new IllegalArgumentException("Game not found"));
-
-        game.markUserAsLeft(userId);
-
-        gameRepository.save(game);
-
-        return game;
-    }
-
-    public Game restartGame(Long gameId, Long userId) {
-        Game game = gameRepository.findById(gameId).orElseThrow(() -> new IllegalArgumentException("Game not found"));
-
-        Long lobbyCreatorUserId = game.getLobbyCreator().getUserId();
-        if (!userId.equals(lobbyCreatorUserId)) {
-            throw new IllegalStateException("Only the lobby creator can restart the game");
+        if (game == null){
+            throw new RuntimeException("Game not found with gameId: " + gameId);
         }
-
-        game.resetGameStateAndRemoveLeftUsers();
-
-        gameRepository.save(game);
-
+        Set<GameUser> participants = game.getParticipants();
+        if(game.getCurrentState() == GameState.ENDED){
+            GameUser gameUser = findGameUser(participants, userId);
+            gameUser.setHasLeft(true);
+        }else{
+            GameUser gameUser = findGameUser(participants, userId);
+            participants.remove(gameUser);
+            gameUserRepository.delete(gameUser);
+            updateGameState(gameId, WebsocketType.PLAYERUPDATE, participants);
+            if(participants.isEmpty()){
+                gameRepository.delete(game);
+                return null;
+            }
+        }
+        gameRepository.saveAndFlush(game);
+        updateGameState(gameId, WebsocketType.PLAYERUPDATE, participants);
         return game;
     }
+
+
 
 
     public Game addUserToPlayAgain(Long gameId, Long userId){

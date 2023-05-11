@@ -133,6 +133,14 @@ public class GameController {
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 
+    @PostMapping("/games/{gameId}/leave")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameGetDTO leaveGame(@PathVariable Long gameId, @RequestBody String userId) {
+        Game game = gameService.leaveGame(gameId, Long.parseLong(userId));
+        return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
+    }
+
     @PostMapping("/games/{gameId}/guesses")
     @ResponseStatus(HttpStatus.CREATED)
     public String submitGuess(@PathVariable Long gameId, @RequestBody GuessPostDTO guessPostDTO) {
