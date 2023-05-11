@@ -5,7 +5,6 @@ import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 import ch.uzh.ifi.hase.soprafs23.entityOther.Location;
 
 import javax.persistence.*;
-import javax.swing.plaf.synth.Region;
 
 @Entity
 @Table(name = "COUNTRY")

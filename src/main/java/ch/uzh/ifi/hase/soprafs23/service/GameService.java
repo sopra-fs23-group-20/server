@@ -81,11 +81,9 @@ public class GameService {
 
         List<RegionEnum> selectedRegions = gamePostDTO.getSelectedRegions();
         game.setSelectedRegions(selectedRegions);
-        System.out.println("Selected Regions: " + selectedRegions);
 
         Set<Long> countryIds = getCountryIdsByRegionsAndDifficulty(gamePostDTO.getSelectedRegions(), gamePostDTO.getDifficulty());
         game.setCountriesToPlayIds(countryIds);
-        System.out.println("Country to play ids: " + game.getCountriesToPlayIds());
        game.setLobbyCreator(lobbyCreator);
        game.setDifficulty(gamePostDTO.getDifficulty());
        game.setGameMode(gamePostDTO.getGameMode());
@@ -105,16 +103,13 @@ public class GameService {
 
         gameRepository.saveAndFlush(game);
         updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
-        System.out.println(game);
         return game;
     }
 
     public Game joinGame(Long gameId, Long userId) {
-        System.out.println("Joining game with ID: " + gameId + " and user ID: " + userId);
         Game game = gameRepository.findByGameId(gameId);
         User user = userRepository.findByUserId(userId);
         GameUser gameUser = GameUser.transformUserToGameUser(user, game);
-        System.out.println("New game user" + gameUser + " he has token " + gameUser.getToken());
 
         Set<GameUser> participants = new HashSet<>(game.getParticipants());
 
@@ -128,8 +123,6 @@ public class GameService {
         game.setParticipants(participants);
         updateGameState(game.getGameId(), WebsocketType.PLAYERUPDATE, game.getParticipants());
         gameRepository.saveAndFlush(game);
-        //updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
-        System.out.println("User with Id " + userId + " joined game with ID: " + gameId);
         return game;
     }
 
@@ -155,8 +148,6 @@ public class GameService {
     //Logic fixed; not tested
     public String submitGuess(Long gameId, Guess guess) {
         try {
-            System.out.println("The guess username: "+ guess.getUserId());
-            System.out.println("The guess submitted is:" + guess.getGuess());
             Game game = gameRepository.findByGameId(gameId);
             Set<GameUser> gameUsers = new HashSet<>(game.getParticipants());
             GameUser gameUser = findGameUser(gameUsers, guess.getUserId());
@@ -168,7 +159,6 @@ public class GameService {
             if (countryRepository.findNameByCountryId(game.getCurrentCountryId()).equals(guess.getGuess())) {
                 gameUser.setGamePoints(game.getRemainingRoundPoints() + gameUser.getGamePoints());
                 returnString = "Your guess was right you get " + game.getRemainingRoundPoints() + " points";
-                System.out.println("The user " + gameUser.getUsername() + " got " + gameUser.getGamePoints() + " points");
             }
             else {
                 returnString = "Your guess was wrong you get 0 points";
@@ -182,7 +172,6 @@ public class GameService {
                 }
             }
             if(haveAllGuessed){
-                System.out.println("Everyone has guessed");
                 if(game.getRemainingRounds()==0){
                     game.setCurrentState(GameState.ENDED);
                     game.setRemainingTime(30L);
@@ -204,7 +193,6 @@ public class GameService {
     }
 
     private void updateGameEverySecond(Long gameId) {
-        System.out.println("Updating game every second");
         Game game = gameRepository.findByGameId(gameId);
         GameState currentGameState = game.getCurrentState();
         GameStateClass currentGameStateClass = Game.getGameStateClass(currentGameState);
@@ -238,7 +226,6 @@ public class GameService {
     }
 
         public void stopGame(Long gameId) {
-            System.out.println("Stopping game");
             ScheduledFuture<?> scheduledFuture = scheduledFutures.get(gameId);
             if (scheduledFuture != null) {
                 scheduledFuture.cancel(false);
@@ -357,10 +344,8 @@ public class GameService {
     public void updateGameState(Long gameId, WebsocketType websocketType, Object websocketParam) {
         try{
             WebsocketPackage websocketPackage = new WebsocketPackage(websocketType, websocketParam);
-            System.out.println("Sending game state update to all players on game " + gameId);
             messagingTemplate.convertAndSend("/topic/games/" + gameId, websocketPackage);
         }catch (Exception e){
-            System.out.println("Error sending game state update to all players on game " + gameId);
         }
 
     }
@@ -368,10 +353,8 @@ public class GameService {
     private void updatePlayerState(Long gameUserId, Long gameId, WebsocketType websocketType, Object websocketParam){
         try {
             WebsocketPackage websocketPackage = new WebsocketPackage(websocketType, websocketParam);
-            System.out.println("Sending player state update to player " + gameUserId + " on game " + gameId);
             messagingTemplate.convertAndSend("/topic/games/" + gameId + "/" + gameUserId, websocketPackage);
         }catch (Exception e){
-            System.out.println("Error sending player state update to player " + gameUserId + " on game " + gameId);
         }
     }
 
@@ -380,7 +363,6 @@ public class GameService {
         Random rand = new Random();
         long rndNumber = rand.nextInt(89999);
         long GameID= rndNumber+10000;
-        System.out.println("The random GameID is" + (GameID) );
 
         //Now we check if it is already used by another name:
         if(checkGeneratedGameID(GameID)){

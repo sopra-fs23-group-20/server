@@ -15,7 +15,6 @@ import java.util.*;
 public class SetupStateClass implements GameStateClass {
     @Override
     public Game updateGameEverySecond(Game game, GameService gameService) {
-        System.out.println("In Setup State Class, updating every Second");
         game.setCurrentState(GameState.GUESSING);
         game.setRemainingRounds(game.getNumberOfRounds()-1);
         game.setRemainingRoundPoints(100L);
@@ -37,7 +36,6 @@ public class SetupStateClass implements GameStateClass {
             game.setCountriesToPlayIds(gameService.getCountryIdsByRegionsAndDifficulty(game.getSelectedRegions(),game.getDifficulty()));
             myList = new ArrayList<>(game.getCountriesToPlayIds());
         }
-        System.out.println("Countries to play: " + myList);
         Random random = new Random();
         int randomIndex = random.nextInt(myList.size());
         game.setCurrentCountryId(myList.get(randomIndex));

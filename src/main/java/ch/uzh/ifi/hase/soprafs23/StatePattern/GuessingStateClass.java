@@ -12,7 +12,6 @@ import ch.uzh.ifi.hase.soprafs23.service.GameService;
 public class GuessingStateClass implements GameStateClass{
     @Override
     public Game updateGameEverySecond(Game game, GameService gameService) {
-        System.out.println("In GuessingState Class, updating every Second");
         if (game.getRemainingTime() == 0) {
             if(game.getRemainingRounds() == 0){
                 game.setCurrentState(GameState.ENDED);
@@ -30,8 +29,6 @@ public class GuessingStateClass implements GameStateClass{
 
         //Make a Category Update
         Long timeBetweenCategoryUpdates = game.getRoundDuration() / (game.getCategoryStack().getSelectedCategories().size());
-        System.out.println("Time between Category Updates: " + timeBetweenCategoryUpdates);
-        System.out.println("Time between times size " + timeBetweenCategoryUpdates * game.getCategoryStack().getSelectedCategories().size());
         if (game.getRemainingTime() < timeBetweenCategoryUpdates * game.getCategoryStack().getRemainingCategories().size()) {
             if(!game.getCategoryStack().isEmpty()){
                 CategoryStack categoryStack = game.getCategoryStack();

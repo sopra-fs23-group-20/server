@@ -14,13 +14,10 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.plaf.synth.Region;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -65,7 +62,6 @@ public class CountryService {
                 JSONParser parser = new JSONParser();
                 try {
                     countries = (JSONArray) parser.parse(new FileReader("src/main/resources/countries.json"));
-                    System.out.println("Set countries with File");
                 }
                 catch (IOException | ParseException ex) {
                     throw new RuntimeException(ex);
