@@ -58,8 +58,17 @@ class GameTest {
 
         game.setParticipants(users);
         game.setCurrentState(GameState.SETUP);
+        game.setTimeBetweenRounds(10L);
+        game.setGameMode(GameMode.NORMAL);
+        game.setRoundDuration(60);
+        game.setNextGameId(1L);
         assertNotNull(game.getCurrentState());
         assertEquals(GameState.SETUP, game.getCurrentState());
+        assertEquals(10L, game.getTimeBetweenRounds());
+        assertEquals(GameMode.NORMAL, game.getGameMode());
+        assertEquals(60, game.getRoundDuration());
+        assertEquals(1L, game.getNextGameId());
+
     }
 
     @Test
@@ -165,5 +174,66 @@ class GameTest {
 
         GameStateClass endedStateClass = Game.getGameStateClass(GameState.ENDED);
         assertTrue(endedStateClass instanceof EndedStateClass);
+    }
+
+    @Test
+    void testResetGameState() {
+        GameUser user1 = new GameUser();
+        user1.setUserId(1L);
+        GameUser user2 = new GameUser();
+        user2.setUserId(2L);
+
+        Set<GameUser> participants = new HashSet<>();
+        participants.add(user1);
+        participants.add(user2);
+        game.setParticipants(participants);
+
+        game.setCurrentState(GameState.ENDED);
+        game.setRoundDuration(60L);
+        game.resetGameState();
+
+        assertEquals(GameState.GUESSING, game.getCurrentState());
+        assertEquals(60L, game.getRemainingTime());
+    }
+
+    @Test
+    void testMarkUserAsLeft() {
+        GameUser user1 = new GameUser();
+        user1.setUserId(1L);
+        GameUser user2 = new GameUser();
+        user2.setUserId(2L);
+
+        Set<GameUser> participants = new HashSet<>();
+        participants.add(user1);
+        participants.add(user2);
+        game.setParticipants(participants);
+
+        game.markUserAsLeft(1L);
+        assertTrue(user1.isHasLeft());
+        assertFalse(user2.isHasLeft());
+    }
+
+    @Test
+    void testResetGameStateAndRemoveLeftUsers() {
+        GameUser user1 = new GameUser();
+        user1.setUserId(1L);
+        user1.setHasLeft(false);
+        GameUser user2 = new GameUser();
+        user2.setUserId(2L);
+        user2.setHasLeft(true);
+
+        Set<GameUser> participants = new HashSet<>();
+        participants.add(user1);
+        participants.add(user2);
+        game.setParticipants(participants);
+
+        game.setCurrentState(GameState.ENDED);
+        game.setRoundDuration(60L);
+        game.resetGameStateAndRemoveLeftUsers();
+
+        assertEquals(GameState.GUESSING, game.getCurrentState());
+        assertEquals(60L, game.getRemainingTime());
+        assertFalse(game.getParticipants().contains(user2));
+        assertEquals(1, game.getParticipants().size());
     }
 }

@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
+import ch.uzh.ifi.hase.soprafs23.constant.Difficulty;
 
 import java.util.*;
 
@@ -47,8 +48,22 @@ public class CountryServiceTest {
         country2.setRegion(RegionEnum.ASIA);
         country2.setPopulation(2000000L);
 
+        Country country3 = new Country();
+        country3.setCountryId(3L);
+        country3.setName("Country 3");
+        country3.setRegion(RegionEnum.AFRICA);
+        country3.setPopulation(3000000L);
+
+        Country country4 = new Country();
+        country4.setCountryId(4L);
+        country4.setName("Country 4");
+        country4.setRegion(RegionEnum.AMERICA);
+        country4.setPopulation(4000000L);
+
         sampleCountries.add(country1);
         sampleCountries.add(country2);
+        sampleCountries.add(country3);
+        sampleCountries.add(country4);
     }
 
     @Test
@@ -117,7 +132,7 @@ public class CountryServiceTest {
 
         Long topPopulation = countryService.calculateTopPopulation(1);
 
-        assertEquals(2000000L, topPopulation);
+        assertEquals(4000000L, topPopulation);
     }
 
     @Test
@@ -127,6 +142,19 @@ public class CountryServiceTest {
         List<Country> africaCountries = countryService.getCountriesByContinent(RegionEnum.AFRICA.toString());
 
         assertEquals(0, africaCountries.size());
+    }
+
+    @Test
+    public void getMinPopulationByDifficulty_differentDifficulties_correctMinPopulation() {
+        when(countryRepository.findAll(Sort.by(Sort.Direction.DESC, "population"))).thenReturn(sampleCountries);
+
+        Long easyMinPopulation = countryService.getMinPopulationByDifficulty(Difficulty.EASY);
+        Long mediumMinPopulation = countryService.getMinPopulationByDifficulty(Difficulty.MEDIUM);
+        Long hardMinPopulation = countryService.getMinPopulationByDifficulty(Difficulty.HARD);
+
+        assertEquals(1000000L, easyMinPopulation);
+        assertEquals(2000000L, mediumMinPopulation);
+        assertEquals(0L, hardMinPopulation);
     }
 
 
