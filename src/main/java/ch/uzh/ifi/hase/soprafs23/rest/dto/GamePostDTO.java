@@ -19,6 +19,15 @@ public class GamePostDTO {
 
     private GameMode gameMode;
     private Long timeBetweenRounds;
+    private Long numberOfGuesses;
+
+    public Long getNumberOfGuesses() {
+        return numberOfGuesses;
+    }
+
+    public void setNumberOfGuesses(Long numberOfGuesses) {
+        this.numberOfGuesses = numberOfGuesses;
+    }
 
     public GameMode getGameMode() {
         return gameMode;

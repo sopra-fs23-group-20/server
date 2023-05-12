@@ -51,12 +51,7 @@ class GameUserTest {
         assertEquals("testUser", gameUser.getUsername());
     }
 
-    @Test
-    void testHasAlreadyguessed() {
-        gameUser.setHasAlreadyGuessed(true);
-        assertNotNull(gameUser.getHasAlreadyGuessed());
-        assertEquals(true, gameUser.getHasAlreadyGuessed());
-    }
+
 
     @Test
     void testGamePoints() {
@@ -65,12 +60,7 @@ class GameUserTest {
         assertEquals(10L, gameUser.getGamePoints());
     }
 
-    @Test
-    void testUserPlayingState() {
-        gameUser.setUserPlayingState(GameState.GUESSING);
-        assertNotNull(gameUser.getUserPlayingState());
-        assertEquals(GameState.GUESSING, gameUser.getUserPlayingState());
-    }
+
 
     @Test
     void testTransformUserToGameUser() {
@@ -87,6 +77,5 @@ class GameUserTest {
         assertEquals(user.getUsername(), gameUser.getUsername());
         assertEquals(user.getToken(), gameUser.getToken());
         assertEquals(0L, gameUser.getGamePoints());
-        assertEquals(GameState.SETUP, gameUser.getUserPlayingState());
     }
 }

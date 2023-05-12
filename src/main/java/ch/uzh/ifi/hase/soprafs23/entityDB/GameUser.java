@@ -22,15 +22,21 @@ public class GameUser implements Serializable {
     private String token;
     private String username;
 
-    private boolean hasAlreadyGuessed;
-
     private Long gamePoints;
-
-    private GameState userPlayingState;
 
     private boolean hasLeft;
 
     private boolean userPlayingAgain;
+
+    private Long numberOfGuessesLeft;
+
+    public Long getNumberOfGuessesLeft() {
+        return numberOfGuessesLeft;
+    }
+
+    public void setNumberOfGuessesLeft(Long numberOfGuessesLeft) {
+        this.numberOfGuessesLeft = numberOfGuessesLeft;
+    }
 
     public boolean isUserPlayingAgain() {
         return userPlayingAgain;
@@ -38,10 +44,6 @@ public class GameUser implements Serializable {
 
     public void setUserPlayingAgain(boolean userPlayingAgain) {
         this.userPlayingAgain = userPlayingAgain;
-    }
-
-    public boolean isHasAlreadyGuessed() {
-        return hasAlreadyGuessed;
     }
 
     public boolean isHasLeft() {
@@ -52,20 +54,8 @@ public class GameUser implements Serializable {
         this.hasLeft = hasLeft;
     }
 
-    public boolean getHasAlreadyGuessed() {
-        return hasAlreadyGuessed;
-    }
-
-    public void setHasAlreadyGuessed(boolean hasAlreadyGuessed) {
-        this.hasAlreadyGuessed = hasAlreadyGuessed;
-    }
-
     public Long getUserId() {
         return userId;
-    }
-
-    public GameState getCurrentState() {
-        return userPlayingState;
     }
 
 
@@ -109,14 +99,6 @@ public class GameUser implements Serializable {
         this.game = game;
     }
 
-    public GameState getUserPlayingState() {
-        return userPlayingState;
-    }
-
-    public void setUserPlayingState(GameState userPlayingState) {
-        this.userPlayingState = userPlayingState;
-    }
-
     public void setUserId(Long userId) {
         this.userId = userId;
     }
@@ -128,7 +110,7 @@ public class GameUser implements Serializable {
         gameUser.setUsername(user.getUsername());
         gameUser.setToken(user.getToken());
         gameUser.setGamePoints(0L);
-        gameUser.setUserPlayingState(GameState.SETUP);
+        gameUser.setNumberOfGuessesLeft(game.getNumberOfGuesses());
         return gameUser;
     }
 

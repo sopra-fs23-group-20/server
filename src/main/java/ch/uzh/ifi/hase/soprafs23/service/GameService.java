@@ -81,6 +81,7 @@ public class GameService {
        game.setDifficulty(gamePostDTO.getDifficulty());
        game.setGameMode(gamePostDTO.getGameMode());
        game.setTimeBetweenRounds(gamePostDTO.getTimeBetweenRounds());
+       game.setNumberOfGuesses(gamePostDTO.getNumberOfGuesses());
 
         //Set SETUP State
         game.setCurrentState(SETUP);
@@ -138,15 +139,17 @@ public class GameService {
         return game;
     }
 
-    //Logic fixed; not tested
+
     public String submitGuess(Long gameId, Guess guess) {
         try {
             Game game = gameRepository.findByGameId(gameId);
             Set<GameUser> gameUsers = new HashSet<>(game.getParticipants());
             GameUser gameUser = findGameUser(gameUsers, guess.getUserId());
-            gameUser.setUserPlayingState(GameState.SCOREBOARD);
-            gameUser.setHasAlreadyGuessed(true);
+            if(gameUser.getNumberOfGuessesLeft() <= 0){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You have no guesses left");
+            }
 
+            gameUser.setNumberOfGuessesLeft(gameUser.getNumberOfGuessesLeft()-1);
 
             String returnString = "";
             if (countryRepository.findNameByCountryId(game.getCurrentCountryId()).equals(guess.getGuess())) {
@@ -159,20 +162,19 @@ public class GameService {
             boolean haveAllGuessed = true;
             Set<GameUser> participants = game.getParticipants();
             for(GameUser participant: participants){
-                if (!participant.getHasAlreadyGuessed()) {
+                if (participant.getNumberOfGuessesLeft() > 0) {
                     haveAllGuessed = false;
                     break;
                 }
             }
             if(haveAllGuessed){
                 if(game.getRemainingRounds()==0){
-                    game.setCurrentState(GameState.ENDED);
                     game.setRemainingTime(30L);
+                    game.setCurrentState(GameState.ENDED);
                 }else{
-                    game.setCurrentState(GameState.SCOREBOARD);
                     game.setRemainingTime(game.getTimeBetweenRounds());
+                    game.setCurrentState(GameState.SCOREBOARD);
                 }
-
                 updateGameState(game.getGameId(), WebsocketType.GAMEUPDATE, DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
             }
             game.setParticipants(gameUsers);
@@ -462,8 +464,9 @@ public class GameService {
             gamePostDTO.setOpenLobby(game.getOpenLobby());
             gamePostDTO.setRoundDuration(game.getRoundDuration());
             gamePostDTO.setTimeBetweenRounds(game.getTimeBetweenRounds());
-            gamePostDTO.setSelectedRegions(game.getSelectedRegions());
             gamePostDTO.setLobbyCreatorUserId(determineNewHost(game));
+            gamePostDTO.setGameMode(game.getGameMode());
+            gamePostDTO.setNumberOfGuesses(game.getNumberOfGuesses());
             Game newGame = createGame(gamePostDTO);
             newGame.setParticipants(new HashSet<GameUser>());
             addParticipantsToNewGame(game, newGame);
@@ -481,12 +484,11 @@ public class GameService {
                 gameUser.setUserId(participant.getUserId());
                 gameUser.setGamePoints(0L);
                 gameUser.setGame(newGame);
-                gameUser.setHasAlreadyGuessed(false);
                 gameUser.setUsername(participant.getUsername());
-                gameUser.setUserPlayingState(GameState.SETUP);
                 Set<GameUser> newParticipants = newGame.getParticipants();
                 newParticipants.add(gameUser);
                 newGame.setParticipants(newParticipants);
+                newGame.setNumberOfGuesses(oldGame.getNumberOfGuesses());
             }
         }
     }

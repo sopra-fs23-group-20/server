@@ -315,7 +315,6 @@ public class GameControllerTest {
         GameUser gameUser = new GameUser();
         gameUser.setUserId(2L);
         gameUser.setUsername("testUser");
-        gameUser.setUserPlayingState(GameState.GUESSING);
         gameUser.setGamePoints(0L);
 
         Set<GameUser> participants = new HashSet<>();
@@ -435,7 +434,6 @@ public class GameControllerTest {
         GameUser gameUser = new GameUser();
         gameUser.setUserId(2L);
         gameUser.setUsername("testUser");
-        gameUser.setUserPlayingState(GameState.GUESSING);
         gameUser.setGamePoints(0L);
 
         Set<GameUser> participants = new HashSet<>();
@@ -477,7 +475,6 @@ public class GameControllerTest {
         GameUser gameUser = new GameUser();
         gameUser.setUserId(2L);
         gameUser.setUsername("testUser");
-        gameUser.setUserPlayingState(GameState.GUESSING);
         gameUser.setGamePoints(0L);
 
         Set<GameUser> participants = new HashSet<>();

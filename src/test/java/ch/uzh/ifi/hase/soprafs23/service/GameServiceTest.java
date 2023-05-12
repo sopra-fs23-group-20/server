@@ -324,13 +324,13 @@ class GameServiceTest {
         GameUser participant2 = new GameUser();
         GameUser participant3 = new GameUser();
 
+        participant1.setNumberOfGuessesLeft(0L);
+        participant2.setNumberOfGuessesLeft(1L);
+        participant3.setNumberOfGuessesLeft(1L);
+
         participant1.setGamePoints(10L);
         participant2.setGamePoints(30L);
         participant3.setGamePoints(50L);
-
-        participant1.setHasAlreadyGuessed(true);
-        participant2.setHasAlreadyGuessed(false);
-        participant3.setHasAlreadyGuessed(false);
 
         participant1.setUserId(2L);
         participant2.setUserId(3L);
@@ -341,6 +341,7 @@ class GameServiceTest {
         game.setRemainingRoundPoints(30L);
         game.setRemainingRounds(1L);
         game.setRoundDuration(30L);
+        game.setNumberOfGuesses(1L);
 
         when(gameRepository.findByGameId(any())).thenReturn(game);
         when(gameRepository.saveAndFlush(any())).thenReturn(null);

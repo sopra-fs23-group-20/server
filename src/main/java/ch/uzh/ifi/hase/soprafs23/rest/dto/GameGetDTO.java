@@ -35,6 +35,16 @@ public class GameGetDTO {
 
     private Long nextGameId;
 
+    private Long numberOfGuesses;
+
+    public Long getNumberOfGuesses() {
+        return numberOfGuesses;
+    }
+
+    public void setNumberOfGuesses(Long numberOfGuesses) {
+        this.numberOfGuesses = numberOfGuesses;
+    }
+
     public Long getNextGameId() {
         return nextGameId;
     }

@@ -68,6 +68,15 @@ public class Game {
     private List<RegionEnum> selectedRegions;
 
     private Long nextGameId;
+    private Long numberOfGuesses;
+
+    public Long getNumberOfGuesses() {
+        return numberOfGuesses;
+    }
+
+    public void setNumberOfGuesses(Long numberOfGuesses) {
+        this.numberOfGuesses = numberOfGuesses;
+    }
 
     public Long getNextGameId() {
         return nextGameId;
@@ -155,9 +164,6 @@ public class Game {
         Set<GameUser> gamesUsers = getParticipants();
         if (gamesUsers == null) {
             throw new IllegalStateException("Game has no participants.");
-        }
-        for(GameUser gameUser: gamesUsers){
-            gameUser.setUserPlayingState(currentState);
         }
     }
 
