@@ -320,7 +320,7 @@ https://github.com/sopra-fs23-group-20/server/issues/28 <br/>
 https://github.com/sopra-fs23-group-20/client/issues/130 <br/>
 https://github.com/sopra-fs23-group-20/client/issues/143 <br/>
 #### Description:
-
+I created a GameHistory. Now you can see in the settings, how many and which games you played. You see furthermore your ranking history and how many participants had joined in the corresponding games. Moreover, I modified and designed the Scoreboard. Additionally, I designed the Scoreboard, Leaderboard and Gamehistory tables uniformly. Now, they all look nice and consistent. Finally, general improvements and bug fixes.--> I did that many tasks, since I might not be able to work on the project next week (due to work).
 
 ### Dario
 https://github.com/sopra-fs23-group-20/client/issues/111 <br />
