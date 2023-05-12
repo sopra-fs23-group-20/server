@@ -133,6 +133,13 @@ public class GameController {
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 
+    @PostMapping("/games/{gameId}/leave")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void leaveGame(@PathVariable Long gameId, @RequestBody String userId) {
+        gameService.leaveGame(gameId, Long.parseLong(userId));
+    }
+
     @PostMapping("/games/{gameId}/guesses")
     @ResponseStatus(HttpStatus.CREATED)
     public String submitGuess(@PathVariable Long gameId, @RequestBody GuessPostDTO guessPostDTO) {
@@ -144,7 +151,7 @@ public class GameController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GameGetDTO restartGame(@PathVariable Long gameId, @RequestBody String userId) {
-        Game game = gameService.addUserToPlayAgain(gameId, Long.parseLong(userId));
+        Game game = gameService.addUserToRestart(gameId, Long.parseLong(userId));
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 

@@ -47,4 +47,7 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
     @Query("SELECT c FROM Country c WHERE c.region IN :regions AND c.population >= :minPopulation")
     Page<Country> getCountriesByRegionsAndDifficulty(@Param("regions") List<RegionEnum> regions, @Param("minPopulation") Long minPopulation, Pageable pageable);
 
+    @Query("SELECT c.countryId, c.location FROM Country c")
+    List<Object[]> findCountryIdAndLocation();
+
 }

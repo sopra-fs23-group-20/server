@@ -9,6 +9,7 @@ import ch.uzh.ifi.hase.soprafs23.entityOther.Location;
 import ch.uzh.ifi.hase.soprafs23.entityOther.WebsocketPackage;
 import ch.uzh.ifi.hase.soprafs23.repository.CountryRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.GameUserRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
@@ -43,26 +44,18 @@ public class GameService {
     private final CountryService countryService;
     private final CountryRepository countryRepository;
     private final UserRepository userRepository;
+    private final GameUserRepository gameUserRepository;
     private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
-    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, @Qualifier("countryRepository") CountryRepository countryRepository, @Qualifier("userRepository") UserRepository userRepository, CountryService countryService, SimpMessagingTemplate messagingTemplate) {
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, @Qualifier("countryRepository") CountryRepository countryRepository, @Qualifier("userRepository") UserRepository userRepository, CountryService countryService, SimpMessagingTemplate messagingTemplate, @Qualifier("gameUserRepository") GameUserRepository gameUserRepository) {
         this.gameRepository = gameRepository;
         this.countryService = countryService;
         this.countryRepository = countryRepository;
         this.userRepository = userRepository;
         this.messagingTemplate = messagingTemplate;
+        this.gameUserRepository = gameUserRepository;
     }
-
-    /**
-    public static x getScoreboard(Long gameId) {
-        //TODO figure out logic behind scoreboard
-        return
-    }
-     */
-
-
-
     public Game createGame(GamePostDTO gamePostDTO) {
 
         Game game = new Game();
@@ -386,33 +379,41 @@ public class GameService {
         return true;
     }
 
-    public Game leaveGame(Long gameId, Long userId) {
+    public void leaveGame(Long gameId, Long userId) {
         Game game = gameRepository.findById(gameId).orElseThrow(() -> new IllegalArgumentException("Game not found"));
-
-        game.markUserAsLeft(userId);
-
-        gameRepository.save(game);
-
-        return game;
-    }
-
-    public Game restartGame(Long gameId, Long userId) {
-        Game game = gameRepository.findById(gameId).orElseThrow(() -> new IllegalArgumentException("Game not found"));
-
-        Long lobbyCreatorUserId = game.getLobbyCreator().getUserId();
-        if (!userId.equals(lobbyCreatorUserId)) {
-            throw new IllegalStateException("Only the lobby creator can restart the game");
+        if (game == null){
+            throw new RuntimeException("Game not found with gameId: " + gameId);
         }
+        System.out.println("User " + userId + " is leaving game " + gameId);
+        Set<GameUser> participants = game.getParticipants();
+        GameUser gameUser = findGameUser(participants, userId);
+        if(game.getCurrentState() == GameState.ENDED){
+            gameUser.setHasLeft(true);
+        }else{
+            participants.remove(gameUser);
+            if(participants.isEmpty()){
+                stopGame(gameId);
+                game.setLobbyCreator(null);
+                gameUserRepository.delete(gameUser);
+                gameRepository.delete(game);
+                return;
+            }
+            if(game.getLobbyCreator() == gameUser && !participants.isEmpty()){
+                game.setLobbyCreator(participants.iterator().next());
+            }
 
-        game.resetGameStateAndRemoveLeftUsers();
-
-        gameRepository.save(game);
-
-        return game;
+            gameUserRepository.delete(gameUser);
+            updateGameState(gameId, WebsocketType.PLAYERUPDATE, participants);
+        }
+        game.setParticipants(participants);
+        updateGameState(game.getGameId(), WebsocketType.GAMEUPDATE, DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
+        gameRepository.saveAndFlush(game);
     }
 
 
-    public Game addUserToPlayAgain(Long gameId, Long userId){
+
+
+    public Game addUserToRestart(Long gameId, Long userId){
         Game game = gameRepository.findByGameId(gameId);
         if (game == null) {
             throw new RuntimeException("Game not found with gameId: " + gameId);
@@ -430,6 +431,17 @@ public class GameService {
         }
         game.setParticipants(participants);
         gameRepository.saveAndFlush(game);
+
+        boolean everyOneWantsToPlayAgain = true;
+        for(GameUser participant : participants){
+            if(!participant.isUserPlayingAgain() && !participant.isHasLeft()){
+                everyOneWantsToPlayAgain = false;
+            }
+        }
+        if (everyOneWantsToPlayAgain){
+            createRestartedGame(game);
+        }
+
         updateGameState(gameId, WebsocketType.PLAYERUPDATE, participants);
         return game;
     }
@@ -437,7 +449,7 @@ public class GameService {
     public void createRestartedGame(Game game){
         Set<GameUser> playersPlayingAgain = new HashSet<>();
         for(GameUser participant: game.getParticipants()){
-            if(participant.isUserPlayingAgain()){
+            if(participant.isUserPlayingAgain() && !participant.isHasLeft()){
                 playersPlayingAgain.add(participant);
             }
         }
@@ -463,7 +475,7 @@ public class GameService {
 
     private void addParticipantsToNewGame(Game oldGame, Game newGame){
         for(GameUser participant: oldGame.getParticipants()){
-            if(participant.isUserPlayingAgain()){
+            if(participant.isUserPlayingAgain()&&!participant.isHasLeft()){
                 GameUser gameUser = new GameUser();
                 gameUser.setUserPlayingAgain(false);
                 gameUser.setUserId(participant.getUserId());
@@ -482,7 +494,7 @@ public class GameService {
     private String determineNewHost(Game game){
         Long newHostId = null;
         for(GameUser participant: game.getParticipants()){
-            if(participant.isUserPlayingAgain()){
+            if(participant.isUserPlayingAgain() && !participant.isHasLeft()){
                 newHostId = participant.getUserId();
                 if(participant.getUserId().equals(game.getLobbyCreator().getUserId())){
                     return newHostId.toString();
@@ -490,6 +502,51 @@ public class GameService {
             }
         }
         return newHostId.toString();
+    }
+
+    public void setNewClosestCountries(Game game){
+        Long currentCountryId = game.getCurrentCountryId();
+        List<Object[]> countryIdAndLocationList = countryRepository.findCountryIdAndLocation();
+        Map<Long, Location> countryIdLocationMap = new HashMap<>();
+
+        for (Object[] countryIdAndLocation : countryIdAndLocationList) {
+            Long countryId = (Long) countryIdAndLocation[0];
+            Location location = (Location) countryIdAndLocation[1];
+            countryIdLocationMap.put(countryId, location);
+        }
+        List<Long> closestCountryIds = calculateClosestCountries(currentCountryId, countryIdLocationMap);
+        List<String> closestCountryNames = new ArrayList<>();
+        for(Long countryId : closestCountryIds){
+            closestCountryNames.add(countryRepository.findNameByCountryId(countryId));
+        }
+        Collections.shuffle(closestCountryNames);
+        CategoryStack categoryStack = game.getCategoryStack();
+        categoryStack.setClosestCountries(closestCountryNames);
+    }
+
+    private List<Long> calculateClosestCountries(Long currentCountryId, Map<Long, Location> countryIdLocationMap){
+        List<Long> closestCountries = new ArrayList<>();
+        Location currentCountryLocation = countryIdLocationMap.get(currentCountryId);
+        Map<Long, Long> countryIdDistanceMap = new HashMap<>();
+
+        for (Map.Entry<Long, Location> entry : countryIdLocationMap.entrySet()) {
+            Long countryId = entry.getKey();
+            Location location = entry.getValue();
+            countryIdDistanceMap.put(countryId, calculateDistance(currentCountryLocation, location));
+        }
+
+        List<Map.Entry<Long, Long>> sortedEntries = new ArrayList<>(countryIdDistanceMap.entrySet());
+        sortedEntries.sort(Map.Entry.comparingByValue());
+
+        List<Long> firstSixCountryIds = sortedEntries.stream()
+                .limit(6)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+        return firstSixCountryIds;
+    }
+
+    private Long calculateDistance(Location location1, Location location2){
+        return Math.round(Math.sqrt(Math.pow(location1.getLatitude() - location2.getLatitude(), 2) + Math.pow(location1.getLongitude() - location2.getLongitude(), 2)));
     }
 
 }
