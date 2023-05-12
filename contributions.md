@@ -311,6 +311,14 @@ Adapted rules and quick tutorial to mobile
 https://github.com/sopra-fs23-group-20/server/issues/125 <br />
 https://github.com/sopra-fs23-group-20/server/issues/126 <br />
 https://github.com/sopra-fs23-group-20/client/issues/109 <br />
+https://github.com/sopra-fs23-group-20/client/issues/144 <br/>
+https://github.com/sopra-fs23-group-20/client/issues/127 <br/>
+https://github.com/sopra-fs23-group-20/client/issues/119 <br/>
+https://github.com/sopra-fs23-group-20/client/issues/108 <br/>
+https://github.com/sopra-fs23-group-20/client/issues/40 <br/>
+https://github.com/sopra-fs23-group-20/client/issues/28 <br/>
+https://github.com/sopra-fs23-group-20/client/issues/130 <br/>
+https://github.com/sopra-fs23-group-20/client/issues/143 <br/>
 #### Description:
 
 
