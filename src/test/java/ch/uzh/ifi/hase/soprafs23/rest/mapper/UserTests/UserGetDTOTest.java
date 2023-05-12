@@ -46,11 +46,11 @@ public class UserGetDTOTest {
     }
 
     @Test
-    public void testGetBirthday() {
+    public void testGetBirthDate() {
         UserGetDTO dto = new UserGetDTO();
         Date date = new Date();
-        dto.setBirthday(date);
-        assertEquals(date, dto.getBirthday());
+        dto.setBirthDate(date);
+        assertEquals(date, dto.getBirthDate());
     }
 
     @Test

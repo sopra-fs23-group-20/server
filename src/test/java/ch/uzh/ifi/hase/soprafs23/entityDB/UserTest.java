@@ -58,10 +58,10 @@ class UserTest {
 
     @Test
     void testBirthday() {
-        Date testBirthday = new Date();
-        user.setBirthday(testBirthday);
-        assertNotNull(user.getBirthday());
-        assertEquals(testBirthday, user.getBirthday());
+        Date testBirthDate = new Date();
+        user.setBirthDate(testBirthDate);
+        assertNotNull(user.getBirthDate());
+        assertEquals(testBirthDate, user.getBirthDate());
     }
 
     @Test

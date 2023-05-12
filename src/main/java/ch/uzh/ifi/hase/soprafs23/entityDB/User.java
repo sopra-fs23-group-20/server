@@ -28,7 +28,7 @@ public class User implements Serializable {
     private String password;
 
     @Column()
-    private Date birthday;
+    private Date birthDate;
 
     @Column(nullable = false, unique = true)
     private String token;
@@ -91,12 +91,12 @@ public class User implements Serializable {
         this.creation_date = creationDate;
     }
 
-    public Date getBirthday() {
-        return birthday;
+    public Date getBirthDate() {
+        return birthDate;
     }
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
     public String getNationality() { return nationality; }

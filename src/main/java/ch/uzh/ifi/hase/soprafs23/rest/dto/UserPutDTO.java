@@ -10,7 +10,7 @@ public class UserPutDTO {
 
     private String password;
 
-    private Date birthday;
+    private Date birthDate;
 
     private UserStatus status;
 
@@ -43,12 +43,12 @@ public class UserPutDTO {
         this.password = password;
     }
 
-    public Date getBirthday() {
-        return birthday;
+    public Date getBirthDate() {
+        return birthDate;
     }
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
     public UserStatus getStatus() {
@@ -80,7 +80,7 @@ public class UserPutDTO {
         return "UserPutDTO{" +
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", birthday=" + birthday +
+                ", birthDate=" + birthDate +
                 ", status=" + status +
                 ", nationality='" + nationality + '\'' +
                 ", profilePicture='" + profilePicture + '\'' +

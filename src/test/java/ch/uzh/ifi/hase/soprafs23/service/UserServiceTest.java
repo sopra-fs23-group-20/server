@@ -43,7 +43,7 @@ public class UserServiceTest {
         testUser.setCreation_date(new Date());
         testUser.setStatus(UserStatus.OFFLINE);
         testUser.setNationality("testNationality");
-        testUser.setBirthday(new Date());
+        testUser.setBirthDate(new Date());
         testUser.setProfilePicture("testProfilePicture");
         testUser.setToken("testToken");
 
@@ -411,19 +411,19 @@ public class UserServiceTest {
         verify(userRepository, times(1)).save(existingUser);
     }
 
-    // Test case for updating a user's birthday
+    // Test case for updating a user's birthDate
     @Test
-    public void updateUser_validBirthday_success() {
+    public void updateUser_validBirthDate_success() {
         // given
         User existingUser = new User();
         existingUser.setUserId(1L);
         existingUser.setUsername("username");
         existingUser.setPassword("password");
-        existingUser.setBirthday(new Date(10000000));
+        existingUser.setBirthDate(new Date(10000000));
         existingUser.setToken(UUID.randomUUID().toString());
 
         User updatedUser = new User();
-        updatedUser.setBirthday(new Date(20000000));
+        updatedUser.setBirthDate(new Date(20000000));
 
         when(userRepository.findByUserId(Mockito.any())).thenReturn(existingUser);
         when(userRepository.findByToken(Mockito.any())).thenReturn(existingUser);
@@ -434,7 +434,7 @@ public class UserServiceTest {
 
         // then
         assertTrue(isUpdated);
-        assertEquals(updatedUser.getBirthday(), existingUser.getBirthday());
+        assertEquals(updatedUser.getBirthDate(), existingUser.getBirthDate());
         verify(userRepository, times(1)).save(existingUser);
     }
 

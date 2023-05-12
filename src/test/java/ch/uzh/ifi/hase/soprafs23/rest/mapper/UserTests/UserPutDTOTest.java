@@ -21,7 +21,7 @@ public class UserPutDTOTest {
         UserPutDTO userPutDTO = new UserPutDTO();
         userPutDTO.setUsername("testUser");
         userPutDTO.setPassword("password");
-        userPutDTO.setBirthday(new Date());
+        userPutDTO.setBirthDate(new Date());
         userPutDTO.setStatus(UserStatus.ONLINE);
         userPutDTO.setNationality("Swiss");
         userPutDTO.setProfilePicture("testPicture");
@@ -32,7 +32,7 @@ public class UserPutDTOTest {
         // Verify that the User object was created correctly
         assertEquals(userPutDTO.getUsername(), user.getUsername());
         assertEquals(userPutDTO.getPassword(), user.getPassword());
-        assertEquals(userPutDTO.getBirthday(), user.getBirthday());
+        assertEquals(userPutDTO.getBirthDate(), user.getBirthDate());
         assertEquals(userPutDTO.getStatus(), user.getStatus());
         assertEquals(userPutDTO.getNationality(), user.getNationality());
         assertEquals(userPutDTO.getProfilePicture(), user.getProfilePicture());

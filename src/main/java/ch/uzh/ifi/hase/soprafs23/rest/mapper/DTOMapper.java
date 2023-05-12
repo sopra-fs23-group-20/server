@@ -21,7 +21,7 @@ public interface DTOMapper {
 
     @Mapping(source = "username", target = "username")
     @Mapping(source = "password", target = "password")
-    @Mapping(source = "birthday", target = "birthday")
+    @Mapping(source = "birthDate", target = "birthDate")
     @Mapping(source = "status", target = "status")
     @Mapping(source = "nationality", target = "nationality")
     @Mapping(source = "profilePicture", target = "profilePicture")
@@ -32,7 +32,7 @@ public interface DTOMapper {
     @Mapping(source = "username", target = "username")
     @Mapping(source = "creation_date", target = "creation_date")
     @Mapping(source = "status", target = "status")
-    @Mapping(source = "birthday", target = "birthday")
+    @Mapping(source = "birthDate", target = "birthDate")
     @Mapping(source = "nationality", target = "nationality")
     @Mapping(source = "profilePicture", target = "profilePicture")
     @Mapping(source = "gamesWon", target = "gamesWon")

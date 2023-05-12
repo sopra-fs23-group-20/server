@@ -191,7 +191,7 @@ public class UserControllerTest {
         UserPutDTO userPutDTO = new UserPutDTO();
         userPutDTO.setStatus(UserStatus.OFFLINE);
         userPutDTO.setUsername("changedUsername");
-        userPutDTO.setBirthday(new Date("01/01/2000"));
+        userPutDTO.setBirthDate(new Date("01/01/2000"));
 
         MockHttpServletRequestBuilder putRequest = put("/users/{userId}", user.getUserId())
                 .content(asJsonString(userPutDTO))
@@ -213,7 +213,7 @@ public class UserControllerTest {
         UserPutDTO userPutDTO = new UserPutDTO();
         userPutDTO.setStatus(UserStatus.OFFLINE);
         userPutDTO.setUsername("changedUsername");
-        userPutDTO.setBirthday(new Date("01/01/2000"));
+        userPutDTO.setBirthDate(new Date("01/01/2000"));
 
         given(userService.updateUser(Mockito.anyLong(), Mockito.anyString(), Mockito.any())).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -280,7 +280,7 @@ public class UserControllerTest {
         UserPutDTO userPutDTO = new UserPutDTO();
         userPutDTO.setStatus(UserStatus.OFFLINE);
         userPutDTO.setUsername("");
-        userPutDTO.setBirthday(new Date("01/01/2000"));
+        userPutDTO.setBirthDate(new Date("01/01/2000"));
 
         given(userService.updateUser(Mockito.anyLong(), Mockito.anyString(), Mockito.any())).willThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
 
@@ -326,7 +326,7 @@ public class UserControllerTest {
         UserPutDTO userPutDTO = new UserPutDTO();
         userPutDTO.setStatus(UserStatus.OFFLINE);
         userPutDTO.setUsername("changedUsername");
-        userPutDTO.setBirthday(new Date("01/01/2000"));
+        userPutDTO.setBirthDate(new Date("01/01/2000"));
 
         given(userService.updateUser(Mockito.anyLong(), Mockito.anyString(), Mockito.any(User.class)))
                 .willThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));

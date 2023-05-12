@@ -14,7 +14,7 @@ public class UserGetDTO {
 
     private UserStatus status;
 
-    private Date birthday;
+    private Date birthDate;
 
     private String nationality;
 
@@ -62,12 +62,12 @@ public class UserGetDTO {
         this.creation_date = creationDate;
     }
 
-    public Date getBirthday() {
-        return birthday;
+    public Date getBirthDate() {
+        return birthDate;
     }
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
     public String getNationality() {

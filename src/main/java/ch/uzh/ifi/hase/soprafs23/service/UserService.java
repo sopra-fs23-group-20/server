@@ -142,7 +142,7 @@ public class UserService {
             }
             originalUser.setUsername(userInput.getUsername());
         }
-        originalUser.setBirthday(userInput.getBirthday());
+        originalUser.setBirthDate(userInput.getBirthDate());
         if (userInput.getPassword() != null) {
             originalUser.setPassword(userInput.getPassword());
         }
