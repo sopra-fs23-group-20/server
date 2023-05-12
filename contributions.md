@@ -307,6 +307,8 @@ https://github.com/sopra-fs23-group-20/client/issues/115
 implemented quickjoin, might have to work on the alert (already started at the 6 May) <br />
 Adapted rules and quick tutorial to mobile 
 
+---
+
 ### Jamo
 https://github.com/sopra-fs23-group-20/server/issues/125 <br />
 https://github.com/sopra-fs23-group-20/server/issues/126 <br />
@@ -322,6 +324,8 @@ https://github.com/sopra-fs23-group-20/client/issues/143 <br/>
 #### Description:
 I created a GameHistory. Now you can see in the settings, how many and which games you played. You see furthermore your ranking history and how many participants had joined in the corresponding games. Moreover, I modified and designed the Scoreboard. Additionally, I designed the Scoreboard, Leaderboard and Gamehistory tables uniformly. Now, they all look nice and consistent. Finally, general improvements and bug fixes.--> I did that many tasks, since I might not be able to work on the project next week (due to work).
 
+---
+
 ### Dario
 https://github.com/sopra-fs23-group-20/client/issues/111 <br />
 https://github.com/sopra-fs23-group-20/server/issues/137 <br />
@@ -330,6 +334,19 @@ https://github.com/sopra-fs23-group-20/client/issues/120 <br />
 https://github.com/sopra-fs23-group-20/client/issues/122 <br />
 #### Description:
 I added a first draft of the new game mode "Blitz", I fixed a bug where users could submit guess without entering a country, I fixed a visual bug that occured when only selecting antarctica in the regions section, and I added flashcards with animations to learn countries.
+
+---
+
+### Jonas
+https://github.com/sopra-fs23-group-20/client/issues/145 <br />
+https://github.com/sopra-fs23-group-20/client/issues/137 <br />
+https://github.com/sopra-fs23-group-20/client/issues/112 <br />
+https://github.com/sopra-fs23-group-20/server/issues/127 <br />
+https://github.com/sopra-fs23-group-20/server/issues/131 <br />
+
+#### Description:
+I implemented User Story 17 ("Blitz" mode) https://github.com/sopra-fs23-group-20/server/issues/128 <br />
+I also implemented the "leave Game" feature so players can leave the game at any time. <br />
 
 ---
 
