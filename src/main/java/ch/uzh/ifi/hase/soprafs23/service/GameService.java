@@ -386,13 +386,11 @@ public class GameService {
         }
         System.out.println("User " + userId + " is leaving game " + gameId);
         Set<GameUser> participants = game.getParticipants();
+        GameUser gameUser = findGameUser(participants, userId);
         if(game.getCurrentState() == GameState.ENDED){
-            GameUser gameUser = findGameUser(participants, userId);
             gameUser.setHasLeft(true);
         }else{
-            GameUser gameUser = findGameUser(participants, userId);
             participants.remove(gameUser);
-
             if(participants.isEmpty()){
                 stopGame(gameId);
                 game.setLobbyCreator(null);
@@ -415,7 +413,7 @@ public class GameService {
 
 
 
-    public Game addUserToPlayAgain(Long gameId, Long userId){
+    public Game addUserToRestart(Long gameId, Long userId){
         Game game = gameRepository.findByGameId(gameId);
         if (game == null) {
             throw new RuntimeException("Game not found with gameId: " + gameId);
@@ -433,6 +431,17 @@ public class GameService {
         }
         game.setParticipants(participants);
         gameRepository.saveAndFlush(game);
+
+        boolean everyOneWantsToPlayAgain = true;
+        for(GameUser participant : participants){
+            if(!participant.isUserPlayingAgain() && !participant.isHasLeft()){
+                everyOneWantsToPlayAgain = false;
+            }
+        }
+        if (everyOneWantsToPlayAgain){
+            createRestartedGame(game);
+        }
+
         updateGameState(gameId, WebsocketType.PLAYERUPDATE, participants);
         return game;
     }
@@ -493,6 +502,51 @@ public class GameService {
             }
         }
         return newHostId.toString();
+    }
+
+    public void setNewClosestCountries(Game game){
+        Long currentCountryId = game.getCurrentCountryId();
+        List<Object[]> countryIdAndLocationList = countryRepository.findCountryIdAndLocation();
+        Map<Long, Location> countryIdLocationMap = new HashMap<>();
+
+        for (Object[] countryIdAndLocation : countryIdAndLocationList) {
+            Long countryId = (Long) countryIdAndLocation[0];
+            Location location = (Location) countryIdAndLocation[1];
+            countryIdLocationMap.put(countryId, location);
+        }
+        List<Long> closestCountryIds = calculateClosestCountries(currentCountryId, countryIdLocationMap);
+        List<String> closestCountryNames = new ArrayList<>();
+        for(Long countryId : closestCountryIds){
+            closestCountryNames.add(countryRepository.findNameByCountryId(countryId));
+        }
+        Collections.shuffle(closestCountryNames);
+        CategoryStack categoryStack = game.getCategoryStack();
+        categoryStack.setClosestCountries(closestCountryNames);
+    }
+
+    private List<Long> calculateClosestCountries(Long currentCountryId, Map<Long, Location> countryIdLocationMap){
+        List<Long> closestCountries = new ArrayList<>();
+        Location currentCountryLocation = countryIdLocationMap.get(currentCountryId);
+        Map<Long, Long> countryIdDistanceMap = new HashMap<>();
+
+        for (Map.Entry<Long, Location> entry : countryIdLocationMap.entrySet()) {
+            Long countryId = entry.getKey();
+            Location location = entry.getValue();
+            countryIdDistanceMap.put(countryId, calculateDistance(currentCountryLocation, location));
+        }
+
+        List<Map.Entry<Long, Long>> sortedEntries = new ArrayList<>(countryIdDistanceMap.entrySet());
+        sortedEntries.sort(Map.Entry.comparingByValue());
+
+        List<Long> firstSixCountryIds = sortedEntries.stream()
+                .limit(6)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+        return firstSixCountryIds;
+    }
+
+    private Long calculateDistance(Location location1, Location location2){
+        return Math.round(Math.sqrt(Math.pow(location1.getLatitude() - location2.getLatitude(), 2) + Math.pow(location1.getLongitude() - location2.getLongitude(), 2)));
     }
 
 }

@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.StatePattern;
 
 import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
+import ch.uzh.ifi.hase.soprafs23.constant.GameMode;
 import ch.uzh.ifi.hase.soprafs23.constant.GameState;
 import ch.uzh.ifi.hase.soprafs23.constant.WebsocketType;
 import ch.uzh.ifi.hase.soprafs23.entityDB.Category;
@@ -41,6 +42,9 @@ public class SetupStateClass implements GameStateClass {
         game.setCurrentCountryId(myList.get(randomIndex));
         myList.remove(randomIndex);
         game.setCountriesToPlayIds(new HashSet<>(myList));
+        if(game.getGameMode() == GameMode.BLITZ){
+            gameService.setNewClosestCountries(game);
+        }
     }
     private void resetAlreadyGuess(Game game){
         for (GameUser gameUser : game.getParticipants()) {

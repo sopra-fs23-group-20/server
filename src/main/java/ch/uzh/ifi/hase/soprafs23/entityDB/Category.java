@@ -3,8 +3,8 @@ package ch.uzh.ifi.hase.soprafs23.entityDB;
 import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
 import ch.uzh.ifi.hase.soprafs23.entityOther.Location;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.persistence.*;
+import java.util.List;
 
 
 @Embeddable
@@ -17,6 +17,9 @@ public class Category {
     private Location location;
     @Column(length = 10000000)
     private String outline;
+
+
+
 
     public CategoryEnum getType() {
         return type;

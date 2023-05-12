@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.entityDB;
 
 import ch.uzh.ifi.hase.soprafs23.constant.CategoryEnum;
+import ch.uzh.ifi.hase.soprafs23.constant.RegionEnum;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -27,12 +28,25 @@ public class CategoryStack {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "REMAININGCATEGORIES", joinColumns = @JoinColumn(name = "categoryStackId"))
     @Column(name = "categoryEnum")
-    @Enumerated(EnumType.STRING)
     @OrderColumn(name = "position")
     private List<CategoryEnum> remainingCategories;
     private int stackIdx;
 
     private boolean randomizedHints;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "CLOSESTCOUNTRIES", joinColumns = @JoinColumn(name = "categoryStackId"))
+    @Column(name = "countryName")
+    @OrderColumn(name = "position")
+    private List<String> closestCountries;
+
+    public List<String> getClosestCountries() {
+        return closestCountries;
+    }
+
+    public void setClosestCountries(List<String> closestCountries) {
+        this.closestCountries = closestCountries;
+    }
 
     public boolean isRandomizedHints() {
         return randomizedHints;
