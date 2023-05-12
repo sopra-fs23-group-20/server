@@ -379,11 +379,12 @@ public class GameService {
         return true;
     }
 
-    public Game leaveGame(Long gameId, Long userId) {
+    public void leaveGame(Long gameId, Long userId) {
         Game game = gameRepository.findById(gameId).orElseThrow(() -> new IllegalArgumentException("Game not found"));
         if (game == null){
             throw new RuntimeException("Game not found with gameId: " + gameId);
         }
+        System.out.println("User " + userId + " is leaving game " + gameId);
         Set<GameUser> participants = game.getParticipants();
         if(game.getCurrentState() == GameState.ENDED){
             GameUser gameUser = findGameUser(participants, userId);
@@ -391,16 +392,24 @@ public class GameService {
         }else{
             GameUser gameUser = findGameUser(participants, userId);
             participants.remove(gameUser);
+
+            if(participants.isEmpty()){
+                stopGame(gameId);
+                game.setLobbyCreator(null);
+                gameUserRepository.delete(gameUser);
+                gameRepository.delete(game);
+                return;
+            }
+            if(game.getLobbyCreator() == gameUser && !participants.isEmpty()){
+                game.setLobbyCreator(participants.iterator().next());
+            }
+
             gameUserRepository.delete(gameUser);
             updateGameState(gameId, WebsocketType.PLAYERUPDATE, participants);
-            if(participants.isEmpty()){
-                gameRepository.delete(game);
-                return null;
-            }
         }
+        game.setParticipants(participants);
+        updateGameState(game.getGameId(), WebsocketType.GAMEUPDATE, DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
         gameRepository.saveAndFlush(game);
-        updateGameState(gameId, WebsocketType.PLAYERUPDATE, participants);
-        return game;
     }
 
 
@@ -431,7 +440,7 @@ public class GameService {
     public void createRestartedGame(Game game){
         Set<GameUser> playersPlayingAgain = new HashSet<>();
         for(GameUser participant: game.getParticipants()){
-            if(participant.isUserPlayingAgain()){
+            if(participant.isUserPlayingAgain() && !participant.isHasLeft()){
                 playersPlayingAgain.add(participant);
             }
         }
@@ -457,7 +466,7 @@ public class GameService {
 
     private void addParticipantsToNewGame(Game oldGame, Game newGame){
         for(GameUser participant: oldGame.getParticipants()){
-            if(participant.isUserPlayingAgain()){
+            if(participant.isUserPlayingAgain()&&!participant.isHasLeft()){
                 GameUser gameUser = new GameUser();
                 gameUser.setUserPlayingAgain(false);
                 gameUser.setUserId(participant.getUserId());
@@ -476,7 +485,7 @@ public class GameService {
     private String determineNewHost(Game game){
         Long newHostId = null;
         for(GameUser participant: game.getParticipants()){
-            if(participant.isUserPlayingAgain()){
+            if(participant.isUserPlayingAgain() && !participant.isHasLeft()){
                 newHostId = participant.getUserId();
                 if(participant.getUserId().equals(game.getLobbyCreator().getUserId())){
                     return newHostId.toString();

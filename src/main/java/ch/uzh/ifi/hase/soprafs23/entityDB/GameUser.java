@@ -28,7 +28,7 @@ public class GameUser implements Serializable {
 
     private GameState userPlayingState;
 
-    private boolean isHasLeft;
+    private boolean hasLeft;
 
     private boolean userPlayingAgain;
 
@@ -45,11 +45,11 @@ public class GameUser implements Serializable {
     }
 
     public boolean isHasLeft() {
-        return isHasLeft;
+        return hasLeft;
     }
 
     public void setHasLeft(boolean hasLeft) {
-        isHasLeft = hasLeft;
+        this.hasLeft = hasLeft;
     }
 
     public boolean getHasAlreadyGuessed() {

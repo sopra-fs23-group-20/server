@@ -136,9 +136,8 @@ public class GameController {
     @PostMapping("/games/{gameId}/leave")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public GameGetDTO leaveGame(@PathVariable Long gameId, @RequestBody String userId) {
-        Game game = gameService.leaveGame(gameId, Long.parseLong(userId));
-        return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
+    public void leaveGame(@PathVariable Long gameId, @RequestBody String userId) {
+        gameService.leaveGame(gameId, Long.parseLong(userId));
     }
 
     @PostMapping("/games/{gameId}/guesses")
