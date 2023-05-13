@@ -346,6 +346,8 @@ https://github.com/sopra-fs23-group-20/client/issues/112 <br />
 https://github.com/sopra-fs23-group-20/server/issues/127 <br />
 https://github.com/sopra-fs23-group-20/server/issues/131 <br />
 
+
+
 #### Description:
 I implemented User Story 17 ("Blitz" mode) https://github.com/sopra-fs23-group-20/server/issues/128 <br />
 I also implemented the "leave Game" feature so players can leave the game at any time. <br />

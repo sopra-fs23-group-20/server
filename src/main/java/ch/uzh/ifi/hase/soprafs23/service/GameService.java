@@ -411,13 +411,15 @@ public class GameService {
         synchronized (lock) {
             Game game = activeGames.get(gameId);
             if (game == null) {
-                throw new RuntimeException("Game not found with gameId: " + gameId);
+                return;
             }
+
             Set<GameUser> participants = game.getParticipants();
             GameUser gameUser = findGameUser(participants, userId);
             if (game.getCurrentState() == GameState.ENDED) {
                 gameUser.setHasLeft(true);
                 boolean everyOneWantsToPlayAgain = true;
+
                 for (GameUser participant : participants) {
                     if (!participant.isUserPlayingAgain() && !participant.isHasLeft()) {
                         everyOneWantsToPlayAgain = false;
@@ -457,10 +459,8 @@ public class GameService {
     }
 
     public void saveGameToDB(Game game) {
-        synchronized (lock) {
-            activeGames.remove(game.getGameId());
-            gameRepository.saveAndFlush(game);
-        }
+        activeGames.remove(game.getGameId());
+        gameRepository.save(game);
     }
 
     public Game addUserToRestart(Long gameId, Long userId){
@@ -493,7 +493,6 @@ public class GameService {
                 stopGame(gameId);
                 saveGameToDB(game);
             }
-
             updateGameState(gameId, WebsocketType.PLAYERUPDATE, participants);
             return game;
         }
@@ -508,17 +507,19 @@ public class GameService {
         }
         if(!playersPlayingAgain.isEmpty()){
             GamePostDTO gamePostDTO = new GamePostDTO();
+            gamePostDTO.setLobbyCreatorUserId(determineNewHost(game));
+            gamePostDTO.setRoundDuration(game.getRoundDuration());
+            gamePostDTO.setNumberOfRounds(game.getNumberOfRounds());
             gamePostDTO.setCategoryStack(game.getCategoryStack());
             gamePostDTO.setSelectedRegions(game.getSelectedRegions());
-            gamePostDTO.setNumberOfRounds(game.getNumberOfRounds());
-            gamePostDTO.setDifficulty(game.getDifficulty());
             gamePostDTO.setOpenLobby(game.getOpenLobby());
-            gamePostDTO.setRoundDuration(game.getRoundDuration());
-            gamePostDTO.setTimeBetweenRounds(game.getTimeBetweenRounds());
-            gamePostDTO.setLobbyCreatorUserId(determineNewHost(game));
+            gamePostDTO.setDifficulty(game.getDifficulty());
             gamePostDTO.setGameMode(game.getGameMode());
+            gamePostDTO.setTimeBetweenRounds(game.getTimeBetweenRounds());
             gamePostDTO.setNumberOfGuesses(game.getNumberOfGuesses());
+
             Game newGame = createGame(gamePostDTO);
+            newGame.setLobbyCreator(findGameUser(playersPlayingAgain, Long.parseLong(gamePostDTO.getLobbyCreatorUserId())));
             newGame.setParticipants(new HashSet<GameUser>());
             addParticipantsToNewGame(game, newGame);
             game.setNextGameId(newGame.getGameId());
@@ -527,19 +528,12 @@ public class GameService {
     }
 
     private void addParticipantsToNewGame(Game oldGame, Game newGame){
+        Set<GameUser> newParticipants = newGame.getParticipants();
         for(GameUser participant: oldGame.getParticipants()){
             if(participant.isUserPlayingAgain()&&!participant.isHasLeft()){
-                GameUser gameUser = new GameUser();
-                gameUser.setUserPlayingAgain(false);
-                gameUser.setGuessedCorrectly(false);
-                gameUser.setUserId(participant.getUserId());
-                gameUser.setGamePoints(0L);
-                gameUser.setGame(newGame);
-                gameUser.setUsername(participant.getUsername());
-                Set<GameUser> newParticipants = newGame.getParticipants();
+                User user = userRepository.findByUserId(participant.getUserId());
+                GameUser gameUser = GameUser.transformUserToGameUser(user, newGame);
                 newParticipants.add(gameUser);
-                newGame.setParticipants(newParticipants);
-                newGame.setNumberOfGuesses(oldGame.getNumberOfGuesses());
             }
         }
     }

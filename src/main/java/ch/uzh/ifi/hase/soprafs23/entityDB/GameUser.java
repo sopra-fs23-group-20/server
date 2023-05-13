@@ -112,13 +112,16 @@ public class GameUser implements Serializable {
         this.userId = userId;
     }
 
+
     public static GameUser transformUserToGameUser(User user, Game game) {
         GameUser gameUser = new GameUser();
         gameUser.setGame(game);
         gameUser.setUserId(user.getUserId());
-        gameUser.setUsername(user.getUsername());
         gameUser.setToken(user.getToken());
+        gameUser.setUsername(user.getUsername());
         gameUser.setGamePoints(0L);
+        gameUser.setHasLeft(false);
+        gameUser.setUserPlayingAgain(false);
         gameUser.setNumberOfGuessesLeft(game.getNumberOfGuesses());
         gameUser.setGuessedCorrectly(false);
         return gameUser;
