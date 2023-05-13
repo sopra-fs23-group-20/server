@@ -10,6 +10,7 @@ public class EndedStateClass implements GameStateClass{
         if(game.getRemainingTime()==0){
             gameService.createRestartedGame(game);
             gameService.stopGame(game.getGameId());
+            gameService.saveGameToDB(game);
             return game;
         }
         game.setRemainingTime(game.getRemainingTime()-1);
