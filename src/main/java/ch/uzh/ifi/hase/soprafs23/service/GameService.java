@@ -460,9 +460,8 @@ public class GameService {
 
     public void saveGameToDB(Game game) {
         activeGames.remove(game.getGameId());
-        for(GameUser gameUser : game.getParticipants()) {
-            gameUserRepository.save(gameUser);
-        }
+        game.setLobbyCreator(null);
+        game.setCategoryStack(null);
         gameRepository.save(game);
     }
 
