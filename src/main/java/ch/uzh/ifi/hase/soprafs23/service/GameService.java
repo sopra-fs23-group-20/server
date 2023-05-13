@@ -7,10 +7,7 @@ import ch.uzh.ifi.hase.soprafs23.entityDB.Category;
 import ch.uzh.ifi.hase.soprafs23.entityOther.Guess;
 import ch.uzh.ifi.hase.soprafs23.entityOther.Location;
 import ch.uzh.ifi.hase.soprafs23.entityOther.WebsocketPackage;
-import ch.uzh.ifi.hase.soprafs23.repository.CountryRepository;
-import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
-import ch.uzh.ifi.hase.soprafs23.repository.GameUserRepository;
-import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.*;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import org.slf4j.Logger;
@@ -45,16 +42,19 @@ public class GameService {
     private final CountryRepository countryRepository;
     private final UserRepository userRepository;
     private final GameUserRepository gameUserRepository;
+    private final CategoryStackRepository categoryStackRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final Object lock = new Object();
 
     @Autowired
-    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, @Qualifier("countryRepository") CountryRepository countryRepository, @Qualifier("userRepository") UserRepository userRepository, CountryService countryService, SimpMessagingTemplate messagingTemplate, @Qualifier("gameUserRepository") GameUserRepository gameUserRepository) {
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, @Qualifier("countryRepository") CountryRepository countryRepository, @Qualifier("userRepository") UserRepository userRepository, CountryService countryService, SimpMessagingTemplate messagingTemplate, @Qualifier("gameUserRepository") GameUserRepository gameUserRepository, @Qualifier("categoryStackRepository")CategoryStackRepository categoryStackRepository) {
         this.gameRepository = gameRepository;
         this.countryService = countryService;
         this.countryRepository = countryRepository;
         this.userRepository = userRepository;
         this.messagingTemplate = messagingTemplate;
         this.gameUserRepository = gameUserRepository;
+        this.categoryStackRepository = categoryStackRepository;
     }
     public Game createGame(GamePostDTO gamePostDTO) {
 
@@ -101,98 +101,108 @@ public class GameService {
     }
 
     public Game joinGame(Long gameId, Long userId) {
-        Game game = gameRepository.findByGameId(gameId);
-        User user = userRepository.findByUserId(userId);
-        GameUser gameUser = GameUser.transformUserToGameUser(user, game);
+        synchronized (lock) {
+            Game game = gameRepository.findByGameId(gameId);
+            User user = userRepository.findByUserId(userId);
+            GameUser gameUser = GameUser.transformUserToGameUser(user, game);
 
-        Set<GameUser> participants = new HashSet<>(game.getParticipants());
+            Set<GameUser> participants = new HashSet<>(game.getParticipants());
 
-        for(GameUser gameUser1 : participants){
-            if(gameUser1.getUserId().equals(userId)){
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already in game");
+            for (GameUser gameUser1 : participants) {
+                if (gameUser1.getUserId().equals(userId)) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already in game");
+                }
             }
-        }
 
-        participants.add(gameUser);
-        game.setParticipants(participants);
-        updateGameState(game.getGameId(), WebsocketType.PLAYERUPDATE, game.getParticipants());
-        gameRepository.saveAndFlush(game);
-        return game;
+            participants.add(gameUser);
+            game.setParticipants(participants);
+            updateGameState(game.getGameId(), WebsocketType.PLAYERUPDATE, game.getParticipants());
+            gameRepository.saveAndFlush(game);
+            return game;
+        }
     }
 
     public Game startGame(Long gameId) {
-        Game game = gameRepository.findByGameId(gameId);
-        if (game == null) {
-            throw new RuntimeException("Game not found");
-        }
+        synchronized (lock) {
+            Game game = gameRepository.findByGameId(gameId);
+            if (game == null) {
+                throw new RuntimeException("Game not found");
+            }
 
-        game.setCurrentState(SETUP);
-        GameState currentGameState = game.getCurrentState();
-        GameStateClass currentGameStateClass = Game.getGameStateClass(currentGameState);
-        currentGameStateClass.updateGameEverySecond(game, this);
-        gameRepository.saveAndFlush(game);
-        //Initialize the gameUpdating thread
-        String topic = "/topic/game/" + gameId;
-        GameUpdater gameUpdater = new GameUpdater(gameId, topic);
-        ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(gameUpdater, 0, 1, TimeUnit.SECONDS);
-        scheduledFutures.put(gameId, scheduledFuture);
-        return game;
+            game.setCurrentState(SETUP);
+            GameState currentGameState = game.getCurrentState();
+            GameStateClass currentGameStateClass = Game.getGameStateClass(currentGameState);
+            currentGameStateClass.updateGameEverySecond(game, this);
+            gameRepository.saveAndFlush(game);
+            //Initialize the gameUpdating thread
+            String topic = "/topic/game/" + gameId;
+            GameUpdater gameUpdater = new GameUpdater(gameId, topic);
+            ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(gameUpdater, 0, 1, TimeUnit.SECONDS);
+            scheduledFutures.put(gameId, scheduledFuture);
+            return game;
+        }
     }
 
 
     public String submitGuess(Long gameId, Guess guess) {
-        try {
-            Game game = gameRepository.findByGameId(gameId);
-            Set<GameUser> gameUsers = new HashSet<>(game.getParticipants());
-            GameUser gameUser = findGameUser(gameUsers, guess.getUserId());
-            if(gameUser.getNumberOfGuessesLeft() <= 0){
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You have no guesses left");
-            }
-
-            gameUser.setNumberOfGuessesLeft(gameUser.getNumberOfGuessesLeft()-1);
-
-            String returnString = "";
-            if (countryRepository.findNameByCountryId(game.getCurrentCountryId()).equals(guess.getGuess())) {
-                gameUser.setGamePoints(game.getRemainingRoundPoints() + gameUser.getGamePoints());
-                returnString = "Your guess was right you get " + game.getRemainingRoundPoints() + " points";
-            }
-            else {
-                returnString = "Your guess was wrong you get 0 points";
-            }
-            boolean haveAllGuessed = true;
-            Set<GameUser> participants = game.getParticipants();
-            for(GameUser participant: participants){
-                if (participant.getNumberOfGuessesLeft() > 0) {
-                    haveAllGuessed = false;
-                    break;
+        synchronized (lock) {
+            try {
+                Game game = gameRepository.findByGameId(gameId);
+                Set<GameUser> gameUsers = new HashSet<>(game.getParticipants());
+                GameUser gameUser = findGameUser(gameUsers, guess.getUserId());
+                if (gameUser.getNumberOfGuessesLeft() <= 0 || gameUser.isGuessedCorrectly()){
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot submit a Guess");
                 }
-            }
-            if(haveAllGuessed){
-                if(game.getRemainingRounds()==0){
-                    game.setRemainingTime(30L);
-                    game.setCurrentState(GameState.ENDED);
-                }else{
-                    game.setRemainingTime(game.getTimeBetweenRounds());
-                    game.setCurrentState(GameState.SCOREBOARD);
+
+                gameUser.setNumberOfGuessesLeft(gameUser.getNumberOfGuessesLeft() - 1);
+
+                String returnString = "";
+                if (countryRepository.findNameByCountryId(game.getCurrentCountryId()).equals(guess.getGuess())) {
+                    gameUser.setGamePoints(game.getRemainingRoundPoints() + gameUser.getGamePoints());
+                    gameUser.setGuessedCorrectly(true);
+                    returnString = "Your guess was right you get " + game.getRemainingRoundPoints() + " points";
                 }
-                updateGameState(game.getGameId(), WebsocketType.GAMEUPDATE, DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
+                else {
+                    returnString = "Your guess was wrong";
+                }
+                boolean haveAllGuessed = true;
+                Set<GameUser> participants = game.getParticipants();
+                for (GameUser participant : participants) {
+                    if (participant.getNumberOfGuessesLeft() > 0 && !participant.isGuessedCorrectly()) {
+                        haveAllGuessed = false;
+                        break;
+                    }
+                }
+                if (haveAllGuessed) {
+                    if (game.getRemainingRounds() == 0) {
+                        game.setRemainingTime(30L);
+                        game.setCurrentState(GameState.ENDED);
+                    }
+                    else {
+                        game.setRemainingTime(game.getTimeBetweenRounds());
+                        game.setCurrentState(GameState.SCOREBOARD);
+                    }
+                    updateGameState(game.getGameId(), WebsocketType.GAMEUPDATE, DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
+                }
+                game.setParticipants(gameUsers);
+                updateGameState(gameId, WebsocketType.PLAYERUPDATE, game.getParticipants());
+                gameRepository.saveAndFlush(game);
+                return returnString;
             }
-            game.setParticipants(gameUsers);
-            updateGameState(gameId, WebsocketType.PLAYERUPDATE, game.getParticipants());
-            gameRepository.saveAndFlush(game);
-            return returnString;
-        }
-        catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.toString());
+            catch (Exception e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.toString());
+            }
         }
     }
 
     private void updateGameEverySecond(Long gameId) {
-        Game game = gameRepository.findByGameId(gameId);
-        GameState currentGameState = game.getCurrentState();
-        GameStateClass currentGameStateClass = Game.getGameStateClass(currentGameState);
-        currentGameStateClass.updateGameEverySecond(game, this);
-        gameRepository.saveAndFlush(game);
+        synchronized (lock) {
+            Game game = gameRepository.findByGameId(gameId);
+            GameState currentGameState = game.getCurrentState();
+            GameStateClass currentGameStateClass = Game.getGameStateClass(currentGameState);
+            currentGameStateClass.updateGameEverySecond(game, this);
+            gameRepository.saveAndFlush(game);
+        }
     }
 
 
@@ -221,10 +231,12 @@ public class GameService {
     }
 
         public void stopGame(Long gameId) {
-            ScheduledFuture<?> scheduledFuture = scheduledFutures.get(gameId);
-            if (scheduledFuture != null) {
-                scheduledFuture.cancel(false);
-                scheduledFutures.remove(gameId);
+            synchronized (lock) {
+                ScheduledFuture<?> scheduledFuture = scheduledFutures.get(gameId);
+                if (scheduledFuture != null) {
+                    scheduledFuture.cancel(false);
+                    scheduledFutures.remove(gameId);
+                }
             }
         }
 
@@ -382,69 +394,86 @@ public class GameService {
     }
 
     public void leaveGame(Long gameId, Long userId) {
-        Game game = gameRepository.findById(gameId).orElseThrow(() -> new IllegalArgumentException("Game not found"));
-        if (game == null){
-            throw new RuntimeException("Game not found with gameId: " + gameId);
-        }
-        Set<GameUser> participants = game.getParticipants();
-        GameUser gameUser = findGameUser(participants, userId);
-        if(game.getCurrentState() == GameState.ENDED){
-            gameUser.setHasLeft(true);
-        }else{
-            participants.remove(gameUser);
-            if(participants.isEmpty()){
-                stopGame(gameId);
-                game.setLobbyCreator(null);
-                gameUserRepository.delete(gameUser);
-                gameRepository.delete(game);
-                return;
+        synchronized (lock) {
+            Game game = gameRepository.findById(gameId).orElseThrow(() -> new IllegalArgumentException("Game not found"));
+            if (game == null) {
+                throw new RuntimeException("Game not found with gameId: " + gameId);
             }
-            if(game.getLobbyCreator() == gameUser && !participants.isEmpty()){
-                game.setLobbyCreator(participants.iterator().next());
+            Set<GameUser> participants = game.getParticipants();
+            GameUser gameUser = findGameUser(participants, userId);
+            if (game.getCurrentState() == GameState.ENDED) {
+                gameUser.setHasLeft(true);
+                boolean everyOneWantsToPlayAgain = true;
+                for (GameUser participant : participants) {
+                    if (!participant.isUserPlayingAgain() && !participant.isHasLeft()) {
+                        everyOneWantsToPlayAgain = false;
+                    }
+                }
+                if (everyOneWantsToPlayAgain) {
+                    createRestartedGame(game);
+                    stopGame(gameId);
+                }
             }
+            else {
+                participants.remove(gameUser);
+                if (participants.isEmpty()) {
+                    stopGame(gameId);
+                    game.setLobbyCreator(null);
+                    gameUserRepository.delete(gameUser);
+                    categoryStackRepository.delete(game.getCategoryStack());
+                    gameRepository.delete(game);
+                    return;
+                }
+                if (game.getLobbyCreator() == gameUser && !participants.isEmpty()) {
+                    game.setLobbyCreator(participants.iterator().next());
+                }
 
-            gameUserRepository.delete(gameUser);
-            updateGameState(gameId, WebsocketType.PLAYERUPDATE, participants);
+                gameUserRepository.delete(gameUser);
+                updateGameState(gameId, WebsocketType.PLAYERUPDATE, participants);
+            }
+            game.setParticipants(participants);
+            updateGameState(game.getGameId(), WebsocketType.GAMEUPDATE, DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
+            gameRepository.saveAndFlush(game);
         }
-        game.setParticipants(participants);
-        updateGameState(game.getGameId(), WebsocketType.GAMEUPDATE, DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
-        gameRepository.saveAndFlush(game);
     }
 
 
 
 
     public Game addUserToRestart(Long gameId, Long userId){
-        Game game = gameRepository.findByGameId(gameId);
-        if (game == null) {
-            throw new RuntimeException("Game not found with gameId: " + gameId);
-        }
-        Set<GameUser> participants = game.getParticipants();
-        boolean hasBeenAdded = false;
-        for(GameUser participant : participants){
-            if(participant.getUserId().equals(userId)){
-                participant.setUserPlayingAgain(true);
-                hasBeenAdded = true;
+        synchronized (lock) {
+            Game game = gameRepository.findByGameId(gameId);
+            if (game == null) {
+                throw new RuntimeException("Game not found with gameId: " + gameId);
             }
-        }
-        if(!hasBeenAdded){
-            throw new RuntimeException("User not found in game with gameId: " + gameId);
-        }
-        game.setParticipants(participants);
-        gameRepository.saveAndFlush(game);
-
-        boolean everyOneWantsToPlayAgain = true;
-        for(GameUser participant : participants){
-            if(!participant.isUserPlayingAgain() && !participant.isHasLeft()){
-                everyOneWantsToPlayAgain = false;
+            Set<GameUser> participants = game.getParticipants();
+            boolean hasBeenAdded = false;
+            for (GameUser participant : participants) {
+                if (participant.getUserId().equals(userId)) {
+                    participant.setUserPlayingAgain(true);
+                    hasBeenAdded = true;
+                }
             }
-        }
-        if (everyOneWantsToPlayAgain){
-            createRestartedGame(game);
-        }
+            if (!hasBeenAdded) {
+                throw new RuntimeException("User not found in game with gameId: " + gameId);
+            }
+            game.setParticipants(participants);
+            gameRepository.saveAndFlush(game);
 
-        updateGameState(gameId, WebsocketType.PLAYERUPDATE, participants);
-        return game;
+            boolean everyOneWantsToPlayAgain = true;
+            for (GameUser participant : participants) {
+                if (!participant.isUserPlayingAgain() && !participant.isHasLeft()) {
+                    everyOneWantsToPlayAgain = false;
+                }
+            }
+            if (everyOneWantsToPlayAgain) {
+                createRestartedGame(game);
+                stopGame(gameId);
+            }
+
+            updateGameState(gameId, WebsocketType.PLAYERUPDATE, participants);
+            return game;
+        }
     }
 
     public void createRestartedGame(Game game){
@@ -472,7 +501,6 @@ public class GameService {
             game.setNextGameId(newGame.getGameId());
             updateGameState(game.getGameId(), WebsocketType.GAMEUPDATE, DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
         }
-
     }
 
     private void addParticipantsToNewGame(Game oldGame, Game newGame){
@@ -480,6 +508,7 @@ public class GameService {
             if(participant.isUserPlayingAgain()&&!participant.isHasLeft()){
                 GameUser gameUser = new GameUser();
                 gameUser.setUserPlayingAgain(false);
+                gameUser.setGuessedCorrectly(false);
                 gameUser.setUserId(participant.getUserId());
                 gameUser.setGamePoints(0L);
                 gameUser.setGame(newGame);

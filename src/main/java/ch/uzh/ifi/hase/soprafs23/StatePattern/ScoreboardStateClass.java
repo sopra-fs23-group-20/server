@@ -65,6 +65,7 @@ public class ScoreboardStateClass implements GameStateClass{
     private void resetAlreadyGuess(Game game){
         for (GameUser gameUser : game.getParticipants()) {
             gameUser.setNumberOfGuessesLeft(game.getNumberOfGuesses());
+            gameUser.setGuessedCorrectly(false);
         }
     }
 }

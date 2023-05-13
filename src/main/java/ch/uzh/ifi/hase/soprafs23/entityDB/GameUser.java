@@ -29,6 +29,15 @@ public class GameUser implements Serializable {
     private boolean userPlayingAgain;
 
     private Long numberOfGuessesLeft;
+    private boolean guessedCorrectly;
+
+    public boolean isGuessedCorrectly() {
+        return guessedCorrectly;
+    }
+
+    public void setGuessedCorrectly(boolean guessedCorrectly) {
+        this.guessedCorrectly = guessedCorrectly;
+    }
 
     public Long getNumberOfGuessesLeft() {
         return numberOfGuessesLeft;
@@ -111,6 +120,7 @@ public class GameUser implements Serializable {
         gameUser.setToken(user.getToken());
         gameUser.setGamePoints(0L);
         gameUser.setNumberOfGuessesLeft(game.getNumberOfGuesses());
+        gameUser.setGuessedCorrectly(false);
         return gameUser;
     }
 
