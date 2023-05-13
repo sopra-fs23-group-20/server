@@ -142,6 +142,18 @@ public class GameService {
         }
     }
 
+    private boolean checkIfEveryoneGuessed(Game game) {
+        boolean haveAllGuessed = true;
+        Set<GameUser> participants = game.getParticipants();
+        for (GameUser participant : participants) {
+            if (participant.getNumberOfGuessesLeft() > 0 && !participant.isGuessedCorrectly()) {
+                haveAllGuessed = false;
+                break;
+            }
+        }
+        return haveAllGuessed;
+    }
+
 
     public String submitGuess(Long gameId, Guess guess) {
         synchronized (lock) {
@@ -164,15 +176,8 @@ public class GameService {
                 else {
                     returnString = "Your guess was wrong";
                 }
-                boolean haveAllGuessed = true;
-                Set<GameUser> participants = game.getParticipants();
-                for (GameUser participant : participants) {
-                    if (participant.getNumberOfGuessesLeft() > 0 && !participant.isGuessedCorrectly()) {
-                        haveAllGuessed = false;
-                        break;
-                    }
-                }
-                if (haveAllGuessed) {
+
+                if (checkIfEveryoneGuessed(game)) {
                     if (game.getRemainingRounds() == 0) {
                         game.setRemainingTime(30L);
                         game.setCurrentState(GameState.ENDED);
@@ -435,7 +440,16 @@ public class GameService {
                     game.setLobbyCreator(participants.iterator().next());
                 }
 
-                updateGameState(gameId, WebsocketType.PLAYERUPDATE, participants);
+                if (checkIfEveryoneGuessed(game)) {
+                    if (game.getRemainingRounds() == 0) {
+                        game.setRemainingTime(30L);
+                        game.setCurrentState(GameState.ENDED);
+                    }
+                    else {
+                        game.setRemainingTime(game.getTimeBetweenRounds());
+                        game.setCurrentState(GameState.SCOREBOARD);
+                    }
+                }
             }
             game.setParticipants(participants);
             updateGameState(game.getGameId(), WebsocketType.GAMEUPDATE, DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
@@ -448,9 +462,6 @@ public class GameService {
             gameRepository.saveAndFlush(game);
         }
     }
-
-
-
 
     public Game addUserToRestart(Long gameId, Long userId){
         synchronized (lock) {
