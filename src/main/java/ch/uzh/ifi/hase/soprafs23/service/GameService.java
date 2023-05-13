@@ -386,7 +386,6 @@ public class GameService {
         if (game == null){
             throw new RuntimeException("Game not found with gameId: " + gameId);
         }
-        System.out.println("User " + userId + " is leaving game " + gameId);
         Set<GameUser> participants = game.getParticipants();
         GameUser gameUser = findGameUser(participants, userId);
         if(game.getCurrentState() == GameState.ENDED){
