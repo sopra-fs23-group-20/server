@@ -460,6 +460,9 @@ public class GameService {
 
     public void saveGameToDB(Game game) {
         activeGames.remove(game.getGameId());
+        for(GameUser gameUser : game.getParticipants()) {
+            gameUserRepository.save(gameUser);
+        }
         gameRepository.save(game);
     }
 
