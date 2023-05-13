@@ -332,8 +332,10 @@ https://github.com/sopra-fs23-group-20/server/issues/137 <br />
 https://github.com/sopra-fs23-group-20/client/issues/117 <br />
 https://github.com/sopra-fs23-group-20/client/issues/120 <br />
 https://github.com/sopra-fs23-group-20/client/issues/122 <br />
+https://github.com/sopra-fs23-group-20/client/issues/147 <br />
+https://github.com/sopra-fs23-group-20/server/issues/140 <br />
 #### Description:
-I added a first draft of the new game mode "Blitz", I fixed a bug where users could submit guess without entering a country, I fixed a visual bug that occured when only selecting antarctica in the regions section, and I added flashcards with animations to learn countries.
+I added a first draft of the new game mode "Blitz", I fixed a bug where users could submit guess without entering a country, I fixed a visual bug that occured when only selecting antarctica in the regions section, and I added flashcards with animations to learn countries. I also wrote some tests for Game entity and GamePutDTO.
 
 ---
 
