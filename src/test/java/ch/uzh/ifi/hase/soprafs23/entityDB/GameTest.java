@@ -51,6 +51,44 @@ class GameTest {
     }
 
     @Test
+    void testSetCurrentState_noParticipants_throwsIllegalStateException() {
+        GameState gameState = GameState.GUESSING;
+
+        Exception exception = assertThrows(IllegalStateException.class, () -> {
+            game.setCurrentState(gameState);
+        });
+
+        String expectedMessage = "Game has no participants.";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    void testSetCurrentState_withParticipants_doesNotThrowException() {
+        GameState gameState = GameState.GUESSING;
+
+        // Set participants
+        Set<GameUser> gameUsers = new HashSet<>();
+        gameUsers.add(new GameUser());
+        game.setParticipants(gameUsers);
+
+        // This should not throw an exception
+        assertDoesNotThrow(() -> game.setCurrentState(gameState));
+
+        assertEquals(gameState, game.getCurrentState());
+    }
+
+
+    @Test
+    void testNumberOfGuesses() {
+        Long numberOfGuesses = 5L;
+        game.setNumberOfGuesses(numberOfGuesses);
+        assertEquals(numberOfGuesses, game.getNumberOfGuesses());
+    }
+
+
+    @Test
     void testGameState() {
 
         Set<GameUser> users = new HashSet<>();
