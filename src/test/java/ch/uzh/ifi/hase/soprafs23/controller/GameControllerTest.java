@@ -6,7 +6,6 @@ import ch.uzh.ifi.hase.soprafs23.entityDB.GameUser;
 import ch.uzh.ifi.hase.soprafs23.entityOther.Guess;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GuessPostDTO;
-import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +27,8 @@ import java.util.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -92,10 +93,38 @@ public class GameControllerTest {
                 .andExpect(jsonPath("$", hasSize(0)));
     }
 
+    @Test
+    public void getAllGames_gamesFound_gamesReturned() throws Exception {
+        // given
+        List<Game> games = new ArrayList<>();
+        Game game1 = new Game();
+        game1.setGameId(1L);
+        game1.setRoundDuration(2L);
+        games.add(game1);
+        Game game2 = new Game();
+        game2.setGameId(2L);
+        game2.setRoundDuration(2L);
+        games.add(game2);
+
+        given(gameService.getGames()).willReturn(games);
+
+        // when/then -> do the request + validate the result
+        MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/allGames")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        // then
+        mockMvc.perform(getRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].gameId", is(game1.getGameId().intValue())))
+                .andExpect(jsonPath("$[1].gameId", is(game2.getGameId().intValue())));
+    }
+
+
 
 
     @Test
-    public void getAllGames_gamesFound_gamesReturned() throws Exception {
+    public void getGames_gamesFound_gamesReturned() throws Exception {
         // given
         List<Game> games = new ArrayList<>();
         Game game1 = new Game();
@@ -503,6 +532,72 @@ public class GameControllerTest {
         mockMvc.perform(postRequest)
                 .andExpect(status().isCreated())
                 .andExpect(content().string("Your guess was wrong you get 0 points"));
+    }
+
+    @Test
+    public void getQuickjoin_gameFound_gameReturned() throws Exception {
+        // given
+        Game game = new Game();
+        game.setGameId(1L);
+        game.setRoundDuration(2L);
+
+        given(gameService.getQuickGame()).willReturn(game);
+
+        // when/then -> do the request + validate the result
+        MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/bestgameavailable")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        // then
+        mockMvc.perform(getRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.gameId", is(game.getGameId().intValue())));
+    }
+
+    @Test
+    public void leaveGame_validGameIdAndUserId_userLeavesGame() throws Exception {
+        // given
+        Long gameId = 1L;
+        String userId = "2";
+
+        // no return for this service call since method is void
+
+        // when/then -> do the request + validate the result
+        MockHttpServletRequestBuilder postRequest = post("/games/{gameId}/leave", gameId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userId);
+
+        // then
+        mockMvc.perform(postRequest)
+                .andExpect(status().isOk());
+
+        // verify that the service was called
+        verify(gameService, times(1)).leaveGame(gameId, Long.parseLong(userId));
+    }
+
+
+    @Test
+    public void restartGame_validGameIdAndUserId_gameRestarted() throws Exception {
+        // given
+        Long gameId = 1L;
+        String userId = "2";
+        Game game = new Game();
+        game.setRoundDuration(20);
+        game.setGameId(gameId);
+
+        given(gameService.addUserToRestart(gameId, Long.parseLong(userId))).willReturn(game);
+
+        // when/then -> do the request + validate the result
+        MockHttpServletRequestBuilder postRequest = post("/games/{gameId}/restart", gameId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userId);
+
+        // then
+        mockMvc.perform(postRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.gameId", is(game.getGameId().intValue())));
+
+        // verify that the service was called
+        verify(gameService, times(1)).addUserToRestart(gameId, Long.parseLong(userId));
     }
 
 
