@@ -34,7 +34,7 @@ public class GameController {
     @ResponseBody
     public List<GameGetDTO> getAllGames() {
         // fetch all games in the internal representation which are public thus open lobby is TRUE
-        List<Game> games = gameService.getOpenLobbyGames();
+        List<Game> games = gameService.getGames();
         List<GameGetDTO> gameGetDTOs = new ArrayList<>();
 
         // convert each game to the API representation
