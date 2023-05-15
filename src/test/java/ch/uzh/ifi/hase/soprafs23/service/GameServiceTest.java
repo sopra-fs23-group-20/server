@@ -3,9 +3,9 @@ package ch.uzh.ifi.hase.soprafs23.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+
 import ch.uzh.ifi.hase.soprafs23.constant.*;
 import ch.uzh.ifi.hase.soprafs23.entityDB.*;
-import ch.uzh.ifi.hase.soprafs23.entityOther.Guess;
 import ch.uzh.ifi.hase.soprafs23.repository.CountryRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
@@ -14,16 +14,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.server.ResponseStatusException;
 
+import java.lang.reflect.Method;
 import java.util.*;
 
 class GameServiceTest {
@@ -65,93 +62,44 @@ class GameServiceTest {
 
         verify(gameRepository, times(0)).saveAndFlush(any(Game.class));
     }
+/**
+    @Test
+    void testCreateGameSuccess() {
+        GamePostDTO gamePostDTO = new GamePostDTO();
+        gamePostDTO.setLobbyCreatorUserId("1");
+        gamePostDTO.setRoundDuration(120L);
+        gamePostDTO.setNumberOfRounds(5L);
+        gamePostDTO.setOpenLobby(true);
+        gamePostDTO.setSelectedRegions(Arrays.asList(RegionEnum.AFRICA, RegionEnum.EUROPE));
+        gamePostDTO.setDifficulty(Difficulty.EASY);
+        gamePostDTO.setCategoryStack(new CategoryStack());
 
-    /**
-     * @Test void testCreateGameSuccess() {
-     *       GamePostDTO gamePostDTO = new GamePostDTO();
-     *       gamePostDTO.setLobbyCreatorUserId("1");
-     *       gamePostDTO.setRoundDuration(120L);
-     *       gamePostDTO.setNumberOfRounds(5L);
-     *       gamePostDTO.setOpenLobby(true);
-     *       gamePostDTO.setSelectedRegions(Arrays.asList(RegionEnum.AFRICA,
-     *       RegionEnum.EUROPE));
-     *       gamePostDTO.setDifficulty(Difficulty.EASY);
-     *       gamePostDTO.setCategoryStack(new CategoryStack());
-     *       <p>
-     *       User user = new User();
-     *       user.setUserId(1L);
-     *       user.setCreation_date(new Date());
-     *       user.setToken("1234");
-     *       user.setStatus(UserStatus.ONLINE);
-     *       <p>
-     *       <p>
-     *       when(userRepository.findByUserId(1L)).thenReturn(user);
-     *       when(gameRepository.saveAndFlush(any(Game.class))).thenReturn(new
-     *       Game());
-     *       <p>
-     *       Game result = gameService.createGame(gamePostDTO);
-     *       <p>
-     *       assertNotNull(result);
-     *       assertEquals(1L, result.getLobbyCreator().getUserId());
-     *       assertEquals(2, result.getSelectedRegions().size());
-     *       assertEquals(Difficulty.EASY, result.getDifficulty());
-     *       assertTrue(result.getOpenLobby());
-     *       assertNotNull(result.getCategoryStack());
-     *       assertEquals(GameState.SETUP, result.getCurrentState());
-     *       assertEquals(120L, result.getRoundDuration());
-     *       assertEquals(5L, result.getNumberOfRounds());
-     *       verify(gameRepository, times(1)).saveAndFlush(any(Game.class));
-     *       }
-     * @Test void testSubmitGuessSuccess() {
-     *       Game game = new Game();
-     *       game.setGameId(1L);
-     *       game.setRemainingRoundPoints(5L);
-     *       game.setRemainingRounds(2L);
-     *       game.setCurrentState(GameState.SETUP);
-     *       game.setCurrentCountryId(1L);
-     *       game.setSelectedRegions(Arrays.asList(RegionEnum.AFRICA,
-     *       RegionEnum.EUROPE));
-     *       game.setDifficulty(Difficulty.EASY);
-     *       game.setCategoryStack(new CategoryStack());
-     *       game.setCountriesToPlayIds(new HashSet<>(Arrays.asList(1L, 2L, 3L)));
-     *       <p>
-     *       User user = new User();
-     *       user.setUserId(1L);
-     *       user.setUsername("user1");
-     *       user.setCreation_date(new Date());
-     *       user.setToken("1234");
-     *       <p>
-     *       Set<GameUser> participants = new HashSet<>();
-     *       GameUser gameUser = new GameUser();
-     *       gameUser.setGame(game);
-     *       gameUser.setUserId(user.getUserId());
-     *       gameUser.setUsername(user.getUsername());
-     *       gameUser.setToken(user.getToken());
-     *       gameUser.setGamePoints(0L);
-     *       gameUser.setUserPlayingState(GameState.SETUP);
-     *       participants.add(gameUser);
-     *       <p>
-     *       game.setParticipants(participants);
-     *       game.setLobbyCreator(gameUser);
-     *       <p>
-     *       when(gameRepository.findByGameId(1L)).thenReturn(game);
-     *       when(countryRepository.findNameByCountryId(1L)).thenReturn("Switzerland");
-     *       when(gameRepository.saveAndFlush(any(Game.class))).thenReturn(new
-     *       Game());
-     *       <p>
-     *       Guess guess = new Guess();
-     *       guess.setUserId(1L);
-     *       guess.setGuess("Switzerland");
-     *       <p>
-     *       String result = gameService.submitGuess(1L, guess);
-     *       <p>
-     *       assertEquals("Your guess was right you get 5 points", result);
-     *       assertTrue(gameUser.getHasAlreadyGuessed());
-     *       assertEquals(15L, gameUser.getGamePoints());
-     *       assertEquals(GameState.SCOREBOARD, gameUser.getUserPlayingState());
-     *       verify(gameRepository, times(1)).saveAndFlush(any(Game.class));
-     *       }
-     */
+        User user = new User();
+        user.setUserId(1L);
+        user.setCreation_date(new Date());
+        user.setToken("1234");
+        user.setStatus(UserStatus.ONLINE);
+
+        Page<Country> page = new PageImpl<>(Collections.emptyList());
+        when(countryRepository.getCountriesByRegionsAndDifficulty(anyList(), anyLong(), any(Pageable.class))).thenReturn(page);
+
+        when(userRepository.findByUserId(1L)).thenReturn(user);
+        when(gameRepository.saveAndFlush(any(Game.class))).thenReturn(new Game());
+
+        Game result = gameService.createGame(gamePostDTO);
+
+        assertNotNull(result);
+        assertEquals(1L, result.getLobbyCreator().getUserId());
+        assertEquals(2, result.getSelectedRegions().size());
+        assertEquals(Difficulty.EASY, result.getDifficulty());
+        assertTrue(result.getOpenLobby());
+        assertNotNull(result.getCategoryStack());
+        assertEquals(GameState.SETUP, result.getCurrentState());
+        assertEquals(120L, result.getRoundDuration());
+        assertEquals(5L, result.getNumberOfRounds());
+        verify(gameRepository, times(1)).saveAndFlush(any(Game.class));
+    }
+*/
     @Test
     void testCreateGameWithNullLobbyCreatorUser() {
         GamePostDTO gamePostDTO = new GamePostDTO();
@@ -169,6 +117,64 @@ class GameServiceTest {
 
         verify(gameRepository, times(0)).saveAndFlush(any(Game.class));
     }
+
+    @Test
+    void testCheckIfEveryoneGuessed_AllGuessedCorrectly() throws Exception {
+        // Arrange
+        Game game = new Game();
+        Set<GameUser> participants = new HashSet<>();
+
+        GameUser user1 = new GameUser();
+        user1.setNumberOfGuessesLeft(0L);
+        user1.setGuessedCorrectly(true);
+
+        GameUser user2 = new GameUser();
+        user2.setNumberOfGuessesLeft(0L);
+        user2.setGuessedCorrectly(true);
+
+        participants.add(user1);
+        participants.add(user2);
+
+        game.setParticipants(participants);
+
+        // Act
+        Method method = GameService.class.getDeclaredMethod("checkIfEveryoneGuessed", Game.class);
+        method.setAccessible(true);
+        boolean result = (boolean) method.invoke(gameService, game);
+
+        // Assert
+        assertTrue(result);
+    }
+
+    @Test
+    void testCheckIfEveryoneGuessed_NotEveryoneGuessedCorrectly() throws Exception {
+        // Arrange
+        Game game = new Game();
+        Set<GameUser> participants = new HashSet<>();
+
+        GameUser user1 = new GameUser();
+        user1.setNumberOfGuessesLeft(1L);
+        user1.setGuessedCorrectly(false);
+
+        GameUser user2 = new GameUser();
+        user2.setNumberOfGuessesLeft(0L);
+        user2.setGuessedCorrectly(true);
+
+        participants.add(user1);
+        participants.add(user2);
+
+        game.setParticipants(participants);
+
+        // Act
+        Method method = GameService.class.getDeclaredMethod("checkIfEveryoneGuessed", Game.class);
+        method.setAccessible(true);
+        boolean result = (boolean) method.invoke(gameService, game);
+
+        // Assert
+        assertFalse(result);
+    }
+
+
 
     /*
     @Test
