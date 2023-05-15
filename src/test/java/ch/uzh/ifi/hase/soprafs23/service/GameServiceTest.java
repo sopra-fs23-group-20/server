@@ -383,7 +383,22 @@ class GameServiceTest {
         game.setGameId(1L);
         gameService.saveGameToDB(game);
     }
+    @Test
+    void testleaveGame() {
+        //given
+        Long gameId = 1L;
+        Game game = new Game();
+        game.setGameId(gameId);
+        GameUser user = new GameUser();
+        Long UserId = 1L;
+        user.setUserId(UserId);
+        Set<GameUser> participants = new HashSet<GameUser>();
+        participants.add(user);
+        game.setParticipants(participants);
+        //leave game
+        gameService.leaveGame(gameId,UserId);
 
+    }
 
     @Test
     void testStopGameNoScheduledFuture() {
