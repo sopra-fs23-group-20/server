@@ -101,4 +101,12 @@ class CategoryStackTest {
         assertEquals(1, categoryStack.getStackIdx());
     }
 
+    @Test
+    void testSetClosestCountries() {
+        List<String> closestCountries = Arrays.asList("Switzerland", "Germany");
+        categoryStack.setClosestCountries(closestCountries);
+        assertNotNull(categoryStack.getClosestCountries());
+        assertEquals(closestCountries, categoryStack.getClosestCountries());
+    }
+
 }
