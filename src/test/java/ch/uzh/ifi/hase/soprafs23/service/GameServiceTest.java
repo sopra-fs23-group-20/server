@@ -386,6 +386,67 @@ class GameServiceTest {
     }
 
     /*
+Set<Long> countryIds = getCountryIdsByRegionsAndDifficulty(gamePostDTO.getSelectedRegions(), gamePostDTO.getDifficulty());
+    game.setCountriesToPlayIds(countryIds);
+    game.setDifficulty(gamePostDTO.getDifficulty());
+    game.setGameMode(gamePostDTO.getGameMode());
+    game.setTimeBetweenRounds(gamePostDTO.getTimeBetweenRounds());
+    game.setNumberOfGuesses(gamePostDTO.getNumberOfGuesses());
+    game.setCategoryStack(gamePostDTO.getCategoryStack());
+    game.setRoundDuration(gamePostDTO.getRoundDuration());
+    game.setNumberOfRounds(gamePostDTO.getNumberOfRounds());
+    game.setOpenLobby(gamePostDTO.isOpenLobby());
+    Long lobbyCreatorUserId = Long.parseLong(gamePostDTO.getLobbyCreatorUserId());
+ */
+    @Test
+    public void testGetter_getsValue() throws NoSuchFieldException, IllegalAccessException {
+        //given
+        //define values
+        Set<Long> CountriesToPlayIDs = new HashSet<Long>();
+        Difficulty difficulty = Difficulty.HARD;
+        GameMode gameMode = GameMode.BLITZ;
+        Long timeBetweenRounds = 0L;
+        Long numberOfGuesses = 0L;
+        CategoryStack categoryStack = new CategoryStack();
+        Long roundDuration = 0L;
+        Long numberOfRounds = 0L;
+        Boolean openLobby = Boolean.TRUE;
+
+        final Game game = new Game();
+        //set values
+        game.setCountriesToPlayIds(CountriesToPlayIDs);
+        game.setDifficulty(difficulty);
+        game.setGameMode(gameMode);
+        game.setTimeBetweenRounds(timeBetweenRounds);
+        game.setNumberOfGuesses(numberOfGuesses);
+        game.setCategoryStack(categoryStack);
+        game.setRoundDuration(roundDuration);
+        game.setNumberOfRounds(numberOfRounds);
+        game.setOpenLobby(openLobby);
+        //when
+        final Set<Long> getCountriesToPlayIdsResult = game.getCountriesToPlayIds();
+        final Difficulty getDifficulty = game.getDifficulty();
+        final GameMode getGameMode = game.getGameMode();
+        final Long getTimeBetweenRounds = game.getTimeBetweenRounds();
+        final Long getNumberOfGuesses = game.getNumberOfGuesses();
+        final CategoryStack getCategoryStack = game.getCategoryStack();
+        final Long getRoundDuration = game.getRoundDuration();
+        final Long getNumberOfRounds = game.getNumberOfRounds();
+        final Boolean getOpenLobby = game.getOpenLobby();
+
+        //then
+        assertEquals(CountriesToPlayIDs,getCountriesToPlayIdsResult);
+        assertEquals(difficulty,getDifficulty);
+        assertEquals(gameMode,getGameMode);
+        assertEquals(timeBetweenRounds,getTimeBetweenRounds);
+        assertEquals(numberOfGuesses,getNumberOfGuesses);
+        assertEquals(categoryStack,getCategoryStack);
+        assertEquals(roundDuration,getRoundDuration);
+        assertEquals(numberOfRounds,getNumberOfRounds);
+        assertEquals(openLobby,getOpenLobby);
+
+    }
+    /*
     @Test
     void testGetCountryIdsByRegionsAndDifficultyNoCountries() {
         List<RegionEnum> regions = new ArrayList<>();
