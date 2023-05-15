@@ -347,6 +347,10 @@ https://github.com/sopra-fs23-group-20/client/issues/112 <br />
 https://github.com/sopra-fs23-group-20/server/issues/127 <br />
 https://github.com/sopra-fs23-group-20/server/issues/131 <br />
 https://github.com/sopra-fs23-group-20/server/issues/139 <br />
+#### Description:
+I implemented User Story 17 ("Blitz" mode) https://github.com/sopra-fs23-group-20/server/issues/128 <br />
+I also implemented the "leave Game" feature so players can leave the game at any time. <br />
+And I changed the way the game is saved. Now only at the end of the game it is saved to the DB, otherwise it is saved in a synchronized hashmap. <br />
 
 ---
 
@@ -357,16 +361,6 @@ https://github.com/sopra-fs23-group-20/client/issues/125 <br />
 https://github.com/sopra-fs23-group-20/client/issues/128 <br />
 #### Description:
 Created a drap and drop area for the availibale hints to make their order customizable when creating a game. I updated the final game page when the game is over with a custom button and improved styling to reduze the page size. Also created a cutom spinner to have a better indication when the application is stil waiting for data. 
-
-
-
-
-
-
-#### Description:
-I implemented User Story 17 ("Blitz" mode) https://github.com/sopra-fs23-group-20/server/issues/128 <br />
-I also implemented the "leave Game" feature so players can leave the game at any time. <br />
-And I changed the way the game is saved. Now only at the end of the game it is saved to the DB, otherwise it is saved in a synchronized hashmap. <br />
 
 ---
 
