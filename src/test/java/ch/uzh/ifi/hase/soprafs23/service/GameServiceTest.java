@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 
 import ch.uzh.ifi.hase.soprafs23.constant.*;
 import ch.uzh.ifi.hase.soprafs23.entityDB.*;
+import ch.uzh.ifi.hase.soprafs23.entityOther.Location;
 import ch.uzh.ifi.hase.soprafs23.repository.CountryRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
@@ -495,8 +496,115 @@ Set<Long> countryIds = getCountryIdsByRegionsAndDifficulty(gamePostDTO.getSelect
         assertTrue(result);
     }
 
+    @Test
+    void testDetermineNewHostSameHost(){
+        Game game = new Game();
+        GameUser host = new GameUser();
+        host.setUserId(1L);
+        host.setHasLeft(false);
+        host.setUserPlayingAgain(true);
+        game.setLobbyCreator(host);
+        Set<GameUser> participants = new HashSet<>();
+        GameUser participant2 = new GameUser();
+        GameUser participant3 = new GameUser();
+        participants.add(host);
+        participant2.setUserId(2L);
+        participant2.setHasLeft(false);
+        participant2.setUserPlayingAgain(true);
+        participant3.setUserId(3L);
+        participant3.setHasLeft(true);
+        participant3.setUserPlayingAgain(false);
+        participants.add(participant2);
+        participants.add(participant3);
+        game.setParticipants(participants);
+        String newHostId = gameService.determineNewHost(game);
+        assertEquals("1", newHostId);
+    }
+
+    @Test
+    void testDetermineNewHostNewHost(){
+        Game game = new Game();
+        GameUser host = new GameUser();
+        host.setUserId(1L);
+        host.setHasLeft(true);
+        host.setUserPlayingAgain(false);
+        game.setLobbyCreator(host);
+        Set<GameUser> participants = new HashSet<>();
+        GameUser participant2 = new GameUser();
+        GameUser participant3 = new GameUser();
+        participant2.setUserId(2L);
+        participant2.setHasLeft(false);
+        participant2.setUserPlayingAgain(true);
+        participant3.setUserId(3L);
+        participant3.setHasLeft(true);
+        participant3.setUserPlayingAgain(false);
+        participants.add(participant2);
+        participants.add(participant3);
+        game.setParticipants(participants);
+        String newHostId = gameService.determineNewHost(game);
+        assertNotEquals("1", newHostId);
+    }
 
 
+    @Test
+    void testCalculateClosestCountries_NonEmptyMap() {
+        Map<Long, Location>  countryIdLocationMap = new HashMap<>();
+
+        countryIdLocationMap.put(1L, new Location(51.5074, -0.1278));
+        countryIdLocationMap.put(2L, new Location(48.8566, 2.3522));
+        countryIdLocationMap.put(3L, new Location(40.7128, -74.0060));
+        countryIdLocationMap.put(4L, new Location(35.6895, 139.6917));
+        countryIdLocationMap.put(5L, new Location(-33.8688, 151.2093));
+        countryIdLocationMap.put(6L, new Location(52.5200, 13.4050));
+        countryIdLocationMap.put(7L, new Location(55.7558, 37.6173));
+        List<Long> closestCountries = gameService.calculateClosestCountries(1L, countryIdLocationMap);
+        assertNotNull(closestCountries);
+        assertEquals(6, closestCountries.size());
+        assertEquals(closestCountries.contains(1L), true);
+        assertEquals(closestCountries.contains(2L), true);
+        assertEquals(closestCountries.contains(3L), true);
+        assertEquals(closestCountries.contains(4L), true);
+        assertEquals(closestCountries.contains(6L), true);
+        assertEquals(closestCountries.contains(7L), true);
+    }
+
+    @Test
+    void testCalculateClosestCountries_EmptyMap() {
+        Map<Long, Location>  countryIdLocationMap = new HashMap<>();
+
+        countryIdLocationMap.put(1L, new Location(51.5074, -0.1278));
+        countryIdLocationMap.put(2L, new Location(48.8566, 2.3522));
+        countryIdLocationMap.put(3L, new Location(40.7128, -74.0060));
+        countryIdLocationMap.put(4L, new Location(35.6895, 139.6917));
+        countryIdLocationMap.put(5L, new Location(-33.8688, 151.2093));
+        countryIdLocationMap.put(6L, new Location(52.5200, 13.4050));
+        countryIdLocationMap.put(7L, new Location(55.7558, 37.6173));
+        Map<Long, Location> emptyMap = new HashMap<>();
+        List<Long> closestCountries = gameService.calculateClosestCountries(1L, emptyMap);
+        assertNotNull(closestCountries);
+        assertEquals(0, closestCountries.size());
+    }
+
+
+    @Test
+    void testCalculateClosestCountries_SingleCountry() {
+        Map<Long, Location>  countryIdLocationMap = new HashMap<>();
+
+        countryIdLocationMap.put(1L, new Location(51.5074, -0.1278));
+        countryIdLocationMap.put(2L, new Location(48.8566, 2.3522));
+        countryIdLocationMap.put(3L, new Location(40.7128, -74.0060));
+        countryIdLocationMap.put(4L, new Location(35.6895, 139.6917));
+        countryIdLocationMap.put(5L, new Location(-33.8688, 151.2093));
+        countryIdLocationMap.put(6L, new Location(52.5200, 13.4050));
+        countryIdLocationMap.put(7L, new Location(55.7558, 37.6173));
+        Map<Long, Location> singleCountryMap = new HashMap<>();
+        singleCountryMap.put(1L, new Location(51.5074, -0.1278));
+
+        List<Long> closestCountries = gameService.calculateClosestCountries(1L, singleCountryMap);
+        assertNotNull(closestCountries);
+        assertEquals(1, closestCountries.size());
+        assertEquals(List.of(1L), closestCountries);
+    }
 
 
 

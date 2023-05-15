@@ -17,9 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class UserServiceTest {
 
@@ -597,5 +595,54 @@ public class UserServiceTest {
         assertThrows(ResponseStatusException.class, () ->
                 userService.updateUser(99L, existingUser.getToken(), updatedUser)
         );
+    }
+
+    @Test
+    public void updateUser_UserNotFound_ThrowsException() {
+        // Given
+        Long userId = 1L;
+        String authHeader = "token";
+        User userInput = new User();
+
+        // When
+        when(userRepository.findByUserId(userId)).thenReturn(null);
+
+        // Then
+        assertThrows(ResponseStatusException.class, () -> userService.updateUser(userId, authHeader, userInput));
+    }
+
+    @Test
+    public void updateUser_UnauthorizedUser_ThrowsException() {
+        // Given
+        Long userId = 1L;
+        String authHeader = "token";
+        User userInput = new User();
+        User originalUser = new User();
+        originalUser.setToken("differentToken");
+
+        // When
+        when(userRepository.findByUserId(userId)).thenReturn(originalUser);
+
+        // Then
+        assertThrows(ResponseStatusException.class, () -> userService.updateUser(userId, authHeader, userInput));
+    }
+
+    @Test
+    public void updateUser_UsernameExists_ThrowsException() {
+        // Given
+        Long userId = 1L;
+        String authHeader = "token";
+        User userInput = new User();
+        userInput.setUsername("username");
+        User originalUser = new User();
+        originalUser.setToken(authHeader);
+        originalUser.setUsername("originalUsername");
+
+        // When
+        when(userRepository.findByUserId(userId)).thenReturn(originalUser);
+        when(userRepository.findByUsername(userInput.getUsername())).thenReturn(new User());
+
+        // Then
+        assertThrows(ResponseStatusException.class, () -> userService.updateUser(userId, authHeader, userInput));
     }
 }
