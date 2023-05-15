@@ -359,8 +359,10 @@ https://github.com/sopra-fs23-group-20/client/issues/123 <br />
 https://github.com/sopra-fs23-group-20/client/issues/124 <br />
 https://github.com/sopra-fs23-group-20/client/issues/125 <br />
 https://github.com/sopra-fs23-group-20/client/issues/128 <br />
+https://github.com/sopra-fs23-group-20/server/issues/141 <br />
+
 #### Description:
-Created a drap and drop area for the availibale hints to make their order customizable when creating a game. I updated the final game page when the game is over with a custom button and improved styling to reduze the page size. Also created a cutom spinner to have a better indication when the application is stil waiting for data. 
+Created a drap and drop area for the availibale hints to make their order customizable when creating a game. I updated the final game page when the game is over with a custom button and improved styling to reduze the page size. Also created a cutom spinner to have a better indication when the application is stil waiting for data. Also added a bunch of tests.
 
 ---
 
