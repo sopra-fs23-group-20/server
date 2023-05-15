@@ -376,6 +376,12 @@ class GameServiceTest {
 
         assertThrows(RuntimeException.class, () -> gameService.startGame(gameId));
     }
+    @Test
+    void testSaveGame() {
+        Game game = new Game();
+        game.setGameId(1L);
+        gameService.saveGameToDB(game);
+    }
 
 
     @Test
