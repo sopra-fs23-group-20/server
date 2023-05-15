@@ -52,7 +52,6 @@ class GameUserTest {
     }
 
 
-
     @Test
     void testGamePoints() {
         gameUser.setGamePoints(10L);
@@ -60,6 +59,18 @@ class GameUserTest {
         assertEquals(10L, gameUser.getGamePoints());
     }
 
+    @Test
+    void testResetScore() {
+        // First, set some points for the game
+        gameUser.setGamePoints(10L);
+        assertEquals(10L, gameUser.getGamePoints());
+
+        // Then reset the score
+        gameUser.resetScore();
+
+        // Now, the points should be 0
+        assertEquals(0L, gameUser.getGamePoints());
+    }
 
 
     @Test
