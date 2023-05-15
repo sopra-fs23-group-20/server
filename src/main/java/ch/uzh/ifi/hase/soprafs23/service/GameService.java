@@ -28,7 +28,6 @@ import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 import static ch.uzh.ifi.hase.soprafs23.constant.GameState.SETUP;
-import static java.lang.Boolean.TRUE;
 
 @Service
 @Transactional
@@ -255,16 +254,11 @@ public class GameService {
             if (game.getCurrentState().equals(SETUP))
             {
                 JoinableGames.add(game);
-                log.debug("Game equal setup", game);
             }
             else
             {
-                log.debug("Game not equal setup", game);
-
-               // OpenGames.remove(game);
             }
         }
-        //return this.gameRepository.findByCurrentStateIs(SETUP);
 
         return JoinableGames;
     }
