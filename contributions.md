@@ -303,7 +303,7 @@ https://github.com/sopra-fs23-group-20/server/issues/131 Select the 5 closest (d
 ### Louis
 https://github.com/sopra-fs23-group-20/client/issues/105 <br />
 https://github.com/sopra-fs23-group-20/client/issues/115 <br />
-https://github.com/sopra-fs23-group-20/client/issues/135
+https://github.com/sopra-fs23-group-20/client/issues/135 =>1 task for next week
 #### Description:
 implemented quickjoin, might have to work on the alert (already started at the 6 May) <br />
 Adapted rules and quick tutorial to mobile <br />
