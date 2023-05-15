@@ -58,44 +58,34 @@ public class GameService {
         this.categoryStackRepository = categoryStackRepository;
     }
     public Game createGame(GamePostDTO gamePostDTO) {
-
         Game game = new Game();
+
+        game.setGameId(generateGameID());
+
+        game.setSelectedRegions(gamePostDTO.getSelectedRegions());
+        Set<Long> countryIds = getCountryIdsByRegionsAndDifficulty(gamePostDTO.getSelectedRegions(), gamePostDTO.getDifficulty());
+        game.setCountriesToPlayIds(countryIds);
+        game.setDifficulty(gamePostDTO.getDifficulty());
+        game.setGameMode(gamePostDTO.getGameMode());
+        game.setTimeBetweenRounds(gamePostDTO.getTimeBetweenRounds());
+        game.setNumberOfGuesses(gamePostDTO.getNumberOfGuesses());
+        game.setCategoryStack(gamePostDTO.getCategoryStack());
+        game.setRoundDuration(gamePostDTO.getRoundDuration());
+        game.setNumberOfRounds(gamePostDTO.getNumberOfRounds());
+        game.setOpenLobby(gamePostDTO.isOpenLobby());
 
         Long lobbyCreatorUserId = Long.parseLong(gamePostDTO.getLobbyCreatorUserId());
         User lobbyCreatorUser = userRepository.findByUserId(lobbyCreatorUserId);
+        if(lobbyCreatorUser == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found");
+        }
         GameUser lobbyCreator = GameUser.transformUserToGameUser(lobbyCreatorUser, game);
-
-        //Set GameID which is now generated randomly
-        game.setGameId(generateGameID());
-
-        //Set participants
+        game.setLobbyCreator(lobbyCreator);
         Set<GameUser> gameUsers = new HashSet<>();
         gameUsers.add(lobbyCreator);
         game.setParticipants(gameUsers);
 
-        List<RegionEnum> selectedRegions = gamePostDTO.getSelectedRegions();
-        game.setSelectedRegions(selectedRegions);
-
-        Set<Long> countryIds = getCountryIdsByRegionsAndDifficulty(gamePostDTO.getSelectedRegions(), gamePostDTO.getDifficulty());
-        game.setCountriesToPlayIds(countryIds);
-       game.setLobbyCreator(lobbyCreator);
-       game.setDifficulty(gamePostDTO.getDifficulty());
-       game.setGameMode(gamePostDTO.getGameMode());
-       game.setTimeBetweenRounds(gamePostDTO.getTimeBetweenRounds());
-       game.setNumberOfGuesses(gamePostDTO.getNumberOfGuesses());
-
-        //Set SETUP State
         game.setCurrentState(SETUP);
-
-        //Set Category Stack
-        game.setCategoryStack(gamePostDTO.getCategoryStack());
-
-        //Set game round duration and number of rounds
-        game.setRoundDuration(gamePostDTO.getRoundDuration());
-        game.setNumberOfRounds(gamePostDTO.getNumberOfRounds());
-
-        game.setOpenLobby(gamePostDTO.isOpenLobby());
-
         activeGames.put(game.getGameId(), game);
         updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
         return game;
@@ -107,7 +97,7 @@ public class GameService {
             User user = userRepository.findByUserId(userId);
             GameUser gameUser = GameUser.transformUserToGameUser(user, game);
 
-            Set<GameUser> participants = new HashSet<>(game.getParticipants());
+            Set<GameUser> participants = game.getParticipants();
 
             for (GameUser gameUser1 : participants) {
                 if (gameUser1.getUserId().equals(userId)) {
@@ -116,7 +106,6 @@ public class GameService {
             }
 
             participants.add(gameUser);
-            game.setParticipants(participants);
             updateGameState(game.getGameId(), WebsocketType.PLAYERUPDATE, game.getParticipants());
             return game;
         }
