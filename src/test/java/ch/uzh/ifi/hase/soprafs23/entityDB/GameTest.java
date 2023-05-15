@@ -111,9 +111,9 @@ class GameTest {
 
     @Test
     void testRoundDuration () {
-        game.setRoundDuration(60);
+        game.setRoundDuration(60L);
         assertNotNull(game.getRoundDuration());
-        assertEquals(60, game.getRoundDuration());
+        assertEquals(60L, game.getRoundDuration());
     }
 
     @Test
