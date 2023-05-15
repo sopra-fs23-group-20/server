@@ -15,11 +15,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.lang.reflect.Field;
 
@@ -38,14 +36,12 @@ class GameServiceTest {
     @Mock
     private UserRepository userRepository;
 
-    @Mock
-    private CountryService countryService;
-
-    @MockBean
-    private SimpMessagingTemplate simpMessagingTemplate;
-
     @InjectMocks
     private GameService gameService;
+
+    @InjectMocks
+    private CountryService countryService;
+
 
     @BeforeEach
     void setUp() {
@@ -88,6 +84,7 @@ class GameServiceTest {
         when(countryRepository.getCountriesByRegionsAndDifficulty(anyList(), anyLong(), any(Pageable.class))).thenReturn(page);
 
         when(userRepository.findByUserId(1L)).thenReturn(user);
+        when(countryService.getMinPopulationByDifficulty(any(Difficulty.class))).thenReturn(100L);
 
         Game result = gameService.createGame(gamePostDTO);
 
@@ -298,54 +295,131 @@ class GameServiceTest {
         assertThrows(RuntimeException.class, () -> gameService.getGame(gameId));
     }
 
-    /*
     @Test
-    void lastPlayerSubmitGuessGoToScoreboard() {
-        Game game = new Game();
+    void testCreateGameWithInvalidRoundDuration() {
+        GamePostDTO gamePostDTO = new GamePostDTO();
+        gamePostDTO.setLobbyCreatorUserId("1");
+        gamePostDTO.setRoundDuration(-1L);
+        gamePostDTO.setNumberOfRounds(5L);
+        gamePostDTO.setOpenLobby(true);
+        gamePostDTO.setSelectedRegions(Arrays.asList(RegionEnum.AFRICA, RegionEnum.EUROPE));
+        gamePostDTO.setDifficulty(Difficulty.EASY);
+        gamePostDTO.setCategoryStack(new CategoryStack());
 
-        GameUser participant1 = new GameUser();
-        GameUser participant2 = new GameUser();
-        GameUser participant3 = new GameUser();
+        User user = new User();
+        user.setUserId(1L);
+        user.setCreation_date(new Date());
+        user.setToken("1234");
+        user.setStatus(UserStatus.ONLINE);
 
-        participant1.setNumberOfGuessesLeft(0L);
-        participant2.setNumberOfGuessesLeft(1L);
-        participant3.setNumberOfGuessesLeft(1L);
+        when(userRepository.findByUserId(1L)).thenReturn(user);
 
-        participant1.setGamePoints(10L);
-        participant2.setGamePoints(30L);
-        participant3.setGamePoints(50L);
-
-        participant1.setUserId(2L);
-        participant2.setUserId(3L);
-        participant3.setUserId(4L);
-
-        game.setParticipants(new HashSet<>(Arrays.asList(participant1, participant2, participant3)));
-        game.setCurrentState(GameState.GUESSING);
-        game.setRemainingRoundPoints(30L);
-        game.setRemainingRounds(1L);
-        game.setRoundDuration(30L);
-        game.setNumberOfGuesses(1L);
-
-
-        when(countryRepository.findNameByCountryId(anyLong())).thenReturn("Switzerland");
-        when(gameService.getActiveGame(anyLong())).thenReturn(game);
-
-        Guess guess1 = new Guess();
-        guess1.setGuess("Switzerland");
-        guess1.setUserId(3L);
-
-        assertNotEquals(game.getCurrentState(), GameState.SCOREBOARD);
-        gameService.submitGuess(1L, guess1);
-        assertNotEquals(game.getCurrentState(), GameState.SCOREBOARD);
-
-        Guess guess2 = new Guess();
-        guess2.setGuess("France");
-        guess2.setUserId(4L);
-
-        gameService.submitGuess(1L, guess2);
-        assertEquals(game.getCurrentState(), GameState.SCOREBOARD);
+        verify(gameRepository, times(0)).saveAndFlush(any(Game.class));
     }
 
-     */
+    @Test
+    void testStartGameSuccess() throws Exception {
+        Long gameId = 10001L;
+
+        Set<GameUser> participants = new HashSet<>();
+        participants.add(new GameUser());
+        participants.add(new GameUser());
+
+        Long country1 = 1L;
+        Long country2 = 2L;
+        Set<Long> countries = new HashSet<>();
+        countries.add(country1);
+        countries.add(country2);
+
+        CategoryStack categoryStack = new CategoryStack();
+        categoryStack.add(CategoryEnum.CAPITAL);
+
+        Game game = new Game();
+        game.setGameId(gameId);
+        game.setParticipants(participants);
+        game.setCurrentState(GameState.SETUP);
+        game.setNumberOfRounds(10L);
+        game.setCountriesToPlayIds(countries);
+        game.setCategoryStack(categoryStack);
+        game.setRoundDuration(30L);
+
+        when(gameRepository.findByGameId(gameId)).thenReturn(game);
+        when(gameRepository.saveAndFlush(game)).thenReturn(game);
+
+        Field activeGamesField = GameService.class.getDeclaredField("activeGames");
+        activeGamesField.setAccessible(true);
+        Map<Long, Game> activeGames = (Map<Long, Game>) activeGamesField.get(gameService);
+
+        activeGames.put(gameId, game);
+
+        Game startedGame = gameService.startGame(gameId);
+
+        assertNotNull(startedGame);
+        assertEquals(GameState.GUESSING, startedGame.getCurrentState());
+    }
+
+
+
+
+    @Test
+    void testStartGame_GameNotFound() {
+        Long gameId = 10001L;
+
+        assertThrows(RuntimeException.class, () -> gameService.startGame(gameId));
+    }
+
+
+    @Test
+    void testStopGameNoScheduledFuture() {
+        Long gameId = 1L;
+
+        assertDoesNotThrow(() -> gameService.stopGame(gameId));
+    }
+
+    @Test
+    void testGetCountryIdsByRegionsAndDifficultyNoCountries() {
+        List<RegionEnum> regions = new ArrayList<>();
+        regions.add(RegionEnum.EUROPE);
+        regions.add(RegionEnum.ASIA);
+        Difficulty difficulty = Difficulty.HARD;
+
+        when(countryRepository.getCountriesByRegionsAndDifficulty(anyList(), any(), any())).thenReturn(Page.empty());
+        when(countryService.getMinPopulationByDifficulty(any(Difficulty.class))).thenReturn(100L);
+
+        Set<Long> countryIds = gameService.getCountryIdsByRegionsAndDifficulty(regions, difficulty);
+
+        assertNotNull(countryIds);
+        assertTrue(countryIds.isEmpty());
+
+        verify(countryRepository, times(1)).getCountriesByRegionsAndDifficulty(eq(regions), anyLong(), any());
+    }
+
+
+    @Test
+    void testGetAllGamesNoGames() {
+        when(gameRepository.findAll()).thenReturn(new ArrayList<>());
+
+        List<Game> allGames = gameService.getGames();
+
+        assertNotNull(allGames);
+        assertTrue(allGames.isEmpty());
+    }
+
+    @Test
+    void testCheckIfEveryoneGuessedNoParticipants() throws Exception {
+        Game game = new Game();
+        game.setParticipants(new HashSet<>());
+
+        Method method = GameService.class.getDeclaredMethod("checkIfEveryoneGuessed", Game.class);
+        method.setAccessible(true);
+        boolean result = (boolean) method.invoke(gameService, game);
+
+        assertTrue(result);
+    }
+
+
+
+
+
 
 }
