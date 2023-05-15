@@ -18,10 +18,14 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+
+import java.lang.reflect.Field;
 
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.ScheduledFuture;
 
 class GameServiceTest {
 
@@ -62,7 +66,7 @@ class GameServiceTest {
 
         verify(gameRepository, times(0)).saveAndFlush(any(Game.class));
     }
-/**
+
     @Test
     void testCreateGameSuccess() {
         GamePostDTO gamePostDTO = new GamePostDTO();
@@ -84,7 +88,6 @@ class GameServiceTest {
         when(countryRepository.getCountriesByRegionsAndDifficulty(anyList(), anyLong(), any(Pageable.class))).thenReturn(page);
 
         when(userRepository.findByUserId(1L)).thenReturn(user);
-        when(gameRepository.saveAndFlush(any(Game.class))).thenReturn(new Game());
 
         Game result = gameService.createGame(gamePostDTO);
 
@@ -97,9 +100,32 @@ class GameServiceTest {
         assertEquals(GameState.SETUP, result.getCurrentState());
         assertEquals(120L, result.getRoundDuration());
         assertEquals(5L, result.getNumberOfRounds());
-        verify(gameRepository, times(1)).saveAndFlush(any(Game.class));
     }
-*/
+
+    @Test
+    void testStopGame() throws Exception {
+        // Create a mock gameId
+        Long gameId = 1L;
+
+        // Mock a ScheduledFuture
+        ScheduledFuture<?> scheduledFutureMock = mock(ScheduledFuture.class);
+
+        // Set the mock ScheduledFuture in the scheduledFutures map using reflection
+        Field scheduledFuturesField = GameService.class.getDeclaredField("scheduledFutures");
+        scheduledFuturesField.setAccessible(true);
+        Map<Long, ScheduledFuture<?>> scheduledFutures = (Map<Long, ScheduledFuture<?>>) scheduledFuturesField.get(gameService);
+        scheduledFutures.put(gameId, scheduledFutureMock);
+
+        // Call the stopGame method
+        gameService.stopGame(gameId);
+
+        // Verify that cancel(false) is called on the mock ScheduledFuture
+        verify(scheduledFutureMock).cancel(false);
+
+        // Verify that the gameId is removed from the scheduledFutures map using reflection
+        assertFalse(scheduledFutures.containsKey(gameId));
+    }
+
     @Test
     void testCreateGameWithNullLobbyCreatorUser() {
         GamePostDTO gamePostDTO = new GamePostDTO();
@@ -173,61 +199,6 @@ class GameServiceTest {
         // Assert
         assertFalse(result);
     }
-
-
-
-    /*
-    @Test
-    void testJoinGameSuccess() {
-        Long gameId = 10001L;
-        Long userId = 2L;
-
-        Game game = new Game();
-        game.setGameId(gameId);
-        game.setParticipants(new HashSet<>());
-
-        User user = new User();
-        user.setUserId(userId);
-        user.setUsername("TestUser2");
-
-        when(gameRepository.findByGameId(gameId)).thenReturn(game);
-        when(userRepository.findByUserId(userId)).thenReturn(user);
-        when(gameRepository.saveAndFlush(any(Game.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        Game updatedGame = gameService.joinGame(gameId, userId);
-
-        assertNotNull(updatedGame);
-        assertEquals(1, updatedGame.getParticipants().size());
-
-        verify(gameRepository, times(1)).saveAndFlush(any(Game.class));
-    }
-
-     */
-/*
-    @Test
-    void testJoinGameFailure() {
-        Long gameId = 10001L;
-        Long userId = 2L;
-
-        Game game = new Game();
-        game.setGameId(gameId);
-        game.setParticipants(new HashSet<>());
-
-        User user = new User();
-        user.setUserId(userId);
-        user.setUsername("TestUser2");
-
-        game.getParticipants().add(GameUser.transformUserToGameUser(user, game));
-
-        when(gameRepository.findByGameId(gameId)).thenReturn(game);
-        when(userRepository.findByUserId(userId)).thenReturn(user);
-
-        assertThrows(ResponseStatusException.class, () -> gameService.joinGame(gameId, userId));
-
-        verify(gameRepository, times(0)).saveAndFlush(any(Game.class));
-    }
-
- */
 
     @Test
     void testStartGameFailure() {

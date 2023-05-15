@@ -89,8 +89,6 @@ public class GameService {
         activeGames.put(game.getGameId(), game);
         updateGameState(game.getGameId(), WebsocketType.GAMESTATEUPDATE, game.getCurrentState());
 
-        //gameRepository.saveAndFlush(game); // persist the game object to the database
-
         return game;
     }
 
