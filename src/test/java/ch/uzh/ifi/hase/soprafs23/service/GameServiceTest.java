@@ -406,6 +406,17 @@ class GameServiceTest {
 
         assertDoesNotThrow(() -> gameService.stopGame(gameId));
     }
+    @Test
+    void testSetClosestCountries() {
+        Long gameId = 1L;
+        Game game = new Game();
+        game.setGameId(gameId);
+        CategoryStack categoryStack = new CategoryStack();
+        categoryStack.add(CategoryEnum.CAPITAL);
+        game.setCategoryStack(categoryStack);
+        gameService.setNewClosestCountries(game);
+
+    }
 
     /*
 Set<Long> countryIds = getCountryIdsByRegionsAndDifficulty(gamePostDTO.getSelectedRegions(), gamePostDTO.getDifficulty());
