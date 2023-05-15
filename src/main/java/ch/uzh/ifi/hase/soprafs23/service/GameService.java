@@ -524,7 +524,7 @@ public class GameService {
         }
     }
 
-    private String determineNewHost(Game game){
+    public String determineNewHost(Game game){
         Long newHostId = null;
         for(GameUser participant: game.getParticipants()){
             if(participant.isUserPlayingAgain() && !participant.isHasLeft()){
@@ -557,7 +557,7 @@ public class GameService {
         categoryStack.setClosestCountries(closestCountryNames);
     }
 
-    private List<Long> calculateClosestCountries(Long currentCountryId, Map<Long, Location> countryIdLocationMap){
+    public List<Long> calculateClosestCountries(Long currentCountryId, Map<Long, Location> countryIdLocationMap){
         List<Long> closestCountries = new ArrayList<>();
         Location currentCountryLocation = countryIdLocationMap.get(currentCountryId);
         Map<Long, Long> countryIdDistanceMap = new HashMap<>();
