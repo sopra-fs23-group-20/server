@@ -369,3 +369,12 @@ Created a drap and drop area for the availibale hints to make their order custom
 ## Week 15.5 - 21.5
 
 ---
+
+### Jonathan
+https://github.com/sopra-fs23-group-20/client/issues/121 <br />
+https://github.com/sopra-fs23-group-20/client/issues/142 <br />
+
+#### Description:
+Fixed the issue that you could not set or change you nationality with the autocomplete feature. Also redid the update user profile page with a coherent design.
+
+---
