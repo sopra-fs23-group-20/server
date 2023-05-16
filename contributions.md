@@ -384,6 +384,7 @@ https://github.com/sopra-fs23-group-20/server/issues/102 <br />
 https://github.com/sopra-fs23-group-20/client/issues/152 <br />
 https://github.com/sopra-fs23-group-20/client/issues/146 <br />
 https://github.com/sopra-fs23-group-20/client/issues/116 <br />
+https://github.com/sopra-fs23-group-20/server/issues/141 <br />
 
 #### Description:
 Wrote unit tests, and integration tests for GameService class. Explained Blitz mode in game rules, and when quickjoin does not work display an alert. I also added an alert when user leaves a game so that it is informed that he/her is not part of it anymore, to avoid any misunderstanding.
