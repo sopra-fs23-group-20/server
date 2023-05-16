@@ -381,7 +381,6 @@ Fixed the issue that you could not set or change you nationality with the autoco
 
 ### Dario
 https://github.com/sopra-fs23-group-20/server/issues/102 <br />
-https://github.com/sopra-fs23-group-20/client/issues/141 <br />
 https://github.com/sopra-fs23-group-20/client/issues/152 <br />
 https://github.com/sopra-fs23-group-20/client/issues/146 <br />
 https://github.com/sopra-fs23-group-20/client/issues/116 <br />
