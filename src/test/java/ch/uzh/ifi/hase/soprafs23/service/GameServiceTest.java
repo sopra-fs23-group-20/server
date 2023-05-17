@@ -417,6 +417,32 @@ class GameServiceTest {
         gameService.setNewClosestCountries(game);
 
     }
+    @Test
+    void testGetOpenLobbyGames() {
+        Long gameId = 1L;
+        Game game = new Game();
+        game.setGameId(gameId);
+        gameService.getOpenLobbyGames();
+
+    }
+    @Test
+    void testGetOpenPlayableLobbyGames() {
+        Long gameId = 1L;
+        Game game = new Game();
+        game.setGameId(gameId);
+        gameService.getOpenPlayableLobbyGames();
+
+    }
+    /*
+    @Test
+    void testGetQuickGame() {
+        Long gameId = 1L;
+        Game game = new Game();
+        game.setGameId(gameId);
+        gameService.getQuickGame();
+
+    }
+    */
 
     /*
 Set<Long> countryIds = getCountryIdsByRegionsAndDifficulty(gamePostDTO.getSelectedRegions(), gamePostDTO.getDifficulty());
