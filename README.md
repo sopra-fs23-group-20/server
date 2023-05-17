@@ -29,29 +29,29 @@ Our project aims to create an interactive platform that makes learning geography
 
 ### User
 
-The [User](https://github.com/sopra-fs23-group-20/server/blob/827958492eda6547c71077f69acf2fd5a0bd2537/src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/User.java) entity is essential for the geography game application, as it stores important user information, such as username, creation date, and games won, and enables a personalized experience. Additionally, it ensures the security of the application by storing sensitive data, such as passwords and tokens, which are used for authentication and authorization purposes.
+The [User](src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/User.java) entity is essential for the geography game application, as it stores important user information, such as username, creation date, and games won, and enables a personalized experience. Additionally, it ensures the security of the application by storing sensitive data, such as passwords and tokens, which are used for authentication and authorization purposes.
 
 ### Game
 
-The [Game](https://github.com/sopra-fs23-group-20/server/blob/628d671fff0967c6fd185b5291b4fb43f3db6068/src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/Game.java) as it represents the structure and state of the game being played. It stores key information such as the game's current state, duration, and number of rounds. Additionally, the entity stores data related to the game's participants, including the game creator, lobby status, and current participants. It also stores information about the game's difficulty, selected categories, and available hints, and enables the selection of countries and regions to be played.
+The [Game](src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/Game.java) as it represents the structure and state of the game being played. It stores key information such as the game's current state, duration, and number of rounds. Additionally, the entity stores data related to the game's participants, including the game creator, lobby status, and current participants. It also stores information about the game's difficulty, selected categories, and available hints, and enables the selection of countries and regions to be played.
 
 ### GameUser
 
-The [GameUser](https://github.com/sopra-fs23-group-20/server/blob/628d671fff0967c6fd185b5291b4fb43f3db6068/src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/GameUser.java) has dependencies with the User and Game entities. It contains a reference to the User entity via the userId attribute and a reference to the Game entity via the game attribute, which stores information about the specific game instance in which the user is participating. The Game entity also has a reference to GameUser entity via the participants attribute, which stores a collection of GameUser objects representing the users participating in the game.
+The [GameUser](src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/GameUser.java) has dependencies with the User and Game entities. It contains a reference to the User entity via the userId attribute and a reference to the Game entity via the game attribute, which stores information about the specific game instance in which the user is participating. The Game entity also has a reference to GameUser entity via the participants attribute, which stores a collection of GameUser objects representing the users participating in the game.
 
 ### Country
 
-[Country](https://github.com/sopra-fs23-group-20/server/blob/628d671fff0967c6fd185b5291b4fb43f3db6068/src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/Country.java) represents the various countries available for users to learn and guess throughout the game. It stores important data, including the country's unique identifier, name, population, flag, location, capital, and region. Additionally, it relates to the Outline entity, which provides the game map's outline for each country.
+[Country](src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/Country.java) represents the various countries available for users to learn and guess throughout the game. It stores important data, including the country's unique identifier, name, population, flag, location, capital, and region. Additionally, it relates to the Outline entity, which provides the game map's outline for each country.
 
 ## Deployment and Database
 
 ### Google Cloud
 
-The server is currently deployed on Google Cloud using the GC's App Engine in a flexible environment. The profile for the database used is specified in the the [application-dev1.properties](https://github.com/sopra-fs23-group-20/server/blob/628d671fff0967c6fd185b5291b4fb43f3db6068/src/main/resources/application-dev1.properties) file. Currently we are using an In-Memory database which means that after each push to the main branch all game and user data is lost. To use a persistent database the [application-prod.properties](https://github.com/sopra-fs23-group-20/server/blob/628d671fff0967c6fd185b5291b4fb43f3db6068/src/main/resources/application-prod.properties) configuration file can be used. We have already created a template using a Postgres DB which worked, but due to the database's high cost we decided to switch back to the In-Memory DB. [Server Google Cloud](https://sopra-fs23-group-20-server.oa.r.appspot.com/)
+The server is currently deployed on Google Cloud using the GC's App Engine in a flexible environment. The profile for the database used is specified in the the [application-dev1.properties](src/main/resources/application-dev1.properties) file. Currently we are using an In-Memory database which means that after each push to the main branch all game and user data is lost. To use a persistent database the [application-prod.properties](src/main/resources/application-prod.properties) configuration file can be used. We have already created a template using a Postgres DB which worked, but due to the database's high cost we decided to switch back to the In-Memory DB. [Server Google Cloud](https://sopra-fs23-group-20-server.oa.r.appspot.com/)
 
 ### Raspberry PI
 
-The server is additionally to the Google Cloud also integrated into the CI/CD pipeline using a Raspberry PI. It is reachable through [Server Raspberry PI](https://sopra-fs23-group20-server.pktriot.net). It uses the [application-raspberry.properties](https://github.com/sopra-fs23-group-20/server/blob/628d671fff0967c6fd185b5291b4fb43f3db6068/src/main/resources/application-raspberry.properties) configuration for the Raspberry PI's self hosted MariaDB to persist the user and game data between deployments. Since the Google Cloud Server and Client will eventually run out of credits, the application at some point will only be reachable through [Client Raspberry PI](https://sopra-fs23-group20-client.pktriot.net).
+The server is additionally to the Google Cloud also integrated into the CI/CD pipeline using a Raspberry PI. It is reachable through [Server Raspberry PI](https://sopra-fs23-group20-server.pktriot.net). It uses the [application-raspberry.properties](src/main/resources/application-raspberry.properties) configuration for the Raspberry PI's self hosted MariaDB to persist the user and game data between deployments. Since the Google Cloud Server and Client will eventually run out of credits, the application at some point will only be reachable through [Client Raspberry PI](https://sopra-fs23-group20-client.pktriot.net).
 
 ## Launch
 
@@ -135,4 +135,4 @@ To encourage user engagement and acknowledge accomplishments, it would make sens
 
 ## License
 
-[Apache license 2.0](https://github.com/sopra-fs23-group-20/server/blob/6dc8281b0a876fa1d310626a704e0e4bfa08b86d/LICENSE)
+[Apache license 2.0](LICENSE)
