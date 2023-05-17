@@ -43,28 +43,17 @@ The [GameUser](https://github.com/sopra-fs23-group-20/server/blob/628d671fff0967
 
 [Country](https://github.com/sopra-fs23-group-20/server/blob/628d671fff0967c6fd185b5291b4fb43f3db6068/src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/Country.java) represents the various countries available for users to learn and guess throughout the game. It stores important data, including the country's unique identifier, name, population, flag, location, capital, and region. Additionally, it relates to the Outline entity, which provides the game map's outline for each country.
 
-## Launch & Deployment
+## Deployment and Database
 
-### Setup this Template with your IDE of choice
+### Google Cloud
 
-Download your IDE of choice (e.g., [IntelliJ](https://www.jetbrains.com/idea/download/), [Visual Studio Code](https://code.visualstudio.com/), or [Eclipse](http://www.eclipse.org/downloads/)). Make sure Java 17 is installed on your system (for Windows, please make sure your `JAVA_HOME` environment variable is set to the correct version of Java).
+The server is currently deployed on Google Cloud using the GC's App Engine in a flexible environment. The profile for the database used is specified in the the [application-dev1.properties](https://github.com/sopra-fs23-group-20/server/blob/628d671fff0967c6fd185b5291b4fb43f3db6068/src/main/resources/application-dev1.properties) file. Currently we are using an In-Memory database which means that after each push to the main branch all game and user data is lost. To use a persistent database the [application-prod.properties](https://github.com/sopra-fs23-group-20/server/blob/628d671fff0967c6fd185b5291b4fb43f3db6068/src/main/resources/application-prod.properties) configuration file can be used. We have already created a template using a Postgres DB which worked, but due to the database's high cost we decided to switch back to the In-Memory DB. [Server Google Cloud](https://sopra-fs23-group-20-server.oa.r.appspot.com/)
 
-#### IntelliJ
+### Raspberry PI
 
-1. File -> Open... -> SoPra server template
-2. Accept to import the project as a `gradle project`
-3. To build right click the `build.gradle` file and choose `Run Build`
+The server is additionally to the Google Cloud also integrated into the CI/CD pipeline using a Raspberry PI. It is reachable through [Server Raspberry PI](https://sopra-fs23-group20-server.pktriot.net). It uses the [application-raspberry.properties](https://github.com/sopra-fs23-group-20/server/blob/628d671fff0967c6fd185b5291b4fb43f3db6068/src/main/resources/application-raspberry.properties) configuration for the Raspberry PI's self hosted MariaDB to persist the user and game data between deployments. Since the Google Cloud Server and Client will eventually run out of credits, the application at some point will only be reachable through [Client Raspberry PI](https://sopra-fs23-group20-client.pktriot.net).
 
-#### VS Code
-
-The following extensions can help you get started more easily:
-
--   `vmware.vscode-spring-boot`
--   `vscjava.vscode-spring-initializr`
--   `vscjava.vscode-spring-boot-dashboard`
--   `vscjava.vscode-java-pack`
-
-**Note:** You'll need to build the project first with Gradle, just click on the `build` command in the _Gradle Tasks_ extension. Then check the _Spring Boot Dashboard_ extension if it already shows `soprafs23` and hit the play button to start the server. If it doesn't show up, restart VS Code and check again.
+## Launch
 
 ## Building with Gradle
 
@@ -98,8 +87,7 @@ You can verify that the server is running by visiting `localhost:8080` in your b
 
 ### Development Mode
 
-You can start the backend in development mode, this will automatically trigger a new build and reload the application
-once the content of a file has been changed.
+You can start the backend in development mode, this will automatically trigger a new build and reload the application once the content of a file has been changed.
 
 Start two terminal windows and run:
 
