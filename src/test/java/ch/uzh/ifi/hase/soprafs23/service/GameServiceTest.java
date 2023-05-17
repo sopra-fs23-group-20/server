@@ -433,16 +433,20 @@ class GameServiceTest {
         gameService.getOpenPlayableLobbyGames();
 
     }
-    /*
+
     @Test
-    void testGetQuickGame() {
+    void testAddUserToRestart() {
         Long gameId = 1L;
         Game game = new Game();
+        GameUser gameUser = new GameUser();
+        Set<GameUser> participants = new HashSet<GameUser>();
+        participants.add(gameUser);
+        game.setParticipants(participants);
         game.setGameId(gameId);
-        gameService.getQuickGame();
+        gameService.createRestartedGame(game);
 
+        gameService.createRestartedGame(game);
     }
-    */
 
     /*
 Set<Long> countryIds = getCountryIdsByRegionsAndDifficulty(gamePostDTO.getSelectedRegions(), gamePostDTO.getDifficulty());
