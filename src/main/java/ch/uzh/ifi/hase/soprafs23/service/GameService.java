@@ -117,6 +117,9 @@ public class GameService {
             if (game == null) {
                 throw new RuntimeException("Game not found");
             }
+            if(game.getCurrentState() != SETUP){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Game already started");
+            }
 
             game.setCurrentState(SETUP);
             GameState currentGameState = game.getCurrentState();
