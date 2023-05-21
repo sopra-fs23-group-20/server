@@ -398,9 +398,10 @@ Wrote unit tests, and integration tests for GameService class. Explained Blitz m
 [https://github.com/sopra-fs23-group-20/client/issues/152](https://github.com/sopra-fs23-group-20/client/issues/150) <br />
 [https://github.com/sopra-fs23-group-20/client/issues/146](https://github.com/sopra-fs23-group-20/client/issues/149) <br />
 [https://github.com/sopra-fs23-group-20/client/issues/116](https://github.com/sopra-fs23-group-20/server/issues/141) <br />
+https://github.com/sopra-fs23-group-20/client/issues/162
 
 #### Description:
-Wrote unit tests, did some optimization on the UI, updated the landing page by adding a button
+Wrote unit tests, did some optimization on the UI, updated the landing page by adding a button, updated readme
 
 ---
 
