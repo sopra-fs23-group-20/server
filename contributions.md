@@ -367,6 +367,14 @@ Created a drap and drop area for the availibale hints to make their order custom
 ---
 
 ## Week 15.5 - 21.5
+---
+
+### Jamo
+https://github.com/sopra-fs23-group-20/client/issues/121 <br />
+
+
+#### Description:
+I tested the corner cases/overall functionality of "quick join".
 
 ---
 
