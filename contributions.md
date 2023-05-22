@@ -371,7 +371,9 @@ Created a drap and drop area for the availibale hints to make their order custom
 
 ### Jamo
 https://github.com/sopra-fs23-group-20/client/issues/121 <br />
-
+https://github.com/sopra-fs23-group-20/client/issues/144 <br/> (already done last week)
+https://github.com/sopra-fs23-group-20/client/issues/108 <br/> (already done last week) 
+https://github.com/sopra-fs23-group-20/server/issues/28 <br/> (already done last week) 
 
 #### Description:
 I tested the corner cases/overall functionality of "quick join".
