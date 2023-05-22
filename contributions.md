@@ -370,13 +370,15 @@ Created a drap and drop area for the availibale hints to make their order custom
 ---
 
 ### Jamo
-https://github.com/sopra-fs23-group-20/client/issues/121 <br />
 https://github.com/sopra-fs23-group-20/client/issues/144 (already done last week)<br/> 
 https://github.com/sopra-fs23-group-20/client/issues/108 (already done last week)<br/> 
+https://github.com/sopra-fs23-group-20/client/issues/40 (already done last week) <br/>
 https://github.com/sopra-fs23-group-20/server/issues/28 (already done last week)<br/> 
+https://github.com/sopra-fs23-group-20/client/issues/121 <br />
+https://github.com/sopra-fs23-group-20/client/issues/132 
 
 #### Description:
-I tested the corner cases/overall functionality of "quick join".
+As mentioned last week, I did a lot of tasks last week --> hence, see work ahead from last week (the first four tickets listed above; GameHistory implementation). Furthermore, I tested the corner cases/overall functionality of "quick join" and assisted Louis with the mobile compatibility of the Leader and ScoreBoard. 
 
 ---
 
