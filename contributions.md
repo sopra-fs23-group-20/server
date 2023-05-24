@@ -436,6 +436,8 @@ I added some tests for the new game Mode "Blitz" to test the function which calc
 
 
 ## Week 22.5 - 25.5
+---
+
 
 #### Description:
 This week we dedicated our time on playing the app multiple times to look for bugs and change minor things, so no particular issues were completed. <br />
@@ -448,3 +450,17 @@ https://github.com/sopra-fs23-group-20/client/issues/163
 <br />
 #### Description:
 I updated the landing page design, so it should work on mobile, updated the screenshots and of course worked at the report
+
+
+---
+
+### Jonathan
+https://github.com/sopra-fs23-group-20/client/issues/166 <br />
+
+#### Description:
+Redid the Landing page.
+
+
+
+
+
