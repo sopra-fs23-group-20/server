@@ -1,4 +1,4 @@
-# Group 20 - Weekly Contributions - Milestone 3
+# Group 20 - Weekly Contributions - Milestone 3 and 4
 
 ## Week 27.3 - 2.4
 
