@@ -43,6 +43,13 @@ The [GameUser](src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/GameUser.java) h
 
 [Country](src/main/java/ch/uzh/ifi/hase/soprafs23/entityDB/Country.java) represents the various countries available for users to learn and guess throughout the game. It stores important data, including the country's unique identifier, name, population, flag, location, capital, and region. Additionally, it relates to the Outline entity, which provides the game map's outline for each country.
 
+### Websockets
+
+[WebSockets](src/main/java/ch/uzh/ifi/hase/soprafs23/service/WebSocketConfig.java) play a vital role in our application, serving as a key cornerstone. They enable a seamless live collaboration experience in our multiplayer game, allowing players to interact in real time. With constant time-based updates and requests, it is crucial to maintain consistency among all players during gameplay.
+
+
+
+
 ## Deployment and Database
 
 ### Google Cloud
