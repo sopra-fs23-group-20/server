@@ -440,3 +440,11 @@ I added some tests for the new game Mode "Blitz" to test the function which calc
 #### Description:
 This week we dedicated our time on playing the app multiple times to look for bugs and change minor things, so no particular issues were completed. <br />
 We also used our time to work on the ReadMe, Report, and Presentation Slides. <br />
+#### Louis:
+I still wanted to improve some stuff:<br />
+https://github.com/sopra-fs23-group-20/client/issues/134
+<br />
+https://github.com/sopra-fs23-group-20/client/issues/163
+<br />
+#### Description:
+I updated the landing page design, so it should work on mobile, updated the screenshots and of course worked at the report
