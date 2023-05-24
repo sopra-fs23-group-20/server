@@ -259,7 +259,13 @@ https://github.com/sopra-fs23-group-20/client/issues/51 There should be a websoc
 ---
 
 ### Jamo
-I have already submitted my tasks for this week in week 3.4 - 9.4/easter break.
+https://github.com/sopra-fs23-group-20/client/issues/22 (already done in easter break) </br>
+https://github.com/sopra-fs23-group-20/client/issues/29 (already done in easter break)</br>
+https://github.com/sopra-fs23-group-20/client/issues/30 (already done in easter break)</br>
+https://github.com/sopra-fs23-group-20/server/issues/40 (already done in easter break)</br>
+https://github.com/sopra-fs23-group-20/client/issues/31 (already done in easter break)</br>
+#### Description:
+As mentioned in the weekly before the easter break, I have already submitted my tasks for this week in week 3.4 - 9.4/easter break.
 
 ### Louis
 I have already submitted my tasks for this week in week 3.4 - 9.4/easter break.
