@@ -432,33 +432,53 @@ I added some tests for the new game Mode "Blitz" to test the function which calc
 
 ---
 
-
-
-
 ## Week 22.5 - 25.5
 ---
 
-
+#### Dario
 #### Description:
-This week we dedicated our time on playing the app multiple times to look for bugs and change minor things, so no particular issues were completed. <br />
-We also used our time to work on the ReadMe, Report, and Presentation Slides. <br />
+This week we did not plan to do programming, but rather to finalize everything cleanly and hand it in accordingly. <br />
+Consequently, one of the things we did was to make sure the whole Github Board was clean and clear.  <br />
+Moreover, we used our time to finalize the ReadMe and work on the final Report as well as the Presentation Slides. <br />
+Furthermore, we dedicated our time on playing the App multiple times in order to find potential bugs and change, if necessary, minor things. Hence, no particular (planned) issues were completed.<br />
+
+#### Jonas
+#### Description:
+This week we did not plan to do programming, but rather to finalize everything cleanly and hand it in accordingly. <br />
+Consequently, one of the things we did was to make sure the whole Github Board was clean and clear.  <br />
+Moreover, we used our time to finalize the ReadMe and work on the final Report as well as the Presentation Slides. <br />
+Furthermore, we dedicated our time on playing the App multiple times in order to find potential bugs and change, if necessary, minor things. Hence, no particular (planned) issues were completed.<br />
+
+#### Jamo
+#### Description:
+This week we did not plan to do programming, but rather to finalize everything cleanly and hand it in accordingly. <br />
+Consequently, one of the things we did was to make sure the whole Github Board was clean and clear.  <br />
+Moreover, we used our time to finalize the ReadMe and work on the final Report as well as the Presentation Slides. <br />
+Furthermore, we dedicated our time on playing the App multiple times in order to find potential bugs and change, if necessary, minor things. Hence, no particular (planned) issues were completed.<br />
+Additionally, I assisted Louis with the landing page.
+
 #### Louis:
-I still wanted to improve some stuff:<br />
-https://github.com/sopra-fs23-group-20/client/issues/134
-<br />
-https://github.com/sopra-fs23-group-20/client/issues/163
-<br />
+https://github.com/sopra-fs23-group-20/client/issues/134 <br />
+https://github.com/sopra-fs23-group-20/client/issues/163 <br />
 #### Description:
-I updated the landing page design, so it should work on mobile, updated the screenshots and of course worked at the report
-
-
----
+This week we did not plan to do programming, but rather to finalize everything cleanly and hand it in accordingly. <br />
+Consequently, one of the things we did was to make sure the whole Github Board was clean and clear.  <br />
+Moreover, we used our time to finalize the ReadMe and work on the final Report as well as the Presentation Slides. <br />
+Furthermore, we dedicated our time on playing the App multiple times in order to find potential bugs and change, if necessary, minor things. Hence, no particular (planned) issues were completed.<br />
+Additionally, I updated the landing page design, so it should work on mobile.
 
 ### Jonathan
 https://github.com/sopra-fs23-group-20/client/issues/166 <br />
-
 #### Description:
-Redid the Landing page.
+This week we did not plan to do programming, but rather to finalize everything cleanly and hand it in accordingly. <br />
+Consequently, one of the things we did was to make sure the whole Github Board was clean and clear.  <br />
+Moreover, we used our time to finalize the ReadMe and work on the final Report as well as the Presentation Slides. <br />
+Furthermore, we dedicated our time on playing the App multiple times in order to find potential bugs and change, if necessary, minor things. Hence, no particular (planned) issues were completed.<br />
+Additionally, I redid the Landing page.
+
+---
+
+
 
 
 
