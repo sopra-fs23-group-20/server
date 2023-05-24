@@ -436,3 +436,7 @@ I added some tests for the new game Mode "Blitz" to test the function which calc
 
 
 ## Week 22.5 - 25.5
+
+#### Description:
+This week we dedicated our time on playing the app multiple times to look for bugs and change minor things, so no particular issues were completed. <br />
+We also used our time to work on the ReadMe, Report, and Presentation Slides. <br />
