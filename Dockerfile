@@ -30,3 +30,6 @@ EXPOSE 8080
 
 # Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# Build and push the docker image
+# docker buildx build --platform linux/arm64 -t jonasblum/sopra-backend:latest --push .
